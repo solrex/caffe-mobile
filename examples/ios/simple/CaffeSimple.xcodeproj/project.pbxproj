@@ -14,6 +14,11 @@
 		1965DBBA1E447C130064AD55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBB91E447C130064AD55 /* Assets.xcassets */; };
 		1965DBBD1E447C130064AD55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBBB1E447C130064AD55 /* LaunchScreen.storyboard */; };
 		19F82F1F1E44C2C300695409 /* ImageReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 19F82F1E1E44C2C300695409 /* ImageReader.mm */; };
+		19F82F221E44D8D100695409 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F211E44D8D100695409 /* Accelerate.framework */; };
+		19F82F251E44DA7900695409 /* libcaffe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F231E44D9A100695409 /* libcaffe.a */; };
+		19F82F271E44DB2000695409 /* libproto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F261E44DB2000695409 /* libproto.a */; };
+		19F82F291E44DB4900695409 /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F281E44DB4900695409 /* libprotobuf-lite.a */; };
+		19F82F2B1E44DBD900695409 /* libprotobuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F2A1E44DBD900695409 /* libprotobuf.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +34,11 @@
 		1965DBBE1E447C130064AD55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		19F82F1B1E44BD1E00695409 /* ImageReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageReader.h; sourceTree = "<group>"; };
 		19F82F1E1E44C2C300695409 /* ImageReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageReader.mm; sourceTree = "<group>"; };
+		19F82F211E44D8D100695409 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		19F82F231E44D9A100695409 /* libcaffe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcaffe.a; path = ../../../build/lib/libcaffe.a; sourceTree = "<group>"; };
+		19F82F261E44DB2000695409 /* libproto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproto.a; path = ../../../build/lib/libproto.a; sourceTree = "<group>"; };
+		19F82F281E44DB4900695409 /* libprotobuf-lite.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libprotobuf-lite.a"; path = "../../../third_party/protobuf/protobuf/platform/x86_64/lib/libprotobuf-lite.a"; sourceTree = "<group>"; };
+		19F82F2A1E44DBD900695409 /* libprotobuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libprotobuf.a; path = ../../../third_party/protobuf/protobuf/platform/x86_64/lib/libprotobuf.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +46,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19F82F2B1E44DBD900695409 /* libprotobuf.a in Frameworks */,
+				19F82F291E44DB4900695409 /* libprotobuf-lite.a in Frameworks */,
+				19F82F271E44DB2000695409 /* libproto.a in Frameworks */,
+				19F82F251E44DA7900695409 /* libcaffe.a in Frameworks */,
+				19F82F221E44D8D100695409 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +62,7 @@
 			children = (
 				1965DBAC1E447C130064AD55 /* CaffeSimple */,
 				1965DBAB1E447C130064AD55 /* Products */,
+				19F82F201E44D8D100695409 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -82,6 +98,18 @@
 				1965DBAE1E447C130064AD55 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		19F82F201E44D8D100695409 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				19F82F2A1E44DBD900695409 /* libprotobuf.a */,
+				19F82F281E44DB4900695409 /* libprotobuf-lite.a */,
+				19F82F261E44DB2000695409 /* libproto.a */,
+				19F82F231E44D9A100695409 /* libcaffe.a */,
+				19F82F211E44D8D100695409 /* Accelerate.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,15 +242,26 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "-DCPU_ONLY=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					CPU_ONLY,
+					USE_ACCELERATE,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../../include;
+				HEADER_SEARCH_PATHS = (
+					../../../include,
+					../../../build/include,
+					../../../third_party/protobuf/protobuf/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LIBRARY_SEARCH_PATHS = (
+					../../../build/lib,
+					../../../third_party/protobuf/protobuf/platform/x86_64/lib,
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -257,15 +296,26 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "-DCPU_ONLY=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					CPU_ONLY,
+					USE_ACCELERATE,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../../include;
+				HEADER_SEARCH_PATHS = (
+					../../../include,
+					../../../build/include,
+					../../../third_party/protobuf/protobuf/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LIBRARY_SEARCH_PATHS = (
+					../../../build/lib,
+					../../../third_party/protobuf/protobuf/platform/x86_64/lib,
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

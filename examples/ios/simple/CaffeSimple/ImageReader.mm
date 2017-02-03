@@ -17,7 +17,7 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
     const size_t bytes_in_file = ftell(file_handle);
     fseek(file_handle, 0, SEEK_SET);
     // Read file bytes
-    std::vector<uint8> file_data(bytes_in_file);
+    std::vector<uint8_t> file_data(bytes_in_file);
     fread(file_data.data(), 1, bytes_in_file, file_handle);
     fclose(file_handle);
     CFDataRef file_data_ref = CFDataCreateWithBytesNoCopy(NULL, file_data.data(),
@@ -42,10 +42,7 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
         CFRelease(image_provider);
         CFRelease(file_data_ref);
         fprintf(stderr, "Unknown suffix for file '%s'\n", file_name);
-        *out_width = 0;
-        *out_height = 0;
-        *out_channels = 0;
-        return std::vector<uint8>();
+        return 1;
     }
     // Get Image width and height
     const int width = (int)CGImageGetWidth(image);
@@ -54,7 +51,7 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
     CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
     const int bytes_per_row = (width * channels);
     const int bytes_in_image = (bytes_per_row * height);
-    std::vector<uint8> result(bytes_in_image);
+    std::vector<uint8_t> result(bytes_in_image);
     const int bits_per_component = 8;
     // Read Image to bitmap
     CGContextRef context = CGBitmapContextCreate(result.data(), width, height,

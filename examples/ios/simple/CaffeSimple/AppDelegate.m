@@ -17,13 +17,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    UITabBarController *bar = [[UITabBarController alloc] init];
+//    UITabBarController *bar = [[UITabBarController alloc] init];
 //    [bar setViewControllers:
 //     @[[[RunModelViewController alloc] init]]];
-    bar.selectedIndex = 0;
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = bar;
-    [self.window makeKeyAndVisible];
+//    bar.selectedIndex = 0;
+//    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//    self.window.rootViewController = bar;
+//    [self.window makeKeyAndVisible];
     return YES;
 }
 
