@@ -1,0 +1,64 @@
+--- caffe/src/caffe/common.cpp	2017-01-31 23:29:02.000000000 +0800
++++ ../src/caffe/common.cpp	2017-01-31 23:44:39.000000000 +0800
+@@ -1,5 +1,6 @@
++#ifndef DISABLE_BOOST
+ #include <boost/thread.hpp>
+-#include <glog/logging.h>
++#endif
+ #include <cmath>
+ #include <cstdio>
+ #include <ctime>
+@@ -7,16 +8,36 @@
+ #include "caffe/common.hpp"
+ #include "caffe/util/rng.hpp"
+ 
++#ifdef CAFFE_COMPACT
++#include <unistd.h>
++#endif
++
+ namespace caffe {
+ 
++#ifndef DISABLE_BOOST
+ // Make sure each thread can have different values.
+ static boost::thread_specific_ptr<Caffe> thread_instance_;
++#else
++thread_local static Caffe *thread_instance_ = NULL;
++#endif
++
++#ifdef DISABLE_GLOG
++nullstream __nullstream;
++bool LogMessage::enable = true;
++#endif
+ 
+ Caffe& Caffe::Get() {
++#ifndef DISABLE_BOOST
+   if (!thread_instance_.get()) {
+     thread_instance_.reset(new Caffe());
+   }
+   return *(thread_instance_.get());
++#else
++  if (thread_instance_ == NULL) {
++      thread_instance_ = new Caffe();
++  }
++  return *thread_instance_;
++#endif
+ }
+ 
+ // random seeding
+@@ -41,12 +62,16 @@
+ 
+ 
+ void GlobalInit(int* pargc, char*** pargv) {
++#ifndef CAFFE_COMPACT
+   // Google flags.
+   ::gflags::ParseCommandLineFlags(pargc, pargv, true);
++#endif
++#ifndef DISABLE_GLOG
+   // Google logging.
+   ::google::InitGoogleLogging(*(pargv)[0]);
+   // Provide a backtrace on segfault.
+   ::google::InstallFailureSignalHandler();
++#endif
+ }
+ 
+ #ifdef CPU_ONLY  // CPU-only Caffe.

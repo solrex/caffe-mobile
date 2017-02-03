@@ -1,0 +1,41 @@
+--- caffe/src/caffe/util/math_functions.cpp	2017-01-31 23:29:02.000000000 +0800
++++ ../src/caffe/util/math_functions.cpp	2017-01-30 15:43:29.000000000 +0800
+@@ -1,5 +1,7 @@
++#ifndef DISABLE_BOOST
+ #include <boost/math/special_functions/next.hpp>
+ #include <boost/random.hpp>
++#endif
+ 
+ #include <limits>
+ 
+@@ -42,7 +44,7 @@
+ void caffe_cpu_gemv<double>(const CBLAS_TRANSPOSE TransA, const int M,
+     const int N, const double alpha, const double* A, const double* x,
+     const double beta, double* y) {
+-  cblas_dgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
++ cblas_dgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
+ }
+ 
+ template <>
+@@ -226,10 +228,13 @@
+     vdAbs(n, a, y);
+ }
+ 
++#ifndef CAFFE_COMPACT
+ unsigned int caffe_rng_rand() {
+   return (*caffe_rng())();
+ }
++#endif
+ 
++#ifndef DISABLE_BOOST
+ template <typename Dtype>
+ Dtype caffe_nextafter(const Dtype b) {
+   return boost::math::nextafter<Dtype>(
+@@ -324,6 +329,7 @@
+ 
+ template
+ void caffe_rng_bernoulli<float>(const int n, const float p, unsigned int* r);
++#endif
+ 
+ template <>
+ float caffe_cpu_strided_dot<float>(const int n, const float* x, const int incx,

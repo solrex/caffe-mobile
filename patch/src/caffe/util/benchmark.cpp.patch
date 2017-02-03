@@ -1,0 +1,112 @@
+--- caffe/src/caffe/util/benchmark.cpp	2017-01-31 23:29:02.000000000 +0800
++++ ../src/caffe/util/benchmark.cpp	2017-01-31 22:47:36.000000000 +0800
+@@ -5,6 +5,11 @@
+ 
+ namespace caffe {
+ 
++static float time_diff_ms(struct timeval start, struct timeval stop) {
++    return (float)(stop.tv_sec - start.tv_sec)*1000
++        + (float)(stop.tv_usec - start.tv_usec)/1000;
++}
++
+ Timer::Timer()
+     : initted_(false),
+       running_(false),
+@@ -32,7 +37,11 @@
+       NO_GPU;
+ #endif
+     } else {
++#ifndef DISABLE_BOOST
+       start_cpu_ = boost::posix_time::microsec_clock::local_time();
++#else
++      gettimeofday(&start_cpu_, NULL);
++#endif
+     }
+     running_ = true;
+     has_run_at_least_once_ = true;
+@@ -48,7 +57,11 @@
+       NO_GPU;
+ #endif
+     } else {
++#ifndef DISABLE_BOOST
+       stop_cpu_ = boost::posix_time::microsec_clock::local_time();
++#else
++      gettimeofday(&stop_cpu_, NULL);
++#endif
+     }
+     running_ = false;
+   }
+@@ -74,7 +87,11 @@
+       NO_GPU;
+ #endif
+   } else {
++#ifndef DISABLE_BOOST
+     elapsed_microseconds_ = (stop_cpu_ - start_cpu_).total_microseconds();
++#else
++    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
++#endif
+   }
+   return elapsed_microseconds_;
+ }
+@@ -96,7 +113,11 @@
+       NO_GPU;
+ #endif
+   } else {
++#ifndef DISABLE_BOOST
+     elapsed_milliseconds_ = (stop_cpu_ - start_cpu_).total_milliseconds();
++#else
++    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
++#endif
+   }
+   return elapsed_milliseconds_;
+ }
+@@ -127,7 +148,11 @@
+ 
+ void CPUTimer::Start() {
+   if (!running()) {
++#ifndef DISABLE_BOOST
+     this->start_cpu_ = boost::posix_time::microsec_clock::local_time();
++#else
++    gettimeofday(&start_cpu_, NULL);
++#endif
+     this->running_ = true;
+     this->has_run_at_least_once_ = true;
+   }
+@@ -135,7 +160,11 @@
+ 
+ void CPUTimer::Stop() {
+   if (running()) {
++#ifndef DISABLE_BOOST
+     this->stop_cpu_ = boost::posix_time::microsec_clock::local_time();
++#else
++    gettimeofday(&stop_cpu_, NULL);
++#endif
+     this->running_ = false;
+   }
+ }
+@@ -148,8 +177,12 @@
+   if (running()) {
+     Stop();
+   }
++#ifndef DISABLE_BOOST
+   this->elapsed_milliseconds_ = (this->stop_cpu_ -
+                                 this->start_cpu_).total_milliseconds();
++#else
++    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
++#endif
+   return this->elapsed_milliseconds_;
+ }
+ 
+@@ -161,8 +194,12 @@
+   if (running()) {
+     Stop();
+   }
++#ifndef DISABLE_BOOST
+   this->elapsed_microseconds_ = (this->stop_cpu_ -
+                                 this->start_cpu_).total_microseconds();
++#else
++    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
++#endif
+   return this->elapsed_microseconds_;
+ }
+ 

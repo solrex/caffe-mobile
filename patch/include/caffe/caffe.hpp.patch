@@ -1,0 +1,17 @@
+--- caffe/include/caffe/caffe.hpp	2017-01-31 23:29:02.000000000 +0800
++++ ../include/caffe/caffe.hpp	2017-01-31 22:54:21.000000000 +0800
+@@ -10,10 +10,14 @@
+ #include "caffe/layer.hpp"
+ #include "caffe/layer_factory.hpp"
+ #include "caffe/net.hpp"
++#ifndef CAFFE_COMPACT
+ #include "caffe/parallel.hpp"
++#endif
+ #include "caffe/proto/caffe.pb.h"
++#ifndef CAFFE_COMPACT
+ #include "caffe/solver.hpp"
+ #include "caffe/solver_factory.hpp"
++#endif
+ #include "caffe/util/benchmark.hpp"
+ #include "caffe/util/io.hpp"
+ #include "caffe/util/upgrade_proto.hpp"

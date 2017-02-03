@@ -1,0 +1,58 @@
+--- caffe/src/caffe/layers/base_data_layer.cpp	2017-01-31 23:29:02.000000000 +0800
++++ ../src/caffe/layers/base_data_layer.cpp	2017-01-31 23:09:40.000000000 +0800
+@@ -1,9 +1,13 @@
++#ifndef DISABLE_BOOST
+ #include <boost/thread.hpp>
++#endif
+ #include <vector>
+ 
+ #include "caffe/blob.hpp"
+ #include "caffe/data_transformer.hpp"
++#ifndef DISABLE_BOOST
+ #include "caffe/internal_thread.hpp"
++#endif
+ #include "caffe/layer.hpp"
+ #include "caffe/layers/base_data_layer.hpp"
+ #include "caffe/proto/caffe.pb.h"
+@@ -13,8 +17,12 @@
+ 
+ template <typename Dtype>
+ BaseDataLayer<Dtype>::BaseDataLayer(const LayerParameter& param)
++#ifndef CAFFE_COMPACT
+     : Layer<Dtype>(param),
+       transform_param_(param.transform_param()) {
++#else
++    : Layer<Dtype>(param) {
++#endif
+ }
+ 
+ template <typename Dtype>
+@@ -25,13 +33,16 @@
+   } else {
+     output_labels_ = true;
+   }
++#ifndef CAFFE_COMPACT
+   data_transformer_.reset(
+       new DataTransformer<Dtype>(transform_param_, this->phase_));
+   data_transformer_->InitRand();
++#endif
+   // The subclasses should setup the size of bottom and top
+   DataLayerSetUp(bottom, top);
+ }
+ 
++#ifndef CAFFE_COMPACT
+ template <typename Dtype>
+ BasePrefetchingDataLayer<Dtype>::BasePrefetchingDataLayer(
+     const LayerParameter& param)
+@@ -129,8 +140,11 @@
+ #ifdef CPU_ONLY
+ STUB_GPU_FORWARD(BasePrefetchingDataLayer, Forward);
+ #endif
++#endif
+ 
+ INSTANTIATE_CLASS(BaseDataLayer);
++#ifndef CAFFE_COMPACT
+ INSTANTIATE_CLASS(BasePrefetchingDataLayer);
++#endif
+ 
+ }  // namespace caffe

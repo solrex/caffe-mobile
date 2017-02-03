@@ -1,0 +1,28 @@
+--- caffe/include/caffe/util/benchmark.hpp	2017-01-31 23:29:02.000000000 +0800
++++ ../include/caffe/util/benchmark.hpp	2017-01-31 22:38:20.000000000 +0800
+@@ -1,7 +1,11 @@
+ #ifndef CAFFE_UTIL_BENCHMARK_H_
+ #define CAFFE_UTIL_BENCHMARK_H_
+ 
++#ifndef DISABLE_BOOST
+ #include <boost/date_time/posix_time/posix_time.hpp>
++#else
++#include <sys/time.h>
++#endif
+ 
+ #include "caffe/util/device_alternate.hpp"
+ 
+@@ -31,8 +35,13 @@
+   cudaEvent_t start_gpu_;
+   cudaEvent_t stop_gpu_;
+ #endif
++#ifndef DISABLE_BOOST
+   boost::posix_time::ptime start_cpu_;
+   boost::posix_time::ptime stop_cpu_;
++#else
++  struct timeval start_cpu_;
++  struct timeval stop_cpu_;
++#endif
+   float elapsed_milliseconds_;
+   float elapsed_microseconds_;
+ };

@@ -1,0 +1,140 @@
+--- caffe/tools/caffe.cpp	2017-01-31 23:29:02.000000000 +0800
++++ ../tools/caffe.cpp	2017-02-01 00:03:18.000000000 +0800
+@@ -3,23 +3,29 @@
+ namespace bp = boost::python;
+ #endif
+ 
+-#include <gflags/gflags.h>
+-#include <glog/logging.h>
+-
+ #include <cstring>
+ #include <map>
+ #include <string>
+ #include <vector>
+ 
++#ifndef DISABLE_BOOST
+ #include "boost/algorithm/string.hpp"
++#endif
+ #include "caffe/caffe.hpp"
++#ifndef CAFFE_COMPACT
+ #include "caffe/util/signal_handler.h"
++#else
++#include "caffe/util/benchmark.hpp"
++#include <gflags/gflags.h>
++#endif
+ 
+ using caffe::Blob;
+ using caffe::Caffe;
+ using caffe::Net;
+ using caffe::Layer;
++#ifndef CAFFE_COMPACT
+ using caffe::Solver;
++#endif
+ using caffe::shared_ptr;
+ using caffe::string;
+ using caffe::Timer;
+@@ -54,6 +60,7 @@
+ DEFINE_string(sighup_effect, "snapshot",
+              "Optional; action to take when a SIGHUP signal is received: "
+              "snapshot, stop or none.");
++DEFINE_int32(alsologtostderr, 1, "");
+ 
+ // A simple registry for caffe commands.
+ typedef int (*BrewFunction)();
+@@ -87,6 +94,7 @@
+ 
+ // Parse GPU ids or use all available devices
+ static void get_gpus(vector<int>* gpus) {
++#ifndef CPU_ONLY
+   if (FLAGS_gpu == "all") {
+     int count = 0;
+ #ifndef CPU_ONLY
+@@ -106,6 +114,7 @@
+   } else {
+     CHECK_EQ(gpus->size(), 0);
+   }
++#endif
+ }
+ 
+ // Parse phase from flags
+@@ -123,7 +132,11 @@
+ // Parse stages from flags
+ vector<string> get_stages_from_flags() {
+   vector<string> stages;
++#ifndef DISABLE_BOOST
+   boost::split(stages, FLAGS_stage, boost::is_any_of(","));
++#else
++  stages.push_back("TEST");
++#endif
+   return stages;
+ }
+ 
+@@ -135,6 +148,7 @@
+ 
+ // Device Query: show diagnostic information for a GPU device.
+ int device_query() {
++#ifndef CAFFE_COMPACT
+   LOG(INFO) << "Querying GPUs " << FLAGS_gpu;
+   vector<int> gpus;
+   get_gpus(&gpus);
+@@ -142,10 +156,12 @@
+     caffe::Caffe::SetDevice(gpus[i]);
+     caffe::Caffe::DeviceQuery();
+   }
++#endif
+   return 0;
+ }
+ RegisterBrewFunction(device_query);
+ 
++#ifndef CAFFE_COMPACT
+ // Load the weights from the specified caffemodel(s) into the train and
+ // test nets.
+ void CopyLayers(caffe::Solver<float>* solver, const std::string& model_list) {
+@@ -160,6 +176,7 @@
+   }
+ }
+ 
++
+ // Translate the signal effect the user specified on the command-line to the
+ // corresponding enumeration.
+ caffe::SolverAction::Enum GetRequestedAction(
+@@ -175,9 +192,11 @@
+   }
+   LOG(FATAL) << "Invalid signal effect \""<< flag_value << "\" was specified";
+ }
++#endif
+ 
+ // Train / Finetune a model.
+ int train() {
++#ifndef CAFFE_COMPACT
+   CHECK_GT(FLAGS_solver.size(), 0) << "Need a solver definition to train.";
+   CHECK(!FLAGS_snapshot.size() || !FLAGS_weights.size())
+       << "Give a snapshot to resume training or weights to finetune "
+@@ -257,6 +276,7 @@
+     solver->Solve();
+   }
+   LOG(INFO) << "Optimization Done.";
++#endif
+   return 0;
+ }
+ RegisterBrewFunction(train);
+@@ -435,12 +455,19 @@
+   gflags::SetUsageMessage("command line brew\n"
+       "usage: caffe <command> <args>\n\n"
+       "commands:\n"
++#ifndef CAFFE_COMPACT
+       "  train           train or finetune a model\n"
++#endif
+       "  test            score a model\n"
++#ifndef CAFFE_COMPACT
+       "  device_query    show GPU diagnostic information\n"
++#endif
+       "  time            benchmark model execution time");
+   // Run tool or show usage.
+   caffe::GlobalInit(&argc, &argv);
++#ifdef CAFFE_COMPACT
++  ::gflags::ParseCommandLineFlags(&argc, &argv, true);
++#endif
+   if (argc == 2) {
+ #ifdef WITH_PYTHON_LAYER
+     try {

@@ -1,0 +1,13 @@
+--- caffe/include/caffe/net.hpp	2017-01-31 23:29:02.000000000 +0800
++++ ../include/caffe/net.hpp	2017-01-30 15:43:29.000000000 +0800
+@@ -38,8 +38,10 @@
+   const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
+   /// @brief DEPRECATED; use Forward() instead.
+   const vector<Blob<Dtype>*>& ForwardPrefilled(Dtype* loss = NULL) {
++#ifndef DISABLE_GLOG
+     LOG_EVERY_N(WARNING, 1000) << "DEPRECATED: ForwardPrefilled() "
+         << "will be removed in a future version. Use Forward().";
++#endif
+     return Forward(loss);
+   }
+ 

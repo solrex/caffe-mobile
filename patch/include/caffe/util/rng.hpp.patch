@@ -1,0 +1,53 @@
+--- caffe/include/caffe/util/rng.hpp	2017-01-31 23:29:02.000000000 +0800
++++ ../include/caffe/util/rng.hpp	2017-01-30 15:43:29.000000000 +0800
+@@ -4,23 +4,31 @@
+ #include <algorithm>
+ #include <iterator>
+ 
++#ifndef DISABLE_BOOST
++#FIXME extract random generator from boost
+ #include "boost/random/mersenne_twister.hpp"
+ #include "boost/random/uniform_int.hpp"
++#endif
+ 
+ #include "caffe/common.hpp"
+ 
+ namespace caffe {
+ 
++#ifndef DISABLE_BOOST
+ typedef boost::mt19937 rng_t;
+ 
+ inline rng_t* caffe_rng() {
+   return static_cast<caffe::rng_t*>(Caffe::rng_stream().generator());
+ }
++#else
++typedef int rng_t;
++#endif
+ 
+ // Fisher–Yates algorithm
+ template <class RandomAccessIterator, class RandomGenerator>
+ inline void shuffle(RandomAccessIterator begin, RandomAccessIterator end,
+                     RandomGenerator* gen) {
++#ifndef CAFFE_COMPACT
+   typedef typename std::iterator_traits<RandomAccessIterator>::difference_type
+       difference_type;
+   typedef typename boost::uniform_int<difference_type> dist_type;
+@@ -32,11 +40,18 @@
+     dist_type dist(0, i);
+     std::iter_swap(begin + i, begin + dist(*gen));
+   }
++#else
++  NOT_IMPLEMENTED;
++#endif
+ }
+ 
+ template <class RandomAccessIterator>
+ inline void shuffle(RandomAccessIterator begin, RandomAccessIterator end) {
++#ifndef CAFFE_COMPACT
+   shuffle(begin, end, caffe_rng());
++#else
++  NOT_IMPLEMENTED;
++#endif
+ }
+ }  // namespace caffe
+ 
