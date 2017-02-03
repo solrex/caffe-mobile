@@ -10,11 +10,11 @@
 #include "caffe/layer.hpp"
 #include "caffe/layer_factory.hpp"
 #include "caffe/net.hpp"
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 #include "caffe/parallel.hpp"
 #endif
 #include "caffe/proto/caffe.pb.h"
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 #include "caffe/solver.hpp"
 #include "caffe/solver_factory.hpp"
 #endif

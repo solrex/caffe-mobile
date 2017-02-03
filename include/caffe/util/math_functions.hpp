@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <cmath>  // for std::fabs and std::signbit
 
-#ifndef DISABLE_GLOG
+#ifdef USE_GLOG
 #include "glog/logging.h"
 #endif
 

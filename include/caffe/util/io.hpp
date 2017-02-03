@@ -1,7 +1,7 @@
 #ifndef CAFFE_UTIL_IO_H_
 #define CAFFE_UTIL_IO_H_
 
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include <boost/filesystem.hpp>
 #endif
 #include <iomanip>
@@ -21,7 +21,7 @@
 namespace caffe {
 
 using ::google::protobuf::Message;
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 using ::boost::filesystem::path;
 
 inline void MakeTempDir(string* temp_dirname) {

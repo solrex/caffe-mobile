@@ -1,14 +1,14 @@
 #ifndef CAFFE_COMMON_HPP_
 #define CAFFE_COMMON_HPP_
 
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include <boost/shared_ptr.hpp>
 #else
 #endif
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 #include <gflags/gflags.h>
 #endif
-#ifndef DISABLE_GLOG
+#ifdef USE_GLOG
 #include <glog/logging.h>
 #else
 #include "caffe/glog_wrapper.hpp"
@@ -31,7 +31,7 @@
 #define STRINGIFY(m) #m
 #define AS_STRING(m) STRINGIFY(m)
 
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 // gflags 2.1 issue: namespace google was changed to gflags without warning.
 // Luckily we will be able to use GFLAGS_GFLAGS_H_ to detect if it is version
 // 2.1. If yes, we will add a temporary solution to redirect the namespace.
@@ -85,7 +85,7 @@ namespace cv { class Mat; }
 
 namespace caffe {
 
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 // We will use the boost shared_ptr instead of the new C++11 one mainly
 // because cuda does not work (at least now) well with C++11 features.
 using boost::shared_ptr;

@@ -13,12 +13,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 #add_definitions(-DUSE_EIGEN)
 add_definitions(-DCPU_ONLY)
 
-add_definitions(-DDISABLE_BOOST)
-add_definitions(-DDISABLE_GLOG)
-add_definitions(-DDISABLE_HDF5)
-add_definitions(-DFORWARD_ONLY)
-add_definitions(-DCAFFE_COMPACT)
-
 include(./cmake/Utils.cmake)
 include(./cmake/Misc.cmake)
 include(./cmake/Targets.cmake)

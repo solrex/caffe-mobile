@@ -1,11 +1,11 @@
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include <boost/thread.hpp>
 #endif
 #include <vector>
 
 #include "caffe/blob.hpp"
 #include "caffe/data_transformer.hpp"
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include "caffe/internal_thread.hpp"
 #endif
 #include "caffe/layer.hpp"
@@ -17,7 +17,7 @@ namespace caffe {
 
 template <typename Dtype>
 BaseDataLayer<Dtype>::BaseDataLayer(const LayerParameter& param)
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
     : Layer<Dtype>(param),
       transform_param_(param.transform_param()) {
 #else
@@ -33,7 +33,7 @@ void BaseDataLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   } else {
     output_labels_ = true;
   }
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   data_transformer_.reset(
       new DataTransformer<Dtype>(transform_param_, this->phase_));
   data_transformer_->InitRand();
@@ -42,7 +42,7 @@ void BaseDataLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   DataLayerSetUp(bottom, top);
 }
 
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 template <typename Dtype>
 BasePrefetchingDataLayer<Dtype>::BasePrefetchingDataLayer(
     const LayerParameter& param)
@@ -143,7 +143,7 @@ STUB_GPU_FORWARD(BasePrefetchingDataLayer, Forward);
 #endif
 
 INSTANTIATE_CLASS(BaseDataLayer);
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 INSTANTIATE_CLASS(BasePrefetchingDataLayer);
 #endif
 

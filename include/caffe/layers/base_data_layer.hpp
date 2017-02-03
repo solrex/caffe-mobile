@@ -5,7 +5,7 @@
 
 #include "caffe/blob.hpp"
 #include "caffe/data_transformer.hpp"
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include "caffe/internal_thread.hpp"
 #endif
 #include "caffe/layer.hpp"
@@ -42,7 +42,7 @@ class BaseDataLayer : public Layer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {}
 
  protected:
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   TransformationParameter transform_param_;
   shared_ptr<DataTransformer<Dtype> > data_transformer_;
 #endif
@@ -55,7 +55,7 @@ class Batch {
   Blob<Dtype> data_, label_;
 };
 
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 template <typename Dtype>
 class BasePrefetchingDataLayer :
     public BaseDataLayer<Dtype>, public InternalThread {

@@ -38,7 +38,7 @@ class Net {
   const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
   /// @brief DEPRECATED; use Forward() instead.
   const vector<Blob<Dtype>*>& ForwardPrefilled(Dtype* loss = NULL) {
-#ifndef DISABLE_GLOG
+#ifdef USE_GLOG
     LOG_EVERY_N(WARNING, 1000) << "DEPRECATED: ForwardPrefilled() "
         << "will be removed in a future version. Use Forward().";
 #endif
@@ -66,7 +66,7 @@ class Net {
    */
   void ClearParamDiffs();
 
-#ifndef FORWARD_ONLY
+#ifdef ENABLE_BACKWARD
   /**
    * The network backward should take no input and output, since it solely
    * computes the gradient w.r.t the parameters, and the data has already been
@@ -86,7 +86,7 @@ class Net {
    */
   void Reshape();
 
-#ifndef FORWARD_ONLY
+#ifdef ENABLE_BACKWARD
   Dtype ForwardBackward() {
     Dtype loss;
     Forward(&loss);

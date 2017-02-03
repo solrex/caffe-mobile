@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <iterator>
 
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #FIXME extract random generator from boost
 #include "boost/random/mersenne_twister.hpp"
 #include "boost/random/uniform_int.hpp"
@@ -16,7 +16,7 @@
 
 namespace caffe {
 
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 typedef boost::mt19937 rng_t;
 #else
 typedef std::mt19937   rng_t;
@@ -30,7 +30,7 @@ inline rng_t* caffe_rng() {
 template <class RandomAccessIterator, class RandomGenerator>
 inline void shuffle(RandomAccessIterator begin, RandomAccessIterator end,
                     RandomGenerator* gen) {
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   typedef typename std::iterator_traits<RandomAccessIterator>::difference_type
       difference_type;
   typedef typename boost::uniform_int<difference_type> dist_type;
@@ -49,7 +49,7 @@ inline void shuffle(RandomAccessIterator begin, RandomAccessIterator end,
 
 template <class RandomAccessIterator>
 inline void shuffle(RandomAccessIterator begin, RandomAccessIterator end) {
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   shuffle(begin, end, caffe_rng());
 #else
   NOT_IMPLEMENTED;

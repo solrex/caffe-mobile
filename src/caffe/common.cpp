@@ -1,4 +1,4 @@
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include <boost/thread.hpp>
 #endif
 #include <cmath>
@@ -8,26 +8,26 @@
 #include "caffe/common.hpp"
 #include "caffe/util/rng.hpp"
 
-#ifdef CAFFE_COMPACT
+#ifndef NO_CAFFE_MOBILE
 #include <unistd.h>
 #endif
 
 namespace caffe {
 
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 // Make sure each thread can have different values.
 static boost::thread_specific_ptr<Caffe> thread_instance_;
 #else
 thread_local static Caffe *thread_instance_ = NULL;
 #endif
 
-#ifdef DISABLE_GLOG
+#ifndef USE_GLOG
 nullstream __nullstream;
 bool LogMessage::enable = true;
 #endif
 
 Caffe& Caffe::Get() {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
   if (!thread_instance_.get()) {
     thread_instance_.reset(new Caffe());
   }
@@ -62,11 +62,11 @@ int64_t cluster_seedgen(void) {
 
 
 void GlobalInit(int* pargc, char*** pargv) {
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   // Google flags.
   ::gflags::ParseCommandLineFlags(pargc, pargv, true);
 #endif
-#ifndef DISABLE_GLOG
+#ifdef USE_GLOG
   // Google logging.
   ::google::InitGoogleLogging(*(pargv)[0]);
   // Provide a backtrace on segfault.

@@ -1,4 +1,4 @@
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
 #include <boost/date_time/posix_time/posix_time.hpp>
 #endif
 
@@ -39,7 +39,7 @@ void Timer::Start() {
       NO_GPU;
 #endif
     } else {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
       start_cpu_ = boost::posix_time::microsec_clock::local_time();
 #else
       gettimeofday(&start_cpu_, NULL);
@@ -59,7 +59,7 @@ void Timer::Stop() {
       NO_GPU;
 #endif
     } else {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
       stop_cpu_ = boost::posix_time::microsec_clock::local_time();
 #else
       gettimeofday(&stop_cpu_, NULL);
@@ -89,7 +89,7 @@ float Timer::MicroSeconds() {
       NO_GPU;
 #endif
   } else {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
     elapsed_microseconds_ = (stop_cpu_ - start_cpu_).total_microseconds();
 #else
     elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
@@ -115,7 +115,7 @@ float Timer::MilliSeconds() {
       NO_GPU;
 #endif
   } else {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
     elapsed_milliseconds_ = (stop_cpu_ - start_cpu_).total_milliseconds();
 #else
     elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
@@ -150,7 +150,7 @@ CPUTimer::CPUTimer() {
 
 void CPUTimer::Start() {
   if (!running()) {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
     this->start_cpu_ = boost::posix_time::microsec_clock::local_time();
 #else
     gettimeofday(&start_cpu_, NULL);
@@ -162,7 +162,7 @@ void CPUTimer::Start() {
 
 void CPUTimer::Stop() {
   if (running()) {
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
     this->stop_cpu_ = boost::posix_time::microsec_clock::local_time();
 #else
     gettimeofday(&stop_cpu_, NULL);
@@ -179,7 +179,7 @@ float CPUTimer::MilliSeconds() {
   if (running()) {
     Stop();
   }
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
   this->elapsed_milliseconds_ = (this->stop_cpu_ -
                                 this->start_cpu_).total_milliseconds();
 #else
@@ -196,7 +196,7 @@ float CPUTimer::MicroSeconds() {
   if (running()) {
     Stop();
   }
-#ifndef DISABLE_BOOST
+#ifdef USE_BOOST
   this->elapsed_microseconds_ = (this->stop_cpu_ -
                                 this->start_cpu_).total_microseconds();
 #else

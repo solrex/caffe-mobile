@@ -45,7 +45,7 @@ class ConstantFiller : public Filler<Dtype> {
   }
 };
 
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 /// @brief Fills a Blob with uniformly distributed values @f$ x\sim U(a, b) @f$.
 template <typename Dtype>
 class UniformFiller : public Filler<Dtype> {
@@ -167,7 +167,7 @@ class XavierFiller : public Filler<Dtype> {
   }
 };
 
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
 /**
  * @brief Fills a Blob with values @f$ x \sim N(0, \sigma^2) @f$ where
  *        @f$ \sigma^2 @f$ is set inversely proportional to number of incoming
@@ -276,7 +276,7 @@ Filler<Dtype>* GetFiller(const FillerParameter& param) {
   const std::string& type = param.type();
   if (type == "constant") {
     return new ConstantFiller<Dtype>(param);
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   } else if (type == "gaussian") {
     return new GaussianFiller<Dtype>(param);
   } else if (type == "positive_unitball") {
@@ -286,7 +286,7 @@ Filler<Dtype>* GetFiller(const FillerParameter& param) {
 #endif
   } else if (type == "xavier") {
     return new XavierFiller<Dtype>(param);
-#ifndef CAFFE_COMPACT
+#ifdef NO_CAFFE_MOBILE
   } else if (type == "msra") {
     return new MSRAFiller<Dtype>(param);
   } else if (type == "bilinear") {
