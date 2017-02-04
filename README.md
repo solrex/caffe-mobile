@@ -5,7 +5,7 @@ TODO
 
 # For iPhone Simulator
 
-## Step 1: Build Caffe-Mobile Lib with cmake&make
+## Step 1: Build Caffe-Mobile Lib with cmake
 
 ```
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
@@ -18,7 +18,7 @@ $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
 $ make -j 4
 ```
 
-## Step 2: Build Example iOS App: CaffeSimple with Xcode
+## Step 2: Build iOS App: CaffeSimple with Xcode
 
  - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
 Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
@@ -33,7 +33,7 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/io
 # For iPhone
 ==================
 
-## Step 1: Build Caffe-Mobile Lib with cmake&make
+## Step 1: Build Caffe-Mobile Lib with cmake
 
 ```
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
@@ -46,7 +46,7 @@ $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
 $ make -j 4
 ```
 
-## Step 2: Build Example iOS App: CaffeSimple with Xcode
+## Step 2: Build iOS App: CaffeSimple with Xcode
 
  - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
 Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
@@ -58,34 +58,30 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/io
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on your connected device.
 
-# For OSX Check built
+# For MacOSX & Ubuntu
 ==================
 
-## Step 1: Build Caffe-Mobile Lib with cmake&make
-
-### OSX 1: Use brew installed protobuf
+## Step 1: Install dependency
 
 ```
-$ brew install protobuf
-$ cd build
+$ brew install protobuf # MacOSX
+$ sudo apt install libprotobuf-dev protobuf-compiler libatlas-dev # Ubuntu
+```
+
+## Step 2: Build Caffe-Mobile Lib with cmake
+
+```
+$ git clone --recursive https://github.com/solrex/caffe-mobile.git
+$ mkdir build
+$ cd ../build
 $ cmake ..
 $ make -j 4
 ```
 
-### OSX 2: Use self built protobuf
-
-```
-$ cd third_party
-$ ./build-protobuf-3.1.0.sh
-$ cd ../build
-$ cmake .. -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf
-$ make -j 4
-```
-
-## Step 2: Build Caffe-bin with cmake&make
+## Step 3: Build Caffe-bin with cmake
 
 ```
 $ brew install gflags
-$ cmake .. -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf -DTOOLS
+$ cmake .. -DTOOLS
 $ make -j 4
 ```
