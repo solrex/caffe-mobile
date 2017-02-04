@@ -273,12 +273,12 @@
 				HEADER_SEARCH_PATHS = (
 					../../../include,
 					../../../build/include,
-					../../../third_party/protobuf/protobuf/include,
+					../../../third_party/protobuf/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LIBRARY_SEARCH_PATHS = (
 					../../../build/lib,
-					../../../third_party/protobuf/protobuf/platform/x86_64/lib,
+					../../../third_party/protobuf/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -331,7 +331,7 @@
 				HEADER_SEARCH_PATHS = (
 					../../../include,
 					../../../build/include,
-					../../../third_party/protobuf/protobuf/include,
+					../../../third_party/protobuf/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LIBRARY_SEARCH_PATHS = (
