@@ -4,6 +4,7 @@
 #ifdef USE_BOOST
 #include <boost/shared_ptr.hpp>
 #else
+#include <memory>
 #endif
 #ifdef NO_CAFFE_MOBILE
 #include <gflags/gflags.h>
@@ -40,7 +41,7 @@
 #ifndef GFLAGS_GFLAGS_H_
 namespace gflags = google;
 #endif  // GFLAGS_GFLAGS_H_
-#endif  // DISABLE_GFLAGS
+#endif  // NO_CAFFE_MOBILE
 
 // Disable the copy and assignment operator for a class.
 #define DISABLE_COPY_AND_ASSIGN(classname) \

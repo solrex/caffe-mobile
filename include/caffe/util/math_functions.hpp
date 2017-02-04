@@ -7,6 +7,9 @@
 #ifdef USE_GLOG
 #include "glog/logging.h"
 #endif
+#ifndef NO_CAFFE_MOBILE
+#include <string.h>
+#endif
 
 #include "caffe/common.hpp"
 #include "caffe/util/device_alternate.hpp"
