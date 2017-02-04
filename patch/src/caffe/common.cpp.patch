@@ -1,14 +1,16 @@
 --- caffe/src/caffe/common.cpp	2017-01-27 09:51:56.283123700 +0800
-+++ ../src/caffe/common.cpp	2017-02-04 22:35:34.654099433 +0800
-@@ -1,5 +1,6 @@
++++ ../src/caffe/common.cpp	2017-02-04 23:04:01.367500325 +0800
+@@ -1,5 +1,9 @@
 +#ifdef USE_BOOST
  #include <boost/thread.hpp>
--#include <glog/logging.h>
++#endif
++#ifdef USE_GLOG
+ #include <glog/logging.h>
 +#endif
  #include <cmath>
  #include <cstdio>
  #include <ctime>
-@@ -7,16 +8,36 @@
+@@ -7,16 +11,36 @@
  #include "caffe/common.hpp"
  #include "caffe/util/rng.hpp"
  
@@ -45,7 +47,7 @@
  }
  
  // random seeding
-@@ -41,12 +62,16 @@
+@@ -41,12 +65,16 @@
  
  
  void GlobalInit(int* pargc, char*** pargv) {

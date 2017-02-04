@@ -1052,29 +1052,4 @@ const shared_ptr<Layer<Dtype> > Net<Dtype>::layer_by_name(
 
 INSTANTIATE_CLASS(Net);
 
-#if 0
-// FIXME need?
-/* force register */
-#define FORCE_REG(type) \
-	extern LayerRegistry<float> g_creator_f_##type; \
-	extern LayerRegistry<double> g_creator_d_##type; \
-	LayerRegistry<float> *__g_creator_f_##type = &g_creator_f_##type; \
-	LayerRegistry<double> *__g_creator_d_##type = &g_creator_d_##type
-
-FORCE_REG(TanH);
-FORCE_REG(Pooling);
-FORCE_REG(ReLU);
-FORCE_REG(Sigmoid);
-FORCE_REG(Softmax);
-FORCE_REG(Convolution);
-
-FORCE_REG(Concat);
-FORCE_REG(BNLL);
-FORCE_REG(Flatten);
-FORCE_REG(InnerProduct);
-FORCE_REG(LRN);
-FORCE_REG(MemoryData);
-
-FORCE_REG(Split);
-#endif
 }  // namespace caffe

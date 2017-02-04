@@ -1,5 +1,5 @@
 --- caffe/src/caffe/net.cpp	2017-01-27 09:51:56.935642700 +0800
-+++ ../src/caffe/net.cpp	2017-02-04 22:35:34.654099433 +0800
++++ ../src/caffe/net.cpp	2017-02-04 23:04:40.954733321 +0800
 @@ -5,19 +5,27 @@
  #include <utility>
  #include <vector>
@@ -390,33 +390,3 @@
  
  template <typename Dtype>
  void Net<Dtype>::ClearParamDiffs() {
-@@ -981,4 +1052,29 @@
- 
- INSTANTIATE_CLASS(Net);
- 
-+#if 0
-+// FIXME need?
-+/* force register */
-+#define FORCE_REG(type) \
-+	extern LayerRegistry<float> g_creator_f_##type; \
-+	extern LayerRegistry<double> g_creator_d_##type; \
-+	LayerRegistry<float> *__g_creator_f_##type = &g_creator_f_##type; \
-+	LayerRegistry<double> *__g_creator_d_##type = &g_creator_d_##type
-+
-+FORCE_REG(TanH);
-+FORCE_REG(Pooling);
-+FORCE_REG(ReLU);
-+FORCE_REG(Sigmoid);
-+FORCE_REG(Softmax);
-+FORCE_REG(Convolution);
-+
-+FORCE_REG(Concat);
-+FORCE_REG(BNLL);
-+FORCE_REG(Flatten);
-+FORCE_REG(InnerProduct);
-+FORCE_REG(LRN);
-+FORCE_REG(MemoryData);
-+
-+FORCE_REG(Split);
-+#endif
- }  // namespace caffe

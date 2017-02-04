@@ -45,7 +45,6 @@ class ConstantFiller : public Filler<Dtype> {
   }
 };
 
-#ifdef NO_CAFFE_MOBILE
 /// @brief Fills a Blob with uniformly distributed values @f$ x\sim U(a, b) @f$.
 template <typename Dtype>
 class UniformFiller : public Filler<Dtype> {
@@ -124,7 +123,6 @@ class PositiveUnitballFiller : public Filler<Dtype> {
          << "Sparsity not supported by this Filler.";
   }
 };
-#endif
 
 /**
  * @brief Fills a Blob with values @f$ x \sim U(-a, +a) @f$ where @f$ a @f$ is
@@ -167,7 +165,6 @@ class XavierFiller : public Filler<Dtype> {
   }
 };
 
-#ifdef NO_CAFFE_MOBILE
 /**
  * @brief Fills a Blob with values @f$ x \sim N(0, \sigma^2) @f$ where
  *        @f$ \sigma^2 @f$ is set inversely proportional to number of incoming
@@ -263,7 +260,6 @@ class BilinearFiller : public Filler<Dtype> {
          << "Sparsity not supported by this Filler.";
   }
 };
-#endif
 
 /**
  * @brief Get a specific filler from the specification given in FillerParameter.
@@ -276,22 +272,18 @@ Filler<Dtype>* GetFiller(const FillerParameter& param) {
   const std::string& type = param.type();
   if (type == "constant") {
     return new ConstantFiller<Dtype>(param);
-#ifdef NO_CAFFE_MOBILE
   } else if (type == "gaussian") {
     return new GaussianFiller<Dtype>(param);
   } else if (type == "positive_unitball") {
     return new PositiveUnitballFiller<Dtype>(param);
   } else if (type == "uniform") {
     return new UniformFiller<Dtype>(param);
-#endif
   } else if (type == "xavier") {
     return new XavierFiller<Dtype>(param);
-#ifdef NO_CAFFE_MOBILE
   } else if (type == "msra") {
     return new MSRAFiller<Dtype>(param);
   } else if (type == "bilinear") {
     return new BilinearFiller<Dtype>(param);
-#endif
   } else {
     CHECK(false) << "Unknown filler name: " << param.type();
   }

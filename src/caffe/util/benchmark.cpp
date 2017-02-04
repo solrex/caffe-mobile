@@ -7,11 +7,6 @@
 
 namespace caffe {
 
-static float time_diff_ms(struct timeval start, struct timeval stop) {
-    return (stop.tv_sec - start.tv_sec)*1000
-        + (float)(stop.tv_usec - start.tv_usec)/1000;
-}
-
 Timer::Timer()
     : initted_(false),
       running_(false),

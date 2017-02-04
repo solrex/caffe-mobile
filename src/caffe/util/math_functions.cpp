@@ -44,7 +44,7 @@ template <>
 void caffe_cpu_gemv<double>(const CBLAS_TRANSPOSE TransA, const int M,
     const int N, const double alpha, const double* A, const double* x,
     const double beta, double* y) {
- cblas_dgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
+  cblas_dgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
 }
 
 template <>
@@ -237,9 +237,10 @@ Dtype caffe_nextafter(const Dtype b) {
 #ifdef USE_BOOST
   return boost::math::nextafter<Dtype>(
       b, std::numeric_limits<Dtype>::max());
-#endif
+#else
   return std::nextafter(
       b, std::numeric_limits<Dtype>::max());
+#endif
 }
 
 template

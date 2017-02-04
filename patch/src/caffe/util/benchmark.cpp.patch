@@ -1,24 +1,13 @@
 --- caffe/src/caffe/util/benchmark.cpp	2017-01-27 09:51:57.449642800 +0800
-+++ ../src/caffe/util/benchmark.cpp	2017-02-04 22:35:34.654099433 +0800
-@@ -1,10 +1,17 @@
++++ ../src/caffe/util/benchmark.cpp	2017-02-04 23:00:28.602281548 +0800
+@@ -1,4 +1,6 @@
 +#ifdef USE_BOOST
  #include <boost/date_time/posix_time/posix_time.hpp>
 +#endif
  
  #include "caffe/common.hpp"
  #include "caffe/util/benchmark.hpp"
- 
- namespace caffe {
- 
-+static float time_diff_ms(struct timeval start, struct timeval stop) {
-+    return (stop.tv_sec - start.tv_sec)*1000
-+        + (float)(stop.tv_usec - start.tv_usec)/1000;
-+}
-+
- Timer::Timer()
-     : initted_(false),
-       running_(false),
-@@ -32,7 +39,11 @@
+@@ -32,7 +34,11 @@
        NO_GPU;
  #endif
      } else {
@@ -30,7 +19,7 @@
      }
      running_ = true;
      has_run_at_least_once_ = true;
-@@ -48,7 +59,11 @@
+@@ -48,7 +54,11 @@
        NO_GPU;
  #endif
      } else {
@@ -42,7 +31,7 @@
      }
      running_ = false;
    }
-@@ -74,7 +89,12 @@
+@@ -74,7 +84,12 @@
        NO_GPU;
  #endif
    } else {
@@ -55,7 +44,7 @@
    }
    return elapsed_microseconds_;
  }
-@@ -96,7 +116,12 @@
+@@ -96,7 +111,12 @@
        NO_GPU;
  #endif
    } else {
@@ -68,7 +57,7 @@
    }
    return elapsed_milliseconds_;
  }
-@@ -127,7 +152,11 @@
+@@ -127,7 +147,11 @@
  
  void CPUTimer::Start() {
    if (!running()) {
@@ -80,7 +69,7 @@
      this->running_ = true;
      this->has_run_at_least_once_ = true;
    }
-@@ -135,7 +164,11 @@
+@@ -135,7 +159,11 @@
  
  void CPUTimer::Stop() {
    if (running()) {
@@ -92,7 +81,7 @@
      this->running_ = false;
    }
  }
-@@ -148,8 +181,13 @@
+@@ -148,8 +176,13 @@
    if (running()) {
      Stop();
    }
@@ -106,7 +95,7 @@
    return this->elapsed_milliseconds_;
  }
  
-@@ -161,8 +199,13 @@
+@@ -161,8 +194,13 @@
    if (running()) {
      Stop();
    }

@@ -35,13 +35,11 @@ void DropoutLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   unsigned int* mask = rand_vec_.mutable_cpu_data();
   const int count = bottom[0]->count();
   if (this->phase_ == TRAIN) {
-#ifdef NO_CAFFE_MOBILE
     // Create random numbers
     caffe_rng_bernoulli(count, 1. - threshold_, mask);
     for (int i = 0; i < count; ++i) {
       top_data[i] = bottom_data[i] * mask[i] * scale_;
     }
-#endif
   } else {
     caffe_copy(bottom[0]->count(), bottom_data, top_data);
   }

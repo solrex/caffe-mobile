@@ -1,6 +1,9 @@
 #ifdef USE_BOOST
 #include <boost/thread.hpp>
 #endif
+#ifdef USE_GLOG
+#include <glog/logging.h>
+#endif
 #include <cmath>
 #include <cstdio>
 #include <ctime>
