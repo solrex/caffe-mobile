@@ -25,5 +25,9 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)RunCaffeModel:(UIButton *)btn {
+    _console.text = @"ABC";
+}
+
 
 @end

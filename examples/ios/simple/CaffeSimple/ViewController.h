@@ -10,6 +10,10 @@
 
 @interface ViewController : UIViewController
 
+#pragma mark Console
+@property (nonatomic,strong) IBOutlet UITextView *console;
+
+#pragma mark ClickEvent
+- (IBAction)RunCaffeModel:(UIButton *)btn;
 
 @end
-

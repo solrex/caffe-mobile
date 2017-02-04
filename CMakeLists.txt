@@ -35,7 +35,7 @@ caffe_set_caffe_link()
 
 add_subdirectory(src/caffe)
 
-if(NOT UNIX)
+if(NOT IOS)
     add_subdirectory(tools)
 endif()
 

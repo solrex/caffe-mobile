@@ -9,6 +9,14 @@
 
 #import <Foundation/Foundation.h>
 
+NSString* FilePathForResourceName(NSString* name, NSString* extension) {
+    NSString* file_path = [[NSBundle mainBundle] pathForResource:name ofType:extension];
+    if (file_path == NULL) {
+        LOG(FATAL) << "Couldn't find '" << [name UTF8String] << "."
+	       << [extension UTF8String] << "' in bundle.";
+    }
+    return file_path;
+}
 
 bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
     // Get file size
@@ -66,14 +74,14 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
     CFRelease(image_provider);
     CFRelease(file_data_ref);
     
-    // Convert Bitmap to width*height*3 matrix, put in blob
-    //input_layer->ReShape(1, channels, height, width);
+    // Convert Bitmap (channels*width*height) to Matrix (width*height*channels)
+    // Convert uint8_t to float
     float *input_data = input_layer->mutable_cpu_data();
     // y in height
     for (int c = 0; c < channels; c++) {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                input_data[c*channels + x*width + y] = result[y*width + x*channels + c];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                input_data[c*width*height + y*width + x] = static_cast<float>(result[y*bytes_per_row + x*channels + c]);
             }
         }
     }
