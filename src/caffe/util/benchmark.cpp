@@ -8,7 +8,7 @@
 namespace caffe {
 
 static float time_diff_ms(struct timeval start, struct timeval stop) {
-    return (float)(stop.tv_sec - start.tv_sec)*1000
+    return (stop.tv_sec - start.tv_sec)*1000
         + (float)(stop.tv_usec - start.tv_usec)/1000;
 }
 
@@ -92,7 +92,8 @@ float Timer::MicroSeconds() {
 #ifdef USE_BOOST
     elapsed_microseconds_ = (stop_cpu_ - start_cpu_).total_microseconds();
 #else
-    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
+    elapsed_microseconds_ = (stop_cpu_.tv_sec - start_cpu_.tv_sec)*1000000
+    		+ (stop_cpu_.tv_usec - start_cpu_.tv_usec);
 #endif
   }
   return elapsed_microseconds_;
@@ -118,7 +119,8 @@ float Timer::MilliSeconds() {
 #ifdef USE_BOOST
     elapsed_milliseconds_ = (stop_cpu_ - start_cpu_).total_milliseconds();
 #else
-    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
+    elapsed_microseconds_ = (stop_cpu_.tv_sec - start_cpu_.tv_sec)*1000
+    		+ (stop_cpu_.tv_usec - start_cpu_.tv_usec)/1000.0;
 #endif
   }
   return elapsed_milliseconds_;
@@ -183,7 +185,8 @@ float CPUTimer::MilliSeconds() {
   this->elapsed_milliseconds_ = (this->stop_cpu_ -
                                 this->start_cpu_).total_milliseconds();
 #else
-    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
+    elapsed_milliseconds_ = (stop_cpu_.tv_sec - start_cpu_.tv_sec)*1000
+    		+ (stop_cpu_.tv_usec - start_cpu_.tv_usec)/1000.0;
 #endif
   return this->elapsed_milliseconds_;
 }
@@ -200,7 +203,8 @@ float CPUTimer::MicroSeconds() {
   this->elapsed_microseconds_ = (this->stop_cpu_ -
                                 this->start_cpu_).total_microseconds();
 #else
-    elapsed_microseconds_ = time_diff_ms(start_cpu_, stop_cpu_);
+    elapsed_microseconds_ = (stop_cpu_.tv_sec - start_cpu_.tv_sec)*1000000
+    		+ (stop_cpu_.tv_usec - start_cpu_.tv_usec);
 #endif
   return this->elapsed_microseconds_;
 }

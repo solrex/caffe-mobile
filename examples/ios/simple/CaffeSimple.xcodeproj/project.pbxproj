@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1965DBAF1E447C130064AD55 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1965DBAE1E447C130064AD55 /* main.m */; };
 		1965DBB21E447C130064AD55 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1965DBB11E447C130064AD55 /* AppDelegate.mm */; };
-		1965DBB51E447C130064AD55 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1965DBB41E447C130064AD55 /* ViewController.m */; };
+		1965DBB51E447C130064AD55 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1965DBB41E447C130064AD55 /* ViewController.mm */; };
 		1965DBB81E447C130064AD55 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBB61E447C130064AD55 /* Main.storyboard */; };
 		1965DBBA1E447C130064AD55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBB91E447C130064AD55 /* Assets.xcassets */; };
 		1965DBBD1E447C130064AD55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBBB1E447C130064AD55 /* LaunchScreen.storyboard */; };
@@ -20,6 +20,7 @@
 		19F82F2B1E44DBD900695409 /* libprotobuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F2A1E44DBD900695409 /* libprotobuf.a */; };
 		19F82F491E45783100695409 /* lenet_iter_10000.caffemodel in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F471E45783100695409 /* lenet_iter_10000.caffemodel */; };
 		19F82F4A1E45783100695409 /* lenet.prototxt in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F481E45783100695409 /* lenet.prototxt */; };
+		19F82F4E1E4595ED00695409 /* 61.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F4D1E4595ED00695409 /* 61.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,7 +29,7 @@
 		1965DBB01E447C130064AD55 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1965DBB11E447C130064AD55 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		1965DBB31E447C130064AD55 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		1965DBB41E447C130064AD55 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		1965DBB41E447C130064AD55 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
 		1965DBB71E447C130064AD55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1965DBB91E447C130064AD55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1965DBBC1E447C130064AD55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -42,6 +43,7 @@
 		19F82F2A1E44DBD900695409 /* libprotobuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libprotobuf.a; path = ../../../third_party/protobuf/protobuf/platform/x86_64/lib/libprotobuf.a; sourceTree = "<group>"; };
 		19F82F471E45783100695409 /* lenet_iter_10000.caffemodel */ = {isa = PBXFileReference; lastKnownFileType = file; name = lenet_iter_10000.caffemodel; path = data/lenet_iter_10000.caffemodel; sourceTree = "<group>"; };
 		19F82F481E45783100695409 /* lenet.prototxt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = lenet.prototxt; path = data/lenet.prototxt; sourceTree = "<group>"; };
+		19F82F4D1E4595ED00695409 /* 61.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 61.png; path = data/61.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +87,7 @@
 				19F82F1B1E44BD1E00695409 /* ImageReader.h */,
 				19F82F1E1E44C2C300695409 /* ImageReader.mm */,
 				1965DBB31E447C130064AD55 /* ViewController.h */,
-				1965DBB41E447C130064AD55 /* ViewController.m */,
+				1965DBB41E447C130064AD55 /* ViewController.mm */,
 				1965DBB61E447C130064AD55 /* Main.storyboard */,
 				1965DBB91E447C130064AD55 /* Assets.xcassets */,
 				1965DBBB1E447C130064AD55 /* LaunchScreen.storyboard */,
@@ -118,6 +120,7 @@
 		19F82F4B1E45783D00695409 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				19F82F4D1E4595ED00695409 /* 61.png */,
 				19F82F471E45783100695409 /* lenet_iter_10000.caffemodel */,
 				19F82F481E45783100695409 /* lenet.prototxt */,
 			);
@@ -182,6 +185,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19F82F4E1E4595ED00695409 /* 61.png in Resources */,
 				1965DBBD1E447C130064AD55 /* LaunchScreen.storyboard in Resources */,
 				1965DBBA1E447C130064AD55 /* Assets.xcassets in Resources */,
 				19F82F491E45783100695409 /* lenet_iter_10000.caffemodel in Resources */,
@@ -198,7 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				19F82F1F1E44C2C300695409 /* ImageReader.mm in Sources */,
-				1965DBB51E447C130064AD55 /* ViewController.m in Sources */,
+				1965DBB51E447C130064AD55 /* ViewController.mm in Sources */,
 				1965DBB21E447C130064AD55 /* AppDelegate.mm in Sources */,
 				1965DBAF1E447C130064AD55 /* main.m in Sources */,
 			);

@@ -8,8 +8,6 @@
 
 #import "AppDelegate.h"
 
-#include "caffe/caffe.hpp"
-#include "ImageReader.h"
 
 @interface AppDelegate ()
 
@@ -17,15 +15,9 @@
 
 @implementation AppDelegate
 
-caffe::Net<float> *_net;
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    NSString *modle_path = FilePathForResourceName(@"lenet", @"prototxt");
-    _net = new caffe::Net<float>([modle_path UTF8String], caffe::TEST);
-    NSString *weight_path = FilePathForResourceName(@"lenet_iter_10000", @"caffemodel");
-    _net->CopyTrainedLayersFrom([weight_path UTF8String]);
     return YES;
 }
 

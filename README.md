@@ -25,13 +25,15 @@ $ make -j 4
 iPhoneSimulator:
 
 ```
-$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake -DIOS_PLATFORM=SIMULATOR -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf/protobuf
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
+  -DIOS_PLATFORM=SIMULATOR -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf/protobuf
 $ make -j 4
 ```
 
 iPhone:
 
 ```
-$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake -DIOS_PLATFORM=OS -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf/protobuf
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
+  -DIOS_PLATFORM=OS -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf/protobuf
 $ make -j 4
 ```

@@ -13,6 +13,8 @@
 #pragma mark Console
 @property (nonatomic,strong) IBOutlet UITextView *console;
 
+@property (nonatomic,strong) IBOutlet UIImageView *test_image;
+
 #pragma mark ClickEvent
 - (IBAction)RunCaffeModel:(UIButton *)btn;
 

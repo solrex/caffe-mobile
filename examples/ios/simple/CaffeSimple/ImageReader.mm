@@ -24,6 +24,7 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
     fseek(file_handle, 0, SEEK_END);
     const size_t bytes_in_file = ftell(file_handle);
     fseek(file_handle, 0, SEEK_SET);
+    
     // Read file bytes
     std::vector<uint8_t> file_data(bytes_in_file);
     fread(file_data.data(), 1, bytes_in_file, file_handle);
@@ -32,6 +33,7 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
                                                           bytes_in_file,
                                                           kCFAllocatorNull);
     CGDataProviderRef image_provider = CGDataProviderCreateWithCFData(file_data_ref);
+    
     // Determine file type
     const char* suffix = strrchr(file_name, '.');
     if (!suffix || suffix == file_name) {
@@ -52,19 +54,26 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
         fprintf(stderr, "Unknown suffix for file '%s'\n", file_name);
         return 1;
     }
+    
     // Get Image width and height
-    const int width = (int)CGImageGetWidth(image);
-    const int height = (int)CGImageGetHeight(image);
-    const int channels = 3;
-    CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-    const int bytes_per_row = (width * channels);
-    const int bytes_in_image = (bytes_per_row * height);
+    size_t width = CGImageGetWidth(image);
+    size_t height = CGImageGetHeight(image);
+    size_t bits_per_component = CGImageGetBitsPerComponent(image);
+    size_t bits_per_pixel = CGImageGetBitsPerPixel(image);
+    LOG(INFO) << "CGImage width:" << width << " height:" << height << " BitsPerComponent:" << bits_per_component << " BitsPerPixel:" << bits_per_pixel;
+    
+    size_t channels = bits_per_pixel/bits_per_component;
+    CGColorSpaceRef color_space;
+    if (channels == 1) {
+        color_space = CGColorSpaceCreateDeviceGray();
+    }
+    size_t bytes_per_row = channels * width;
+    size_t bytes_in_image = bytes_per_row * height;
     std::vector<uint8_t> result(bytes_in_image);
-    const int bits_per_component = 8;
     // Read Image to bitmap
     CGContextRef context = CGBitmapContextCreate(result.data(), width, height,
                                                  bits_per_component, bytes_per_row, color_space,
-                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+                                                 kCGImageAlphaNone);
     CGColorSpaceRelease(color_space);
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
     
