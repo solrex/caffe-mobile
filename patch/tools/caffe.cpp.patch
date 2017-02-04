@@ -1,5 +1,5 @@
---- caffe/tools/caffe.cpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../tools/caffe.cpp	2017-02-01 00:03:18.000000000 +0800
+--- caffe/tools/caffe.cpp	2017-01-27 09:51:57.559643300 +0800
++++ ../tools/caffe.cpp	2017-02-04 22:35:34.674081512 +0800
 @@ -3,23 +3,29 @@
  namespace bp = boost::python;
  #endif
@@ -12,11 +12,11 @@
  #include <string>
  #include <vector>
  
-+#ifndef DISABLE_BOOST
++#ifdef USE_BOOST
  #include "boost/algorithm/string.hpp"
 +#endif
  #include "caffe/caffe.hpp"
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
  #include "caffe/util/signal_handler.h"
 +#else
 +#include "caffe/util/benchmark.hpp"
@@ -27,7 +27,7 @@
  using caffe::Caffe;
  using caffe::Net;
  using caffe::Layer;
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
  using caffe::Solver;
 +#endif
  using caffe::shared_ptr;
@@ -61,7 +61,7 @@
  // Parse stages from flags
  vector<string> get_stages_from_flags() {
    vector<string> stages;
-+#ifndef DISABLE_BOOST
++#ifdef USE_BOOST
    boost::split(stages, FLAGS_stage, boost::is_any_of(","));
 +#else
 +  stages.push_back("TEST");
@@ -73,7 +73,7 @@
  
  // Device Query: show diagnostic information for a GPU device.
  int device_query() {
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
    LOG(INFO) << "Querying GPUs " << FLAGS_gpu;
    vector<int> gpus;
    get_gpus(&gpus);
@@ -86,7 +86,7 @@
  }
  RegisterBrewFunction(device_query);
  
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
  // Load the weights from the specified caffemodel(s) into the train and
  // test nets.
  void CopyLayers(caffe::Solver<float>* solver, const std::string& model_list) {
@@ -106,7 +106,7 @@
  
  // Train / Finetune a model.
  int train() {
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
    CHECK_GT(FLAGS_solver.size(), 0) << "Need a solver definition to train.";
    CHECK(!FLAGS_snapshot.size() || !FLAGS_weights.size())
        << "Give a snapshot to resume training or weights to finetune "
@@ -118,21 +118,38 @@
    return 0;
  }
  RegisterBrewFunction(train);
-@@ -435,12 +455,19 @@
+@@ -337,6 +357,7 @@
+ 
+ // Time: benchmark the execution time of a model.
+ int time() {
++#ifdef NO_BACKWORD
+   CHECK_GT(FLAGS_model.size(), 0) << "Need a model definition to time.";
+   caffe::Phase phase = get_phase_from_flags(caffe::TRAIN);
+   vector<string> stages = get_stages_from_flags();
+@@ -422,6 +443,7 @@
+     FLAGS_iterations << " ms.";
+   LOG(INFO) << "Total Time: " << total_timer.MilliSeconds() << " ms.";
+   LOG(INFO) << "*** Benchmark ends ***";
++#endif
+   return 0;
+ }
+ RegisterBrewFunction(time);
+@@ -435,12 +457,20 @@
    gflags::SetUsageMessage("command line brew\n"
        "usage: caffe <command> <args>\n\n"
        "commands:\n"
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
        "  train           train or finetune a model\n"
 +#endif
        "  test            score a model\n"
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
        "  device_query    show GPU diagnostic information\n"
 +#endif
        "  time            benchmark model execution time");
++
    // Run tool or show usage.
    caffe::GlobalInit(&argc, &argv);
-+#ifdef CAFFE_COMPACT
++#ifndef NO_CAFFE_MOBILE
 +  ::gflags::ParseCommandLineFlags(&argc, &argv, true);
 +#endif
    if (argc == 2) {

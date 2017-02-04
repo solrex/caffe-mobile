@@ -1,14 +1,30 @@
---- caffe/include/caffe/filler.hpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../include/caffe/filler.hpp	2017-01-30 15:43:29.000000000 +0800
+--- caffe/include/caffe/filler.hpp	2017-01-27 09:51:55.350123200 +0800
++++ ../include/caffe/filler.hpp	2017-02-04 22:35:34.594153197 +0800
 @@ -45,6 +45,7 @@
    }
  };
  
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
  /// @brief Fills a Blob with uniformly distributed values @f$ x\sim U(a, b) @f$.
  template <typename Dtype>
  class UniformFiller : public Filler<Dtype> {
-@@ -260,6 +261,7 @@
+@@ -123,6 +124,7 @@
+          << "Sparsity not supported by this Filler.";
+   }
+ };
++#endif
+ 
+ /**
+  * @brief Fills a Blob with values @f$ x \sim U(-a, +a) @f$ where @f$ a @f$ is
+@@ -165,6 +167,7 @@
+   }
+ };
+ 
++#ifdef NO_CAFFE_MOBILE
+ /**
+  * @brief Fills a Blob with values @f$ x \sim N(0, \sigma^2) @f$ where
+  *        @f$ \sigma^2 @f$ is set inversely proportional to number of incoming
+@@ -260,6 +263,7 @@
           << "Sparsity not supported by this Filler.";
    }
  };
@@ -16,15 +32,22 @@
  
  /**
   * @brief Get a specific filler from the specification given in FillerParameter.
-@@ -272,6 +274,7 @@
+@@ -272,18 +276,22 @@
    const std::string& type = param.type();
    if (type == "constant") {
      return new ConstantFiller<Dtype>(param);
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
    } else if (type == "gaussian") {
      return new GaussianFiller<Dtype>(param);
    } else if (type == "positive_unitball") {
-@@ -284,6 +287,7 @@
+     return new PositiveUnitballFiller<Dtype>(param);
+   } else if (type == "uniform") {
+     return new UniformFiller<Dtype>(param);
++#endif
+   } else if (type == "xavier") {
+     return new XavierFiller<Dtype>(param);
++#ifdef NO_CAFFE_MOBILE
+   } else if (type == "msra") {
      return new MSRAFiller<Dtype>(param);
    } else if (type == "bilinear") {
      return new BilinearFiller<Dtype>(param);

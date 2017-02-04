@@ -1,10 +1,10 @@
---- caffe/src/caffe/util/io.cpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../src/caffe/util/io.cpp	2017-01-30 15:43:29.000000000 +0800
+--- caffe/src/caffe/util/io.cpp	2017-01-27 09:51:57.498643500 +0800
++++ ../src/caffe/util/io.cpp	2017-02-04 22:35:34.654099433 +0800
 @@ -18,6 +18,9 @@
  #include "caffe/common.hpp"
  #include "caffe/proto/caffe.pb.h"
  #include "caffe/util/io.hpp"
-+#ifdef CAFFE_COMPACT
++#ifndef NO_CAFFE_MOBILE
 +#include <unistd.h>
 +#endif
  

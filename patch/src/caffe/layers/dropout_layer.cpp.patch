@@ -1,10 +1,10 @@
---- caffe/src/caffe/layers/dropout_layer.cpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../src/caffe/layers/dropout_layer.cpp	2017-01-31 23:22:24.000000000 +0800
+--- caffe/src/caffe/layers/dropout_layer.cpp	2017-01-27 09:51:56.561122800 +0800
++++ ../src/caffe/layers/dropout_layer.cpp	2017-02-04 22:35:34.654099433 +0800
 @@ -35,11 +35,13 @@
    unsigned int* mask = rand_vec_.mutable_cpu_data();
    const int count = bottom[0]->count();
    if (this->phase_ == TRAIN) {
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
      // Create random numbers
      caffe_rng_bernoulli(count, 1. - threshold_, mask);
      for (int i = 0; i < count; ++i) {

@@ -1,11 +1,14 @@
---- caffe/include/caffe/util/math_functions.hpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../include/caffe/util/math_functions.hpp	2017-01-30 15:43:29.000000000 +0800
-@@ -4,7 +4,9 @@
+--- caffe/include/caffe/util/math_functions.hpp	2017-01-27 09:51:55.772623200 +0800
++++ ../include/caffe/util/math_functions.hpp	2017-02-04 22:45:32.054023741 +0800
+@@ -4,7 +4,12 @@
  #include <stdint.h>
  #include <cmath>  // for std::fabs and std::signbit
  
-+#ifndef DISABLE_GLOG
++#ifdef USE_GLOG
  #include "glog/logging.h"
++#endif
++#ifndef NO_CAFFE_MOBILE
++#include <string.h>
 +#endif
  
  #include "caffe/common.hpp"

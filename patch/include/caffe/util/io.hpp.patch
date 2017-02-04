@@ -1,10 +1,10 @@
---- caffe/include/caffe/util/io.hpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../include/caffe/util/io.hpp	2017-01-30 15:43:29.000000000 +0800
+--- caffe/include/caffe/util/io.hpp	2017-01-27 09:51:55.768122600 +0800
++++ ../include/caffe/util/io.hpp	2017-02-04 22:35:34.598149613 +0800
 @@ -1,7 +1,9 @@
  #ifndef CAFFE_UTIL_IO_H_
  #define CAFFE_UTIL_IO_H_
  
-+#ifndef DISABLE_BOOST
++#ifdef USE_BOOST
  #include <boost/filesystem.hpp>
 +#endif
  #include <iomanip>
@@ -14,7 +14,7 @@
  namespace caffe {
  
  using ::google::protobuf::Message;
-+#ifndef DISABLE_BOOST
++#ifdef USE_BOOST
  using ::boost::filesystem::path;
  
  inline void MakeTempDir(string* temp_dirname) {
@@ -26,18 +26,3 @@
  
  bool ReadProtoFromTextFile(const char* filename, Message* proto);
  
-@@ -129,6 +133,14 @@
- bool DecodeDatumNative(Datum* datum);
- bool DecodeDatum(Datum* datum, bool is_color);
- 
-+#ifdef CAFFE_COMPACT
-+void ReadNetParamsFromTextFileOrDie(const string& param_file,
-+                                    NetParameter* param);
-+
-+void ReadNetParamsFromBinaryFileOrDie(const string& param_file,
-+                                      NetParameter* param);
-+#endif
-+
- #ifdef USE_OPENCV
- cv::Mat ReadImageToCVMat(const string& filename,
-     const int height, const int width, const bool is_color);

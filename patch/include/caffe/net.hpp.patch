@@ -1,13 +1,45 @@
---- caffe/include/caffe/net.hpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../include/caffe/net.hpp	2017-01-30 15:43:29.000000000 +0800
+--- caffe/include/caffe/net.hpp	2017-01-27 09:51:55.678623300 +0800
++++ ../include/caffe/net.hpp	2017-02-04 22:35:34.598149613 +0800
 @@ -38,8 +38,10 @@
    const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
    /// @brief DEPRECATED; use Forward() instead.
    const vector<Blob<Dtype>*>& ForwardPrefilled(Dtype* loss = NULL) {
-+#ifndef DISABLE_GLOG
++#ifdef USE_GLOG
      LOG_EVERY_N(WARNING, 1000) << "DEPRECATED: ForwardPrefilled() "
          << "will be removed in a future version. Use Forward().";
 +#endif
      return Forward(loss);
    }
  
+@@ -64,6 +66,7 @@
+    */
+   void ClearParamDiffs();
+ 
++#ifdef ENABLE_BACKWARD
+   /**
+    * The network backward should take no input and output, since it solely
+    * computes the gradient w.r.t the parameters, and the data has already been
+@@ -73,6 +76,7 @@
+   void BackwardFromTo(int start, int end);
+   void BackwardFrom(int start);
+   void BackwardTo(int end);
++#endif
+ 
+   /**
+    * @brief Reshape all layers from bottom to top.
+@@ -82,6 +86,7 @@
+    */
+   void Reshape();
+ 
++#ifdef ENABLE_BACKWARD
+   Dtype ForwardBackward() {
+     Dtype loss;
+     Forward(&loss);
+@@ -91,6 +96,7 @@
+ 
+   /// @brief Updates the network weights based on the diff values computed.
+   void Update();
++#endif
+   /**
+    * @brief Shares weight data of owner blobs with shared blobs.
+    *

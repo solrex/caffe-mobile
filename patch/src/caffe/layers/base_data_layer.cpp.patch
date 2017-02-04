@@ -1,14 +1,14 @@
---- caffe/src/caffe/layers/base_data_layer.cpp	2017-01-31 23:29:02.000000000 +0800
-+++ ../src/caffe/layers/base_data_layer.cpp	2017-01-31 23:09:40.000000000 +0800
+--- caffe/src/caffe/layers/base_data_layer.cpp	2017-01-27 09:51:56.330123800 +0800
++++ ../src/caffe/layers/base_data_layer.cpp	2017-02-04 22:35:34.654099433 +0800
 @@ -1,9 +1,13 @@
-+#ifndef DISABLE_BOOST
++#ifdef USE_BOOST
  #include <boost/thread.hpp>
 +#endif
  #include <vector>
  
  #include "caffe/blob.hpp"
  #include "caffe/data_transformer.hpp"
-+#ifndef DISABLE_BOOST
++#ifdef USE_BOOST
  #include "caffe/internal_thread.hpp"
 +#endif
  #include "caffe/layer.hpp"
@@ -18,7 +18,7 @@
  
  template <typename Dtype>
  BaseDataLayer<Dtype>::BaseDataLayer(const LayerParameter& param)
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
      : Layer<Dtype>(param),
        transform_param_(param.transform_param()) {
 +#else
@@ -31,7 +31,7 @@
    } else {
      output_labels_ = true;
    }
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
    data_transformer_.reset(
        new DataTransformer<Dtype>(transform_param_, this->phase_));
    data_transformer_->InitRand();
@@ -40,7 +40,7 @@
    DataLayerSetUp(bottom, top);
  }
  
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
  template <typename Dtype>
  BasePrefetchingDataLayer<Dtype>::BasePrefetchingDataLayer(
      const LayerParameter& param)
@@ -51,7 +51,7 @@
 +#endif
  
  INSTANTIATE_CLASS(BaseDataLayer);
-+#ifndef CAFFE_COMPACT
++#ifdef NO_CAFFE_MOBILE
  INSTANTIATE_CLASS(BasePrefetchingDataLayer);
 +#endif
  
