@@ -1,5 +1,104 @@
-#!/bin/bash -x
-# https://gist.github.com/e814d23046772a98ae437270e8aaaf08.git
+#!/bin/bash
+# Based on https://gist.github.com/e814d23046772a98ae437270e8aaaf08.git
+
+# TARGET: Linux, Android, iPhoneOS, iPhoneSimulator, MacOSX
+if [ "$1" = "" ]; then
+    TARGET=Linux
+else
+    TARGET=$1
+fi
+
+# Options for All
+PB_VERSION=3.1.0
+MAKE_FLAGS="$MAKE_FLAGS -j 4"
+
+# Options for Android
+ANDROID_NDK=/opt/android-ndk-r13b
+ANDROID_ABI="armeabi-v7a with NEON"
+ANDROID_NATIVE_API_LEVEL=21
+BUILD_PROTOC=OFF
+
+echo "$(tput setaf 2)"
+echo Building Google Protobuf for $TARGET
+echo "$(tput sgr0)"
+
+RUN_DIR=$PWD
+
+function fetch-protobuf {
+    echo "$(tput setaf 2)"
+    echo "##########################################"
+    echo " Fetch Google Protobuf $PB_VERSION from source."
+    echo "##########################################"
+    echo "$(tput sgr0)"
+
+    if [ ! -f protobuf-${PB_VERSION}.tar.gz ]; then
+        curl -L https://github.com/google/protobuf/archive/v${PB_VERSION}.tar.gz --output protobuf-${PB_VERSION}.tar.gz
+    fi
+    if [ -d protobuf-${PB_VERSION} ]; then
+        rm -rf protobuf-${PB_VERSION}
+    fi
+    tar -xzf protobuf-${PB_VERSION}.tar.gz
+}
+
+function build-Linux {
+    echo "$(tput setaf 2)"
+    echo "#####################"
+    echo " Building protobuf for Linux"
+    echo "#####################"
+    echo "$(tput sgr0)"
+
+    mkdir protobuf-$PB_VERSION/build
+    rm -rf protobuf-$PB_VERSION/build/*
+    cd protobuf-$PB_VERSION/build
+    cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-Linux \
+        -Dprotobuf_BUILD_TESTS=OFF \
+        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+        -Dprotobuf_WITH_ZLIB=OFF
+    make ${MAKE_FLAGS}
+    make install
+    cd ../..
+    mkdir protobuf
+    ln -sf protobuf-Linux/lib protobuf/lib
+    ln -sf protobuf-Linux/include protobuf/include
+    ln -sf protobuf-Linux/bin protobuf/bin
+}
+
+function build-Android {
+    echo "$(tput setaf 2)"
+    echo "#####################"
+    echo " Building protobuf for Android"
+    echo "#####################"
+    echo "$(tput sgr0)"
+
+    mkdir protobuf-$PB_VERSION/build
+    rm -rf protobuf-$PB_VERSION/build/*
+    cd protobuf-$PB_VERSION/build
+    # if [ "$BUILD_PROTOC" = "OFF" ]; then
+    #     # Do not cross build protoc
+    #     sed -i "s/include(libprotoc.cmake)/#include(libprotoc.cmake)/" ../cmake/CMakeLists.txt
+    #     sed -i "s/include(protoc.cmake)/#include(protoc.cmake)/" ../cmake/CMakeLists.txt
+    # fi
+    cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-Android \
+        -DCMAKE_TOOLCHAIN_FILE="../../android-cmake/android.toolchain.cmake" \
+        -DANDROID_NDK="$ANDROID_NDK" \
+        -DANDROID_ABI="$ANDROID_ABI" \
+        -DANDROID_NATIVE_API_LEVEL="$ANDROID_NATIVE_API_LEVEL" \
+        -Dprotobuf_BUILD_TESTS=OFF \
+        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+        -Dprotobuf_WITH_ZLIB=OFF
+    make ${MAKE_FLAGS}
+    make install
+    cd ../..
+    mkdir protobuf
+    ln -sf protobuf-Android/lib protobuf/lib
+    ln -sf protobuf-Android/include protobuf/include
+}
+
+if [ "$1" != "" ]; then
+    fetch-protobuf
+    build-$TARGET
+    exit
+fi
 
 echo "$(tput setaf 2)"
 echo Building Google Protobuf for Mac OS X / iOS.
@@ -15,8 +114,6 @@ BUILD_I386_IOS_SIM=1
 BUILD_ARMV7_IPHONE=1
 BUILD_ARMV7S_IPHONE=1
 BUILD_ARM64_IPHONE=1
-
-PB_VERSION=3.1.0
 
 # Set this to the replacement name for the 'google' namespace.
 # This is being done to avoid a conflict with the private
@@ -91,6 +188,7 @@ echo "$(tput sgr0)"
     
     tar xvf /tmp/protobuf-${PB_VERSION}.tar.gz
 )
+
 
 echo "$(tput setaf 2)"
 echo "###############################################################"
