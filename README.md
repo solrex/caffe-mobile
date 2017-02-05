@@ -31,7 +31,6 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/io
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on the simulator.
 
 # For iPhone
-==================
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
 
@@ -85,3 +84,10 @@ $ brew install gflags
 $ cmake .. -DTOOLS
 $ make -j 4
 ```
+
+# Thanks
+
+ - Based on https://github.com/BVLC/caffe
+ - Inspired by https://github.com/chyh1990/caffe-compact
+ - Use https://github.com/Yangqing/ios-cmake
+ - Use https://gist.github.com/TyGuy/e814d23046772a98ae437270e8aaaf08
