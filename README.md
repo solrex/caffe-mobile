@@ -1,7 +1,7 @@
 Caffe on Mobile Devices
 ==================
 
-TODO
+iOS/Android Caffe lib with demo APP (CPU_ONLY, NO_BACKWARD, NO_BOOST, NO_HDF5, NO_LEVELDB)
 
 # For iPhone Simulator
 
