@@ -53,7 +53,7 @@ caffe::Net<float> *_net;
 
 - (void)RunCaffeModel:(UIButton *)btn {
     caffe::CPUTimer timer;
-    [_console insertText:@"Caffe infering..."];
+    [_console insertText:@"\nCaffe infering..."];
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
     NSString *test_file_path = FilePathForResourceName(@"61", @"png");
     timer.Start();
@@ -62,7 +62,7 @@ caffe::Net<float> *_net;
     timer.Stop();
     [_console insertText:[NSString stringWithFormat:@"%fms\n", timer.MilliSeconds()]];
     
-    [_console insertText:@"\nInference result:\n"];
+    [_console insertText:@"Inference result:\n"];
     caffe::Blob<float> *output_layer = _net->output_blobs()[0];
     const float *begin = output_layer->cpu_data();
     const float *end = begin + output_layer->channels();

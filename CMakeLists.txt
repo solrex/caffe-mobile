@@ -33,6 +33,8 @@ if(CMAKE_PREFIX_PATH AND NOT IOS)
     set(CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
     include(./cmake/ProtoBuf.cmake)
     set(CMAKE_FIND_ROOT_PATH ${SAVE_PATH})
+else()
+    include(./cmake/ProtoBuf.cmake)
 endif()
 
 # Select blas lib for different platform
