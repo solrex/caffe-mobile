@@ -58,11 +58,9 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   // the current NetState.
   NetParameter filtered_param;
   FilterNet(in_param, &filtered_param);
-#ifdef USE_GLOG
   LOG_IF(INFO, Caffe::root_solver())
       << "Initializing net from parameters: " << std::endl
       << filtered_param.DebugString();
-#endif
   // Create a copy of filtered_param with splits added where necessary.
   NetParameter param;
   InsertSplits(filtered_param, &param);
@@ -93,10 +91,8 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     }
     layers_.push_back(LayerRegistry<Dtype>::CreateLayer(layer_param));
     layer_names_.push_back(layer_param.name());
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "Creating Layer " << layer_param.name();
-#endif
     bool need_backward = false;
 
     // Figure out this layer's input and output
@@ -133,31 +129,23 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     }
     // After this layer is connected, set it up.
     layers_[layer_id]->SetUp(bottom_vecs_[layer_id], top_vecs_[layer_id]);
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "Setting up " << layer_names_[layer_id];
-#endif
     for (int top_id = 0; top_id < top_vecs_[layer_id].size(); ++top_id) {
       if (blob_loss_weights_.size() <= top_id_vecs_[layer_id][top_id]) {
         blob_loss_weights_.resize(top_id_vecs_[layer_id][top_id] + 1, Dtype(0));
       }
       blob_loss_weights_[top_id_vecs_[layer_id][top_id]] = layer->loss(top_id);
-#ifdef USE_GLOG
       LOG_IF(INFO, Caffe::root_solver())
           << "Top shape: " << top_vecs_[layer_id][top_id]->shape_string();
-#endif
       if (layer->loss(top_id)) {
-#ifdef USE_GLOG
         LOG_IF(INFO, Caffe::root_solver())
             << "    with loss weight " << layer->loss(top_id);
-#endif
       }
       memory_used_ += top_vecs_[layer_id][top_id]->count();
     }
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "Memory required for data: " << memory_used_ * sizeof(Dtype);
-#endif
     const int param_size = layer_param.param_size();
     const int num_param_blobs = layers_[layer_id]->blobs().size();
     CHECK_LE(param_size, num_param_blobs)
@@ -261,10 +249,8 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   // In the end, all remaining blobs are considered output blobs.
   for (set<string>::iterator it = available_blobs.begin();
       it != available_blobs.end(); ++it) {
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "This network produces output " << *it;
-#endif
     net_output_blobs_.push_back(blobs_[blob_name_to_idx[*it]].get());
     net_output_blob_indices_.push_back(blob_name_to_idx[*it]);
   }
@@ -276,9 +262,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   }
   ShareWeights();
   debug_info_ = param.debug_info();
-#ifdef USE_GLOG
   LOG_IF(INFO, Caffe::root_solver()) << "Network initialization done.";
-#endif
 }
 
 template <typename Dtype>
@@ -317,36 +301,30 @@ bool Net<Dtype>::StateMeetsRule(const NetState& state,
   // Check whether the rule is broken due to phase.
   if (rule.has_phase()) {
       if (rule.phase() != state.phase()) {
-#ifdef USE_GLOG
         LOG_IF(INFO, Caffe::root_solver())
             << "The NetState phase (" << state.phase()
             << ") differed from the phase (" << rule.phase()
             << ") specified by a rule in layer " << layer_name;
-#endif
         return false;
       }
   }
   // Check whether the rule is broken due to min level.
   if (rule.has_min_level()) {
     if (state.level() < rule.min_level()) {
-#ifdef USE_GLOG
       LOG_IF(INFO, Caffe::root_solver())
           << "The NetState level (" << state.level()
           << ") is above the min_level (" << rule.min_level()
           << ") specified by a rule in layer " << layer_name;
-#endif
       return false;
     }
   }
   // Check whether the rule is broken due to max level.
   if (rule.has_max_level()) {
     if (state.level() > rule.max_level()) {
-#ifdef USE_GLOG
       LOG_IF(INFO, Caffe::root_solver())
           << "The NetState level (" << state.level()
           << ") is above the max_level (" << rule.max_level()
           << ") specified by a rule in layer " << layer_name;
-#endif
       return false;
     }
   }
@@ -359,11 +337,9 @@ bool Net<Dtype>::StateMeetsRule(const NetState& state,
       if (rule.stage(i) == state.stage(j)) { has_stage = true; }
     }
     if (!has_stage) {
-#ifdef USE_GLOG
       LOG_IF(INFO, Caffe::root_solver())
           << "The NetState did not contain stage '" << rule.stage(i)
           << "' specified by a rule in layer " << layer_name;
-#endif
       return false;
     }
   }
@@ -376,11 +352,9 @@ bool Net<Dtype>::StateMeetsRule(const NetState& state,
       if (rule.not_stage(i) == state.stage(j)) { has_stage = true; }
     }
     if (has_stage) {
-#ifdef USE_GLOG
       LOG_IF(INFO, Caffe::root_solver())
           << "The NetState contained a not_stage '" << rule.not_stage(i)
           << "' specified by a rule in layer " << layer_name;
-#endif
       return false;
     }
   }
@@ -400,10 +374,8 @@ void Net<Dtype>::AppendTop(const NetParameter& param, const int layer_id,
   if (blob_name_to_idx && layer_param->bottom_size() > top_id &&
       blob_name == layer_param->bottom(top_id)) {
     // In-place computation
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << layer_param->name() << " -> " << blob_name << " (in-place)";
-#endif
     top_vecs_[layer_id].push_back(blobs_[(*blob_name_to_idx)[blob_name]].get());
     top_id_vecs_[layer_id].push_back((*blob_name_to_idx)[blob_name]);
   } else if (blob_name_to_idx &&
@@ -441,10 +413,8 @@ int Net<Dtype>::AppendBottom(const NetParameter& param, const int layer_id,
                << layer_param.name() << "', bottom index " << bottom_id << ")";
   }
   const int blob_id = (*blob_name_to_idx)[blob_name];
-#ifdef USE_GLOG
   LOG_IF(INFO, Caffe::root_solver())
       << layer_names_[layer_id] << " <- " << blob_name;
-#endif
   bottom_vecs_[layer_id].push_back(blobs_[blob_id].get());
   bottom_id_vecs_[layer_id].push_back(blob_id);
   available_blobs->erase(blob_name);
@@ -502,12 +472,10 @@ void Net<Dtype>::AppendParam(const NetParameter& param, const int layer_id,
         param_layer_indices_[owner_net_param_id];
     const int owner_layer_id = owner_index.first;
     const int owner_param_id = owner_index.second;
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver()) << "Sharing parameters '" << param_name
         << "' owned by "
         << "layer '" << layer_names_[owner_layer_id] << "', param "
         << "index " << owner_param_id;
-#endif
     Blob<Dtype>* this_blob = layers_[layer_id]->blobs()[param_id].get();
     Blob<Dtype>* owner_blob =
         layers_[owner_layer_id]->blobs()[owner_param_id].get();
@@ -634,13 +602,11 @@ void Net<Dtype>::ForwardDebugInfo(const int layer_id) {
     const Blob<Dtype>& blob = *top_vecs_[layer_id][top_id];
     const string& blob_name = blob_names_[top_id_vecs_[layer_id][top_id]];
     const Dtype data_abs_val_mean = blob.asum_data() / blob.count();
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "    [Forward] "
         << "Layer " << layer_names_[layer_id]
         << ", top blob " << blob_name
         << " data: " << data_abs_val_mean;
-#endif
   }
   for (int param_id = 0; param_id < layers_[layer_id]->blobs().size();
        ++param_id) {
@@ -648,13 +614,11 @@ void Net<Dtype>::ForwardDebugInfo(const int layer_id) {
     const int net_param_id = param_id_vecs_[layer_id][param_id];
     const string& blob_name = param_display_names_[net_param_id];
     const Dtype data_abs_val_mean = blob.asum_data() / blob.count();
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "    [Forward] "
         << "Layer " << layer_names_[layer_id]
         << ", param blob " << blob_name
         << " data: " << data_abs_val_mean;
-#endif
   }
 }
 
@@ -667,26 +631,22 @@ void Net<Dtype>::BackwardDebugInfo(const int layer_id) {
     const Blob<Dtype>& blob = *bottom_vec[bottom_id];
     const string& blob_name = blob_names_[bottom_id_vecs_[layer_id][bottom_id]];
     const Dtype diff_abs_val_mean = blob.asum_diff() / blob.count();
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "    [Backward] "
         << "Layer " << layer_names_[layer_id]
         << ", bottom blob " << blob_name
         << " diff: " << diff_abs_val_mean;
-#endif
   }
   for (int param_id = 0; param_id < layers_[layer_id]->blobs().size();
        ++param_id) {
     if (!layers_[layer_id]->param_propagate_down(param_id)) { continue; }
     const Blob<Dtype>& blob = *layers_[layer_id]->blobs()[param_id];
     const Dtype diff_abs_val_mean = blob.asum_diff() / blob.count();
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "    [Backward] "
         << "Layer " << layer_names_[layer_id]
         << ", param blob " << param_id
         << " diff: " << diff_abs_val_mean;
-#endif
   }
 }
 #endif
@@ -700,24 +660,21 @@ void Net<Dtype>::UpdateDebugInfo(const int param_id) {
   const Dtype diff_abs_val_mean = blob.asum_diff() / blob.count();
   if (param_owner < 0) {
     const Dtype data_abs_val_mean = blob.asum_data() / blob.count();
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "    [Update] Layer " << layer_name
         << ", param " << param_display_name
         << " data: " << data_abs_val_mean
         << "; diff: " << diff_abs_val_mean;
-#endif
+#
   } else {
     const string& owner_layer_name =
         layer_names_[param_layer_indices_[param_owner].first];
-#ifdef USE_GLOG
     LOG_IF(INFO, Caffe::root_solver())
         << "    [Update] Layer " << layer_name
         << ", param blob " << param_display_name
         << " (owned by layer " << owner_layer_name << ", " << "param "
         << param_display_names_[param_owners_[param_id]] << ")"
         << " diff: " << diff_abs_val_mean;
-#endif
   }
 }
 

@@ -40,6 +40,18 @@ class LogMessage{
       enable = _enable;
     }
 };
+
+// This class is used to explicitly ignore values in the conditional
+// logging macros.  This avoids compiler warnings like "value computed
+// is not used" and "statement has no effect".
+
+class LogMessageVoidify {
+ public:
+  LogMessageVoidify() { }
+  // This has to be an operator with a precedence lower than << but
+  // higher than ?:
+  void operator&(std::ostream&) { }
+};
 }
 
 #define   LOG(type)   caffe::LogMessage(#type).stream()
@@ -62,5 +74,8 @@ class LogMessage{
 #define   DCHECK_LE(x, y)   DCHECK((x) <= (y))
 #define   DCHECK_GE(x, y)   DCHECK((x) >= (y))
 #define   DCHECK_NE(x, y)   DCHECK((x) != (y))
+
+#define LOG_IF(severity, condition) \
+  !(condition) ? (void) 0 : caffe::LogMessageVoidify() & LOG(severity)
 
 #endif
