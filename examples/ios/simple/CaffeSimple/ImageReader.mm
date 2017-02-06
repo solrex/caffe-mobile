@@ -108,17 +108,21 @@ bool ReadImageToBlob(NSString *file_name,
         LOG(ERROR) << "image_channels input_channels not match.";
         return false;
     }
-    int input_width = input_layer->width();
-    int input_height = input_layer->height();
+    //int input_width = input_layer->width();
+    //int input_height = input_layer->height();
     
     float *input_data = input_layer->mutable_cpu_data();
    
-
-    for (int h = 0; h < height; h++) {
-        for (int w = 0; w < width; w++) {
-            for (int c = 0; c < input_channels; c++) {
+    for (size_t h = 0; h < height; h++) {
+        for (size_t w = 0; w < width; w++) {
+            for (size_t c = 0; c < input_channels; c++) {
+                // OpenCV use BGR instead of RGB
+                size_t cc = c;
+                if (input_channels == 3) {
+                    cc = 2 - c;
+                }
                 // Convert uint8_t to float
-                input_data[c*width*height + h*width + w] = static_cast<float>(result[h*width*image_channels + w*image_channels + c]);
+                input_data[c*width*height + h*width + w] = static_cast<float>(result[h*width*image_channels + w*image_channels + cc]);
                 if (mean.size() == input_channels) {
                     input_data[c*width*height + h*width + w] -= mean[c];
                 }

@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 
+#include <numeric>
 #include "caffe/caffe.hpp"
 #include "ImageReader.h"
 
@@ -57,26 +58,29 @@ caffe::Net<float> *_net;
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
     NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
     timer.Start();
-    std::vector<float> mean;
-    //mean.push_back(81.3);
-    //mean.push_back(107.3);
-    //mean.push_back(105.3);
+    //std::vector<float> mean({81.3, 107.3, 105.3});
+    std::vector<float> mean();
     if(! ReadImageToBlob(test_file_path, mean, input_layer)) {
         LOG(INFO) << "ReadImageToBlob failed";
         [_console insertText:@"ReadImageToBlob failed"];
+        return;
     }
     _net->Forward();
     timer.Stop();
     [_console insertText:[NSString stringWithFormat:@"%fms\n", timer.MilliSeconds()]];
     
-    [_console insertText:@"Inference result:\n"];
+    [_console insertText:@"Inference result(sorted):\n"];
     caffe::Blob<float> *output_layer = _net->output_blobs()[0];
     const float *begin = output_layer->cpu_data();
     const float *end = begin + output_layer->channels();
     std::vector<float> result(begin, end);
-    for (int i=0; i<result.size(); i++) {
-        LOG(INFO) << "result[" << i << "]=" << result[i];
-        [_console insertText:[NSString stringWithFormat:@"result[%d]=%f\n", i, result[i]]];
+    std::vector<size_t> result_idx(result.size());
+    std::iota(result_idx.begin(), result_idx.end(), 0);
+    std::sort(result_idx.begin(), result_idx.end(),
+              [&result](size_t l, size_t r){return result[l] > result[r];});
+    for (int i=0; i<result_idx.size(); i++) {
+        LOG(INFO) << "result[" << result_idx[i] << "]=" << result[result_idx[i]];
+        [_console insertText:[NSString stringWithFormat:@"result[%lu] \t= %f\n", result_idx[i], result[result_idx[i]] ] ];
     }
 }
 
