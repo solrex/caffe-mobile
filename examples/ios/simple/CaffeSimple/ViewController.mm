@@ -57,7 +57,7 @@ caffe::Net<float> *_net;
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
     NSString *test_file_path = FilePathForResourceName(@"61", @"png");
     timer.Start();
-    ReadImageToBlob([test_file_path UTF8String], input_layer);
+    ReadImageToBlob(test_file_path, input_layer);
     _net->Forward();
     timer.Stop();
     [_console insertText:[NSString stringWithFormat:@"%fms\n", timer.MilliSeconds()]];

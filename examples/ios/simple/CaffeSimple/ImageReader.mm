@@ -18,9 +18,12 @@ NSString* FilePathForResourceName(NSString* name, NSString* extension) {
     return file_path;
 }
 
-bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
+// Read a jpg/png image from file to Caffe input_layer.
+// Modified on tensorflow ios example, URL: https://github.com/tensorflow/tensorflow/\
+// blob/master/tensorflow/contrib/ios_examples/simple/ios_image_load.mm
+bool ReadImageToBlob(NSString *file_name, caffe::Blob<float>* input_layer) {
     // Get file size
-    FILE* file_handle = fopen(file_name, "rb");
+    FILE* file_handle = fopen([file_name UTF8String], "rb");
     fseek(file_handle, 0, SEEK_END);
     const size_t bytes_in_file = ftell(file_handle);
     fseek(file_handle, 0, SEEK_SET);
@@ -34,24 +37,20 @@ bool ReadImageToBlob(const char* file_name, caffe::Blob<float>* input_layer) {
                                                           kCFAllocatorNull);
     CGDataProviderRef image_provider = CGDataProviderCreateWithCFData(file_data_ref);
     
-    // Determine file type
-    const char* suffix = strrchr(file_name, '.');
-    if (!suffix || suffix == file_name) {
-        suffix = "";
-    }
-    // Read image to file
+    // Determine file type, Read image 
+    NSString *suffix = [file_name pathExtension];
     CGImageRef image;
-    if (strcasecmp(suffix, ".png") == 0) {
+    if ([suffix isEqualToString: @"png"]) {
         image = CGImageCreateWithPNGDataProvider(image_provider, NULL, true,
                                                  kCGRenderingIntentDefault);
-    } else if ((strcasecmp(suffix, ".jpg") == 0) ||
-               (strcasecmp(suffix, ".jpeg") == 0)) {
+    } else if ([suffix isEqualToString: @"jpg"] ||
+               [suffix isEqualToString: @"jpeg"]) {
         image = CGImageCreateWithJPEGDataProvider(image_provider, NULL, true,
                                                   kCGRenderingIntentDefault);
     } else {
         CFRelease(image_provider);
         CFRelease(file_data_ref);
-        fprintf(stderr, "Unknown suffix for file '%s'\n", file_name);
+        LOG(ERROR) << "Unknown suffix for file" << file_name;
         return 1;
     }
     
