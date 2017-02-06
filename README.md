@@ -14,7 +14,7 @@ $ ./build-protobuf-3.1.0.sh iPhoneSimulator
 $ mkdir ../build
 $ cd ../build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
-  -DIOS_PLATFORM=SIMULATOR -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf
+  -DIOS_PLATFORM=SIMULATOR -DTHIRD_PARTY=1
 $ make -j 4
 ```
 
@@ -24,8 +24,10 @@ $ make -j 4
 Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
 
 ```
-$ cp $CAFFE/examples/mnist/lenet.prototxt $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
-$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
+$ cp $CAFFE/examples/mnist/lenet.prototxt \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on the simulator.
@@ -41,7 +43,7 @@ $ ./build-protobuf-3.1.0.sh iPhoneOS
 $ mkdir ../build
 $ cd ../build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
-  -DIOS_PLATFORM=OS -DCMAKE_PREFIX_PATH=$PWD/../third_party/protobuf
+  -DIOS_PLATFORM=OS -DTHIRD_PARTY=1
 $ make -j 4
 ```
 

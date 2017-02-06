@@ -27,20 +27,20 @@ if(NOT MSVC)
     endif()
 endif()
 
-# Set protobuf search path for different platform
-if(CMAKE_PREFIX_PATH AND NOT IOS)
+# Set search path for cross compile
+if(THIRD_PARTY)
     set(SAVE_PATH ${CMAKE_FIND_ROOT_PATH})
-    set(CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
+    set(CMAKE_FIND_ROOT_PATH ${CMAKE_SOURCE_DIR}/third_party/protobuf ${CMAKE_SOURCE_DIR}/third_party/OpenBLAS)
     include(./cmake/ProtoBuf.cmake)
+    include(./cmake/Modules/FindOpenBLAS.cmake)
     set(CMAKE_FIND_ROOT_PATH ${SAVE_PATH})
 else()
     include(./cmake/ProtoBuf.cmake)
+    include(./cmake/Modules/FindOpenBLAS.cmake)
 endif()
-
-# Select blas lib for different platform
 include(./cmake/Modules/FindvecLib.cmake)
-include(./cmake/FindOpenBLAS.cmake)
-include(./cmake/FindAtlas.cmake)
+include(./cmake/Modules/FindAtlas.cmake)
+# Select blas lib for different platform
 # APPLE only, 1st
 if(VECLIB_FOUND)
     include_directories(${vecLib_INCLUDE_DIR})

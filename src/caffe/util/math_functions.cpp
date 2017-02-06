@@ -1,7 +1,9 @@
 #ifdef USE_BOOST
 #include <boost/math/special_functions/next.hpp>
 #include <boost/random.hpp>
-#endif
+#else
+#include <math.h>
+#endif // USE_BOOST
 
 #include <limits>
 
@@ -232,15 +234,11 @@ unsigned int caffe_rng_rand() {
   return (*caffe_rng())();
 }
 
+#ifdef USE_BOOST
 template <typename Dtype>
 Dtype caffe_nextafter(const Dtype b) {
-#ifdef USE_BOOST
   return boost::math::nextafter<Dtype>(
       b, std::numeric_limits<Dtype>::max());
-#else
-  return std::nextafter(
-      b, std::numeric_limits<Dtype>::max());
-#endif
 }
 
 template
@@ -248,6 +246,16 @@ float caffe_nextafter(const float b);
 
 template
 double caffe_nextafter(const double b);
+#else
+// std::nextafter has some problems with tr1 & _GLIBCXX_USE_C99_MATH_TR1
+// when using android ndk
+float caffe_nextafter(const float b) {
+    return ::nextafterf(b, std::numeric_limits<float>::max());
+}
+double caffe_nextafter(const double b) {
+    return ::nextafter(b, std::numeric_limits<float>::max());
+}
+#endif
 
 template <typename Dtype>
 void caffe_rng_uniform(const int n, const Dtype a, const Dtype b, Dtype* r) {
