@@ -59,7 +59,7 @@ caffe::Net<float> *_net;
     NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
     timer.Start();
     //std::vector<float> mean({81.3, 107.3, 105.3});
-    std::vector<float> mean();
+    std::vector<float> mean;
     if(! ReadImageToBlob(test_file_path, mean, input_layer)) {
         LOG(INFO) << "ReadImageToBlob failed";
         [_console insertText:@"ReadImageToBlob failed"];
