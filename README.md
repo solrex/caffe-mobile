@@ -58,7 +58,6 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/io
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on your connected device.
 
 # For MacOSX & Ubuntu
-==================
 
 ## Step 1: Install dependency
 
@@ -90,4 +89,4 @@ $ make -j 4
  - Based on https://github.com/BVLC/caffe
  - Inspired by https://github.com/chyh1990/caffe-compact
  - Use https://github.com/Yangqing/ios-cmake
- - Use https://gist.github.com/TyGuy/e814d23046772a98ae437270e8aaaf08
+ - Use https://github.com/taka-no-me/android-cmake
