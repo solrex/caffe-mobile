@@ -22,7 +22,7 @@ caffe::Net<float> *_net;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    NSString *test_file_path = FilePathForResourceName(@"61", @"png");
+    NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
     UIImage *image = [UIImage imageWithContentsOfFile:test_file_path];
     [_test_image setImage:image];
 }
@@ -39,9 +39,9 @@ caffe::Net<float> *_net;
 - (void)viewDidAppear:(BOOL)animated {
     caffe::CPUTimer timer;
     timer.Start();
-    NSString *modle_path = FilePathForResourceName(@"lenet", @"prototxt");
+    NSString *modle_path = FilePathForResourceName(@"net", @"prototxt");
     _net = new caffe::Net<float>([modle_path UTF8String], caffe::TEST);
-    NSString *weight_path = FilePathForResourceName(@"lenet_iter_10000", @"caffemodel");
+    NSString *weight_path = FilePathForResourceName(@"weight", @"caffemodel");
     _net->CopyTrainedLayersFrom([weight_path UTF8String]);
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
     timer.Stop();
@@ -55,9 +55,16 @@ caffe::Net<float> *_net;
     caffe::CPUTimer timer;
     [_console insertText:@"\nCaffe infering..."];
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
-    NSString *test_file_path = FilePathForResourceName(@"61", @"png");
+    NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
     timer.Start();
-    ReadImageToBlob(test_file_path, input_layer);
+    std::vector<float> mean;
+    //mean.push_back(81.3);
+    //mean.push_back(107.3);
+    //mean.push_back(105.3);
+    if(! ReadImageToBlob(test_file_path, mean, input_layer)) {
+        LOG(INFO) << "ReadImageToBlob failed";
+        [_console insertText:@"ReadImageToBlob failed"];
+    }
     _net->Forward();
     timer.Stop();
     [_console insertText:[NSString stringWithFormat:@"%fms\n", timer.MilliSeconds()]];

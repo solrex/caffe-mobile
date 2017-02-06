@@ -21,7 +21,9 @@ NSString* FilePathForResourceName(NSString* name, NSString* extension) {
 // Read a jpg/png image from file to Caffe input_layer.
 // Modified on tensorflow ios example, URL: https://github.com/tensorflow/tensorflow/\
 // blob/master/tensorflow/contrib/ios_examples/simple/ios_image_load.mm
-bool ReadImageToBlob(NSString *file_name, caffe::Blob<float>* input_layer) {
+bool ReadImageToBlob(NSString *file_name,
+                     const std::vector<float> &mean,
+                     caffe::Blob<float>* input_layer) {
     // Get file size
     FILE* file_handle = fopen([file_name UTF8String], "rb");
     fseek(file_handle, 0, SEEK_END);
@@ -59,39 +61,69 @@ bool ReadImageToBlob(NSString *file_name, caffe::Blob<float>* input_layer) {
     size_t height = CGImageGetHeight(image);
     size_t bits_per_component = CGImageGetBitsPerComponent(image);
     size_t bits_per_pixel = CGImageGetBitsPerPixel(image);
+    
     LOG(INFO) << "CGImage width:" << width << " height:" << height << " BitsPerComponent:" << bits_per_component << " BitsPerPixel:" << bits_per_pixel;
     
-    size_t channels = bits_per_pixel/bits_per_component;
+    size_t image_channels = bits_per_pixel/bits_per_component;
     CGColorSpaceRef color_space;
-    if (channels == 1) {
+    uint32_t bitmapInfo = 0;
+    if (image_channels == 1) {
         color_space = CGColorSpaceCreateDeviceGray();
+        bitmapInfo = kCGImageAlphaNone;
+    } else if (image_channels == 4) {
+        // Remove alpha channel
+        color_space = CGColorSpaceCreateDeviceRGB();
+        //bitmapInfo = kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big;
+        bitmapInfo = kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big;
+    } else {
+        // FIXME: image convert
+        LOG(ERROR) << "Image channel:" << image_channels;
+        return false;
     }
-    size_t bytes_per_row = channels * width;
+
+    // Read Image to bitmap
+    size_t bytes_per_row = image_channels * width;
     size_t bytes_in_image = bytes_per_row * height;
     std::vector<uint8_t> result(bytes_in_image);
-    // Read Image to bitmap
     CGContextRef context = CGBitmapContextCreate(result.data(), width, height,
                                                  bits_per_component, bytes_per_row, color_space,
-                                                 kCGImageAlphaNone);
+                                                 bitmapInfo);
+    LOG(INFO) << "bytes_per_row: " << bytes_per_row;
+    // Release resources
     CGColorSpaceRelease(color_space);
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
-    
-    // Release resources
     CGContextRelease(context);
     CFRelease(image);
     CFRelease(image_provider);
     CFRelease(file_data_ref);
     
     // Convert Bitmap (channels*width*height) to Matrix (width*height*channels)
-    // Convert uint8_t to float
+    // Remove alpha channel
+    int input_channels = input_layer->channels();
+    LOG(INFO) << "image_channels:" << image_channels << " input_channels:" << input_channels;
+    if (input_channels == 3 && image_channels != 4) {
+        LOG(ERROR) << "image_channels input_channels not match.";
+        return false;
+    } else if (input_channels == 1 && image_channels != 1) {
+        LOG(ERROR) << "image_channels input_channels not match.";
+        return false;
+    }
+    int input_width = input_layer->width();
+    int input_height = input_layer->height();
+    
     float *input_data = input_layer->mutable_cpu_data();
-    // y in height
-    for (int c = 0; c < channels; c++) {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                input_data[c*width*height + y*width + x] = static_cast<float>(result[y*bytes_per_row + x*channels + c]);
+   
+
+    for (int h = 0; h < height; h++) {
+        for (int w = 0; w < width; w++) {
+            for (int c = 0; c < input_channels; c++) {
+                // Convert uint8_t to float
+                input_data[c*width*height + h*width + w] = static_cast<float>(result[h*width*image_channels + w*image_channels + c]);
+                if (mean.size() == input_channels) {
+                    input_data[c*width*height + h*width + w] -= mean[c];
+                }
             }
         }
     }
-    return 0;
+    return true;
 }

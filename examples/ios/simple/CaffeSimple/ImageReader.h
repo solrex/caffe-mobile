@@ -13,6 +13,8 @@
 
 NSString* FilePathForResourceName(NSString* name, NSString* extension);
 
-bool ReadImageToBlob(NSString *file_name, caffe::Blob<float>* input_layer);
+bool ReadImageToBlob(NSString *file_name,
+                     const std::vector<float> &mean,
+                     caffe::Blob<float>* input_layer);
 
 #endif /* ImageReader_h */
