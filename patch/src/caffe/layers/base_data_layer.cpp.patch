@@ -1,5 +1,5 @@
 --- caffe/src/caffe/layers/base_data_layer.cpp	2017-01-27 09:51:56.330123800 +0800
-+++ ../src/caffe/layers/base_data_layer.cpp	2017-02-04 22:35:34.654099433 +0800
++++ ../src/caffe/layers/base_data_layer.cpp	2017-02-06 20:20:48.228476426 +0800
 @@ -1,9 +1,13 @@
 +#ifdef USE_BOOST
  #include <boost/thread.hpp>
@@ -14,29 +14,7 @@
  #include "caffe/layer.hpp"
  #include "caffe/layers/base_data_layer.hpp"
  #include "caffe/proto/caffe.pb.h"
-@@ -13,8 +17,12 @@
- 
- template <typename Dtype>
- BaseDataLayer<Dtype>::BaseDataLayer(const LayerParameter& param)
-+#ifdef NO_CAFFE_MOBILE
-     : Layer<Dtype>(param),
-       transform_param_(param.transform_param()) {
-+#else
-+    : Layer<Dtype>(param) {
-+#endif
- }
- 
- template <typename Dtype>
-@@ -25,13 +33,16 @@
-   } else {
-     output_labels_ = true;
-   }
-+#ifdef NO_CAFFE_MOBILE
-   data_transformer_.reset(
-       new DataTransformer<Dtype>(transform_param_, this->phase_));
-   data_transformer_->InitRand();
-+#endif
-   // The subclasses should setup the size of bottom and top
+@@ -32,6 +36,7 @@
    DataLayerSetUp(bottom, top);
  }
  
@@ -44,15 +22,15 @@
  template <typename Dtype>
  BasePrefetchingDataLayer<Dtype>::BasePrefetchingDataLayer(
      const LayerParameter& param)
-@@ -129,8 +140,11 @@
+@@ -129,8 +134,11 @@
  #ifdef CPU_ONLY
  STUB_GPU_FORWARD(BasePrefetchingDataLayer, Forward);
  #endif
-+#endif
++#endif // NO_CAFFE_MOBILE
  
  INSTANTIATE_CLASS(BaseDataLayer);
 +#ifdef NO_CAFFE_MOBILE
  INSTANTIATE_CLASS(BasePrefetchingDataLayer);
-+#endif
++#endif // NO_CAFFE_MOBILE
  
  }  // namespace caffe
