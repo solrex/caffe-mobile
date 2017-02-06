@@ -17,12 +17,8 @@ namespace caffe {
 
 template <typename Dtype>
 BaseDataLayer<Dtype>::BaseDataLayer(const LayerParameter& param)
-#ifdef NO_CAFFE_MOBILE
     : Layer<Dtype>(param),
       transform_param_(param.transform_param()) {
-#else
-    : Layer<Dtype>(param) {
-#endif
 }
 
 template <typename Dtype>
@@ -33,11 +29,9 @@ void BaseDataLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   } else {
     output_labels_ = true;
   }
-#ifdef NO_CAFFE_MOBILE
   data_transformer_.reset(
       new DataTransformer<Dtype>(transform_param_, this->phase_));
   data_transformer_->InitRand();
-#endif
   // The subclasses should setup the size of bottom and top
   DataLayerSetUp(bottom, top);
 }
@@ -140,11 +134,11 @@ void BasePrefetchingDataLayer<Dtype>::Forward_cpu(
 #ifdef CPU_ONLY
 STUB_GPU_FORWARD(BasePrefetchingDataLayer, Forward);
 #endif
-#endif
+#endif // NO_CAFFE_MOBILE
 
 INSTANTIATE_CLASS(BaseDataLayer);
 #ifdef NO_CAFFE_MOBILE
 INSTANTIATE_CLASS(BasePrefetchingDataLayer);
-#endif
+#endif // NO_CAFFE_MOBILE
 
 }  // namespace caffe

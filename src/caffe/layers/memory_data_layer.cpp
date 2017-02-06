@@ -40,10 +40,8 @@ void MemoryDataLayer<Dtype>::AddDatumVector(const vector<Datum>& datum_vector) {
       "The added data must be a multiple of the batch size.";
   added_data_.Reshape(num, channels_, height_, width_);
   added_label_.Reshape(num, 1, 1, 1);
-#ifdef NO_CAFFE_MOBILE
   // Apply data transformations (mirror, scale, crop...)
   this->data_transformer_->Transform(datum_vector, &added_data_);
-#endif
   // Copy Labels
   Dtype* top_label = added_label_.mutable_cpu_data();
   for (int item_id = 0; item_id < num; ++item_id) {
@@ -86,13 +84,11 @@ void MemoryDataLayer<Dtype>::Reset(Dtype* data, Dtype* labels, int n) {
   CHECK(data);
   CHECK(labels);
   CHECK_EQ(n % batch_size_, 0) << "n must be a multiple of batch size";
-#ifdef NO_CAFFE_MOBILE
   // Warn with transformation parameters since a memory array is meant to
   // be generic and no transformations are done with Reset().
   if (this->layer_param_.has_transform_param()) {
     LOG(WARNING) << this->type() << " does not transform array data on Reset()";
   }
-#endif
   data_ = data;
   labels_ = labels;
   n_ = n;

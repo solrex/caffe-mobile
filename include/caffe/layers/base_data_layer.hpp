@@ -42,10 +42,8 @@ class BaseDataLayer : public Layer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {}
 
  protected:
-#ifdef NO_CAFFE_MOBILE
   TransformationParameter transform_param_;
   shared_ptr<DataTransformer<Dtype> > data_transformer_;
-#endif
   bool output_labels_;
 };
 
@@ -83,7 +81,7 @@ class BasePrefetchingDataLayer :
 
   Blob<Dtype> transformed_data_;
 };
-#endif
+#endif // NO_CAFFE_MOBILE
 
 }  // namespace caffe
 
