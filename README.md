@@ -10,7 +10,7 @@ iOS/Android Caffe lib with demo APP (CPU_ONLY, NO_BACKWARD, NO_BOOST, NO_HDF5, N
 ```
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
 $ cd caffe-mobile/third_party
-$ ./build-protobuf-3.1.0.sh
+$ ./build-protobuf-3.1.0.sh iPhoneSimulator
 $ mkdir ../build
 $ cd ../build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
@@ -37,7 +37,7 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/io
 ```
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
 $ cd caffe-mobile/third_party
-$ ./build-protobuf-3.1.0.sh
+$ ./build-protobuf-3.1.0.sh iPhoneOS
 $ mkdir ../build
 $ cd ../build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \

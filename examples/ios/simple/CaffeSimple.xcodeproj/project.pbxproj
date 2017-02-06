@@ -158,6 +158,7 @@
 				TargetAttributes = {
 					1965DBA91E447C130064AD55 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 4X58F8M83Y;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -352,6 +353,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 4X58F8M83Y;
 				INFOPLIST_FILE = CaffeSimple/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yangwenbo.CaffeSimple;
@@ -363,6 +365,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 4X58F8M83Y;
 				INFOPLIST_FILE = CaffeSimple/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yangwenbo.CaffeSimple;
