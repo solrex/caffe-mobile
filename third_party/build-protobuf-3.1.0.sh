@@ -58,9 +58,10 @@ function build-Linux {
     make install
     mkdir -p ../../protobuf
     cd ../../protobuf
-    ln -sfF ../protobuf-$TARGET/lib lib
-    ln -sfF ../protobuf-$TARGET/include include
-    ln -sfF ../protobuf-$TARGET/bin bin
+    rm -f lib include bin
+    ln -s ../protobuf-$TARGET/lib lib
+    ln -s ../protobuf-$TARGET/include include
+    ln -s ../protobuf-$TARGET/bin bin
     cd ..
 }
 
@@ -95,8 +96,9 @@ function build-Android {
     make install
     mkdir -p ../../protobuf
     cd ../../protobuf
-    ln -sfF ../protobuf-$TARGET/lib lib
-    ln -sfF ../protobuf-$TARGET/include include
+    rm -f lib include
+    ln -s ../protobuf-$TARGET/lib lib
+    ln -s ../protobuf-$TARGET/include include
     cd ..
 }
 
@@ -125,8 +127,9 @@ function build-iPhoneSimulator {
     make install
     mkdir -p ../../protobuf
     cd ../../protobuf
-    ln -sfF ../protobuf-$TARGET/lib lib
-    ln -sfF ../protobuf-$TARGET/include include
+    rm -f lib include
+    ln -s ../protobuf-$TARGET/lib lib
+    ln -s ../protobuf-$TARGET/include include
     cd ..
 }
 
@@ -156,8 +159,9 @@ function build-iPhoneOS {
     make install
     mkdir -p ../../protobuf
     cd ../../protobuf
-    ln -sfF ../protobuf-$TARGET/lib lib
-    ln -sfF ../protobuf-$TARGET/include include
+    rm -f lib include
+    ln -s ../protobuf-$TARGET/lib lib
+    ln -s ../protobuf-$TARGET/include include
     cd ..
 }
 
