@@ -13,7 +13,6 @@ MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
 # Options for Android
-ANDROID_NDK=/opt/android-ndk-r13b
 ANDROID_ABI="armeabi-v7a with NEON"
 ANDROID_NATIVE_API_LEVEL=21
 BUILD_PROTOC=OFF
@@ -76,6 +75,16 @@ function build-Android {
     echo "#####################"
     echo "$(tput sgr0)"
 
+    # Test ENV NDK_HOME
+    if [ ! -d "$NDK_HOME" ]; then
+        echo "$(tput setaf 2)"
+        echo "###########################################################"
+        echo " ERROR: Invalid NDK_HOME=\"$NDK_HOME\" env variable, exit. "
+        echo "###########################################################"
+        echo "$(tput sgr0)"
+        exit 1
+    fi
+
     mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
     rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
     cd protobuf-$PB_VERSION/$BUILD_DIR
@@ -86,7 +95,7 @@ function build-Android {
     # fi
     cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET\
         -DCMAKE_TOOLCHAIN_FILE="../../android-cmake/android.toolchain.cmake" \
-        -DANDROID_NDK="$ANDROID_NDK" \
+        -DANDROID_NDK="$NDK_HOME" \
         -DANDROID_ABI="$ANDROID_ABI" \
         -DANDROID_NATIVE_API_LEVEL="$ANDROID_NATIVE_API_LEVEL" \
         -Dprotobuf_BUILD_TESTS=OFF \

@@ -8,10 +8,9 @@ MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
 # Options for Android
-ANDROID_NDK=/opt/android-ndk-r13b
 ANDROID_NATIVE_API_LEVEL=21
+# Options: "arm64-v8a" "armeabi-v7a with NEON"
 ANDROID_ABI="armeabi-v7a with NEON"
-ANDROID_ABI="arm64-v8a"
 
 # Build Environment
 if [ "$(uname)" = "Darwin" ]; then
@@ -61,14 +60,24 @@ function build-Android {
     echo "#####################"
     echo "$(tput sgr0)"
 
+    # Test ENV NDK_HOME
+    if [ ! -d "$NDK_HOME" ]; then
+        echo "$(tput setaf 2)"
+        echo "###########################################################"
+        echo " ERROR: Invalid NDK_HOME=\"$NDK_HOME\" env variable, exit. "
+        echo "###########################################################"
+        echo "$(tput sgr0)"
+        exit 1
+    fi
+
     if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then
-        CROSS_SUFFIX=$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}-${BIT}/bin/arm-linux-androideabi-
-        SYSROOT=$ANDROID_NDK/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
+        CROSS_SUFFIX=$NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}-${BIT}/bin/arm-linux-androideabi-
+        SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
         TARGET=ARMV7
         BINARY=32
     elif [ "${ANDROID_ABI}" = "arm64-v8a" ]; then
-        CROSS_SUFFIX=$ANDROID_NDK/toolchains/aarch64-linux-android-4.9/prebuilt/${OS}-${BIT}/bin/aarch64-linux-android-
-        SYSROOT=$ANDROID_NDK/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm64
+        CROSS_SUFFIX=$NDK_HOME/toolchains/aarch64-linux-android-4.9/prebuilt/${OS}-${BIT}/bin/aarch64-linux-android-
+        SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm64
         TARGET=ARMV8
         BINARY=64
     else
@@ -106,9 +115,5 @@ function build-Android {
     cd ..
 }
 
-ANDROID_ABI="armeabi-v7a with NEON"
 fetch-OpenBLAS
 build-$PLATFORM
-#ANDROID_ABI="arm64-v8a"
-#fetch-OpenBLAS
-#build-$PLATFORM
