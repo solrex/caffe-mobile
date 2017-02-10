@@ -53,8 +53,10 @@ $ make -j 4
 Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
 
 ```
-$ cp $CAFFE/examples/mnist/lenet.prototxt $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/
-$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/
+$ cp $CAFFE/examples/mnist/lenet.prototxt \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on your connected device.
