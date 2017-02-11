@@ -13,7 +13,7 @@ MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
 # Options for Android
-ANDROID_ABI="armeabi-v7a with NEON"
+ANDROID_ABI="armeabi-v7a-hard with NEON"
 ANDROID_NATIVE_API_LEVEL=21
 BUILD_PROTOC=OFF
 

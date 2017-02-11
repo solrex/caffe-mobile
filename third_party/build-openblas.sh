@@ -98,6 +98,7 @@ function build-Android {
         CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
         HOSTCC=gcc \
         TARGET=$TARGET \
+        CFLAGS="-mhard-float" \
         BINARY=$BINARY \
         PREFIX="../OpenBLAS-$TARGET"
     make ${MAKE_FLAGS} \
@@ -111,10 +112,12 @@ function build-Android {
         CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
         HOSTCC=gcc \
         TARGET=$TARGET \
+        CFLAGS="-mhard-float" \
         BINARY=$BINARY \
         PREFIX="../OpenBLAS-$TARGET" \
         install
     cd ..
+    ln -s OpenBLAS-$OPENBLAS_VERSION OpenBLAS
 }
 
 fetch-OpenBLAS
