@@ -270,7 +270,7 @@ void caffe_rng_uniform(const int n, const Dtype a, const Dtype b, Dtype* r) {
     r[i] = variate_generator();
   }
 #else
-  std::uniform_real_distribution<Dtype> random_distribution(a, caffe_nextafter<Dtype>(b));
+  std::uniform_real_distribution<Dtype> random_distribution(a, caffe_nextafter(b));
   for (int i = 0; i < n; ++i) {
     r[i] = random_distribution(*caffe_rng());
   }
