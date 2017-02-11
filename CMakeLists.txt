@@ -59,6 +59,10 @@ caffe_set_caffe_link()
 
 add_subdirectory(src/caffe)
 
+if(ANDROID)
+    add_subdirectory(src/jni)
+endif()
+
 if(TOOLS)
     add_subdirectory(tools)
 endif()

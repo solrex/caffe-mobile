@@ -90,6 +90,7 @@ function build-Android {
     make ${MAKE_FLAGS} \
         NOFORTRAN=1 \
         NO_NOLAPACKE=1 \
+        OSNAME=Android \
         SMP=1 \
         USE_THREAD=1 \
         NUM_THREAD=4 \
@@ -102,6 +103,7 @@ function build-Android {
     make ${MAKE_FLAGS} \
         NOFORTRAN=1 \
         NO_NOLAPACKE=1 \
+        OSNAME=Android \
         SMP=1 \
         USE_THREAD=1 \
         NUM_THREAD=4 \
