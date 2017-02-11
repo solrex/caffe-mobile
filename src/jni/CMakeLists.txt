@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 if(ANDROID)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-warn-mismatch")
   #add_library(caffe_jni STATIC caffe_jni.cpp caffe_mobile.cpp)
   add_library(caffe_jni SHARED caffe_jni.cpp caffe_mobile.cpp)
   target_link_libraries(caffe_jni ${Caffe_LINK})
