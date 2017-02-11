@@ -3,4 +3,4 @@
 	url = https://github.com/Yangqing/ios-cmake.git
 [submodule "third_party/android-cmake"]
 	path = third_party/android-cmake
-	url = https://github.com/taka-no-me/android-cmake.git
+	url = https://github.com/solrex/android-cmake.git
