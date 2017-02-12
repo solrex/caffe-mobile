@@ -7,22 +7,49 @@
 
 namespace caffe {
 
+/**
+ * @brief Wrap caffe::net to a simpler interface; singleton
+ */
 class CaffeMobile {
 public:
+  /**
+   * @brief Destructor
+   */
   ~CaffeMobile();
 
-  static CaffeMobile *get(const std::string &model_path, const std::string &weights_path);
+  /**
+   * @brief Get the CaffeMobile singleton from the param file (*.prototxt)
+   * and the tained file (*.caffemodel)
+   * @return NULL: failed; not NULL: succeeded
+   */
+  static CaffeMobile *get(const std::string &param_file,
+                          const std::string &trained_file);
 
+  /**
+   * @brief Get the exist CaffeMobile singleton pointer
+   * @return NULL: no exist; not NULL: exist
+   */
   static CaffeMobile *get();
 
-  std::vector<float>* predict(signed char *bgr_mat,
-                             int width, int height, int channels);
+  /**
+   * @brief Use loaded model to classify a Image
+   * @param img_buf: colored file in RGBA or RGB bitmap buf
+   */
+  std::vector<float> predictImage(signed char *bitmap,
+                                   int width, int height, int channels);
 private:
-  CaffeMobile(const string &model_path, const string &weights_path);
+  /**
+   * @brief Construct a caffe net from the param file (*.prototxt)
+   * and the tained file (*.caffemodel)
+   */
+  CaffeMobile(const string &param_file, const string &trained_file);
 
 
+  /// @brief
   static CaffeMobile *caffe_mobile_;
+  /// @brief
   shared_ptr<Net<float>> net_;
+  /// @brief
   int input_channels_;
   int input_width_;
   int input_height_;

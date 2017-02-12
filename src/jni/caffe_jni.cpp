@@ -40,17 +40,14 @@ string bytes2string(JNIEnv *env, jbyteArray buf) {
 }
 
 JNIEXPORT void JNICALL
-Java_com_ooolab_caffe_1android_1lib_CaffeMobile_setNumThreads(JNIEnv *env,
+Java_com_ooolab_caffemobile_CaffeMobile_setNumThreads(JNIEnv *env,
                                                              jobject thiz,
                                                              jint numThreads) {
   int num_threads = numThreads;
   openblas_set_num_threads(num_threads);
 }
 
-JNIEXPORT void JNICALL Java_com_yangwenbo_caffe_1android_1lib_CaffeMobile_enableLog(
-    JNIEnv *env, jobject thiz, jboolean enabled) {}
-
-JNIEXPORT jint JNICALL Java_com_yangwenbo_caffe_1android_1lib_CaffeMobile_loadModel(
+JNIEXPORT jint JNICALL Java_com_yangwenbo_caffemobile_CaffeMobile_loadModel(
     JNIEnv *env, jobject thiz, jstring modelPath, jstring weightsPath) {
   CaffeMobile::get(jstring2string(env, modelPath),
                    jstring2string(env, weightsPath));
@@ -62,22 +59,21 @@ JNIEXPORT jint JNICALL Java_com_yangwenbo_caffe_1android_1lib_CaffeMobile_loadMo
  * (str.getBytes("US-ASCII")) which contains the img path
  */
 JNIEXPORT jfloatArray JNICALL
-Java_com_yangwenbo_caffe_1android_1lib_CaffeMobile_predict(
-    JNIEnv *env, jobject thiz, jbyteArray bgr_mat, jint width, jint height,
+Java_com_yangwenbo_caffemobile_CaffeMobile_predict(
+    JNIEnv *env, jobject thiz, jbyteArray bitmap, jint width, jint height,
     jint channels, jint k) {
-
   // Get matrix pointer
-  jbyte *ptr = env->GetByteArrayElements(bgr_mat, 0);
+  jbyte *ptr = env->GetByteArrayElements(bitmap, 0);
   // Predict
   CaffeMobile *caffe_mobile = CaffeMobile::get();
-  vector<float> *predict = caffe_mobile->predict(ptr, width, height, channels);
+  vector<float> predict = caffe_mobile->predictImage(ptr, width, height, channels);
   // Handle result
   jfloatArray result = env->NewFloatArray(k);
   if (result == NULL) {
     return NULL; /* out of memory error thrown */
   }
   // move from the temp structure to the java structure
-  env->SetFloatArrayRegion(result, 0, k, predict->data());
+  env->SetFloatArrayRegion(result, 0, k, predict.data());
   return result;
 }
 
