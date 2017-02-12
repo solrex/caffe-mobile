@@ -176,9 +176,12 @@ function build-iPhoneOS {
 
 fetch-protobuf
 if [ "$TARGET" != "Linux" -a "$TARGET" != "MacOSX" ]; then
-    TARGET_SAVE=$TARGET
-    TARGET=Linux
-    build-$TARGET
-    TARGET=$TARGET_SAVE
+    PROTOC_VERSION=$(./protobuf/bin/protoc --version)
+    if [ "$PROTOC_VERSION" != "libprotoc 3.1.0" ]; then
+        TARGET_SAVE=$TARGET
+        TARGET=Linux
+        build-$TARGET
+        TARGET=$TARGET_SAVE
+    fi
 fi
 build-$TARGET
