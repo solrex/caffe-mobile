@@ -16,12 +16,12 @@
 		19F82F1F1E44C2C300695409 /* ImageReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 19F82F1E1E44C2C300695409 /* ImageReader.mm */; };
 		19F82F221E44D8D100695409 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F211E44D8D100695409 /* Accelerate.framework */; };
 		19F82F271E44DB2000695409 /* libproto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F261E44DB2000695409 /* libproto.a */; };
-		19F82F291E44DB4900695409 /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F281E44DB4900695409 /* libprotobuf-lite.a */; };
-		19F82F2B1E44DBD900695409 /* libprotobuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F2A1E44DBD900695409 /* libprotobuf.a */; };
 		19F82F531E4847C200695409 /* test_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F511E4847C200695409 /* test_image.jpg */; };
 		19F82F541E4847C200695409 /* test_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F521E4847C200695409 /* test_image.png */; };
 		19F82F571E48485C00695409 /* net.prototxt in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F551E48485C00695409 /* net.prototxt */; };
 		19F82F581E48485C00695409 /* weight.caffemodel in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F561E48485C00695409 /* weight.caffemodel */; };
+		19FEA4AA1E52044E00E336DE /* libprotobuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19FEA4A91E52044E00E336DE /* libprotobuf.a */; };
+		19FEA4AC1E52046600E336DE /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19FEA4AB1E52046600E336DE /* libprotobuf-lite.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,12 +40,14 @@
 		19F82F211E44D8D100695409 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		19F82F231E44D9A100695409 /* libcaffe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcaffe.a; path = ../../../build/lib/libcaffe.a; sourceTree = "<group>"; };
 		19F82F261E44DB2000695409 /* libproto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproto.a; path = ../../../build/lib/libproto.a; sourceTree = "<group>"; };
-		19F82F281E44DB4900695409 /* libprotobuf-lite.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libprotobuf-lite.a"; path = "../../../third_party/protobuf/protobuf/platform/x86_64/lib/libprotobuf-lite.a"; sourceTree = "<group>"; };
-		19F82F2A1E44DBD900695409 /* libprotobuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libprotobuf.a; path = ../../../third_party/protobuf/protobuf/platform/x86_64/lib/libprotobuf.a; sourceTree = "<group>"; };
 		19F82F511E4847C200695409 /* test_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = test_image.jpg; path = data/test_image.jpg; sourceTree = "<group>"; };
 		19F82F521E4847C200695409 /* test_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = test_image.png; path = data/test_image.png; sourceTree = "<group>"; };
 		19F82F551E48485C00695409 /* net.prototxt */ = {isa = PBXFileReference; lastKnownFileType = text; name = net.prototxt; path = data/net.prototxt; sourceTree = "<group>"; };
 		19F82F561E48485C00695409 /* weight.caffemodel */ = {isa = PBXFileReference; lastKnownFileType = file; name = weight.caffemodel; path = data/weight.caffemodel; sourceTree = "<group>"; };
+		19FEA4A71E52043600E336DE /* bin */ = {isa = PBXFileReference; lastKnownFileType = text; path = bin; sourceTree = "<group>"; };
+		19FEA4A81E52043600E336DE /* protoc */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = protoc; sourceTree = "<group>"; };
+		19FEA4A91E52044E00E336DE /* libprotobuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libprotobuf.a; path = "../../../third_party/protobuf-iPhoneOS/lib/libprotobuf.a"; sourceTree = "<group>"; };
+		19FEA4AB1E52046600E336DE /* libprotobuf-lite.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libprotobuf-lite.a"; path = "../../../third_party/protobuf-iPhoneOS/lib/libprotobuf-lite.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,8 +55,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19F82F2B1E44DBD900695409 /* libprotobuf.a in Frameworks */,
-				19F82F291E44DB4900695409 /* libprotobuf-lite.a in Frameworks */,
+				19FEA4AC1E52046600E336DE /* libprotobuf-lite.a in Frameworks */,
+				19FEA4AA1E52044E00E336DE /* libprotobuf.a in Frameworks */,
 				19F82F271E44DB2000695409 /* libproto.a in Frameworks */,
 				19F82F221E44D8D100695409 /* Accelerate.framework in Frameworks */,
 			);
@@ -110,8 +112,9 @@
 		19F82F201E44D8D100695409 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				19F82F2A1E44DBD900695409 /* libprotobuf.a */,
-				19F82F281E44DB4900695409 /* libprotobuf-lite.a */,
+				19FEA4AB1E52046600E336DE /* libprotobuf-lite.a */,
+				19FEA4A91E52044E00E336DE /* libprotobuf.a */,
+				19FEA4A61E52043600E336DE /* bin */,
 				19F82F261E44DB2000695409 /* libproto.a */,
 				19F82F231E44D9A100695409 /* libcaffe.a */,
 				19F82F211E44D8D100695409 /* Accelerate.framework */,
@@ -128,6 +131,16 @@
 				19F82F511E4847C200695409 /* test_image.jpg */,
 			);
 			name = data;
+			sourceTree = "<group>";
+		};
+		19FEA4A61E52043600E336DE /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				19FEA4A71E52043600E336DE /* bin */,
+				19FEA4A81E52043600E336DE /* protoc */,
+			);
+			name = bin;
+			path = "../../../third_party/protobuf/bin";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -339,10 +352,7 @@
 					../../../third_party/protobuf/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LIBRARY_SEARCH_PATHS = (
-					../../../build/lib,
-					../../../third_party/protobuf/protobuf/platform/x86_64/lib,
-				);
+				LIBRARY_SEARCH_PATHS = ../../../build/lib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
