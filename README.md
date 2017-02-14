@@ -30,6 +30,17 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
      $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
 
+ - Check the batch size setting in net.prototxt, set it to `1` if needed.
+ 
+ ```
+ $ diff $CAFFE/examples/mnist/lenet.prototxt \
+        $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+ 6c6
+<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
+---
+>   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
+ ```
+
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on the simulator.
 
 # For iPhone
@@ -58,6 +69,17 @@ $ cp $CAFFE/examples/mnist/lenet.prototxt \
 $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
      $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
+
+ - Check the batch size setting in net.prototxt, set it to `1` if needed.
+ 
+ ```
+ $ diff $CAFFE/examples/mnist/lenet.prototxt \
+        $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+ 6c6
+<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
+---
+>   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
+ ```
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on your connected device.
 
