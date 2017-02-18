@@ -50,20 +50,17 @@ CaffeMobile::~CaffeMobile() {
     net_.reset();
 }
 
-std::vector<float> CaffeMobile::predictImage(signed char *bitmap,
+std::vector<float> CaffeMobile::predictImage(signed char* img_buf,
                                              int width,
                                              int height,
                                              int channels) {
-  if ((bitmap == NULL) || net_.get() == NULL) {
-    LOG(ERROR) << "Invalid arguments: bitmap=" << bitmap
+  if ((img_buf == NULL) || net_.get() == NULL) {
+    LOG(ERROR) << "Invalid arguments: img_buf=" << img_buf
         << ",net_=" << net_.get();
     return std::vector<float>();
   }
   LOG(INFO) << "image_channels:" << channels << " input_channels:" << input_channels_;
-  if (input_channels_ == 3 && channels != 4) {
-    LOG(ERROR) << "image_channels input_channels not match.";
-    return std::vector<float>();
-  } else if (input_channels_ == 1 && channels != 1) {
+  if (input_channels_ != channels) {
     LOG(ERROR) << "image_channels input_channels not match.";
     return std::vector<float>();
   }
@@ -72,18 +69,8 @@ std::vector<float> CaffeMobile::predictImage(signed char *bitmap,
   // Write input
   Blob<float> *input_layer = net_->input_blobs()[0];
   float *input_data = input_layer->mutable_cpu_data();
-  for (int c = 0; c < input_channels_; c++) {
-    for (int h = 0; h < input_height_; h++) {
-      for (int w = 0; w < input_width_; w++) {
-        // OpenCV use BGR instead of RGB
-        int cc = c;
-        if (input_channels_ == 3) {
-          cc = 2 - c;
-        }
-        input_data[c*input_width_*input_height_ + h*input_width_ + w]
-            = static_cast<float>(bitmap[h*width*channels + w*channels + cc]);
-      }
-    }
+  for (int i = 0; i < input_channels_*input_height_*input_width_; i++) {
+	  input_data[i] = static_cast<float>(img_buf[i]);
   }
   // Do Inference
   net_->Forward();
