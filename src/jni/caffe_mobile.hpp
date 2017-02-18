@@ -35,8 +35,11 @@ public:
    * @brief Use loaded model to classify a Image
    * @param img_buf: Grayscale(1 channel) or BGR(3 channels) pixels array
    */
-  std::vector<float> predictImage(signed char *img_buf,
-                                  int width, int height, int channels);
+  bool predictImage(uint8_t *img_buf,
+                    int width,
+                    int height,
+                    int channels,
+                    std::vector<float> &result);
 private:
   /**
    * @brief Construct a caffe net from the param file (*.prototxt)

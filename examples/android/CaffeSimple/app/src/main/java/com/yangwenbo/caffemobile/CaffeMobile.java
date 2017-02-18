@@ -38,7 +38,7 @@ public class CaffeMobile {
     public void predictImage(String fileName) {
         CaffeImage image = ReadGrayPngToPixel(fileName);
         float[] result = predict(image.pixels, image.width, image.height, image.channels);
-        for (int i = 0; i<10; i++) {
+        for (int i = 0; i<result.length; i++) {
             Log.i(TAG, "predictImage:  " + result[i]);
         }
     }

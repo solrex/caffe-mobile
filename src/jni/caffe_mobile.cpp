@@ -50,19 +50,17 @@ CaffeMobile::~CaffeMobile() {
     net_.reset();
 }
 
-std::vector<float> CaffeMobile::predictImage(signed char* img_buf,
-                                             int width,
-                                             int height,
-                                             int channels) {
+bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int channels,
+                               std::vector<float> &result) {
   if ((img_buf == NULL) || net_.get() == NULL) {
     LOG(ERROR) << "Invalid arguments: img_buf=" << img_buf
         << ",net_=" << net_.get();
-    return std::vector<float>();
+    return false;
   }
   LOG(INFO) << "image_channels:" << channels << " input_channels:" << input_channels_;
   if (input_channels_ != channels) {
     LOG(ERROR) << "image_channels input_channels not match.";
-    return std::vector<float>();
+    return false;
   }
   CPUTimer timer;
   timer.Start();
@@ -70,7 +68,8 @@ std::vector<float> CaffeMobile::predictImage(signed char* img_buf,
   Blob<float> *input_layer = net_->input_blobs()[0];
   float *input_data = input_layer->mutable_cpu_data();
   for (int i = 0; i < input_channels_*input_height_*input_width_; i++) {
-	  input_data[i] = static_cast<float>(img_buf[i]);
+    // Cast *uint8_t* to float
+    input_data[i] = static_cast<float>(img_buf[i]);
   }
   // Do Inference
   net_->Forward();
@@ -79,8 +78,8 @@ std::vector<float> CaffeMobile::predictImage(signed char* img_buf,
   Blob<float> *output_layer = net_->output_blobs()[0];
   const float *begin = output_layer->cpu_data();
   const float *end = begin + output_layer->channels();
-  std::vector<float> result(begin, end);
-  return result;
+  result.assign(begin, end);
+  return true;
 }
 
 } // namespace caffe

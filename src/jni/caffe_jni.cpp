@@ -1,44 +1,16 @@
-#include <string.h>
 #include <jni.h>
 #include <android/log.h>
-#include <string>
-#include <vector>
-#include <cblas.h>
 
-#include "caffe/caffe.hpp"
 #include "caffe_mobile.hpp"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-using std::string;
-using std::vector;
-using caffe::CaffeMobile;
-
-string jstring2string(JNIEnv *env, jstring jstr) {
-  const char *cstr = env->GetStringUTFChars(jstr, 0);
-  string str(cstr);
-  env->ReleaseStringUTFChars(jstr, cstr);
-  return str;
-}
-
-/**
- * NOTE: byte[] buf = str.getBytes("US-ASCII")
- */
-string bytes2string(JNIEnv *env, jbyteArray buf) {
-  jbyte *ptr = env->GetByteArrayElements(buf, 0);
-  string s((char *)ptr, env->GetArrayLength(buf));
-  env->ReleaseByteArrayElements(buf, ptr, 0);
-  return s;
-}
-
 JNIEXPORT void JNICALL
-Java_com_yangwenbo_caffemobile_CaffeMobile_setNumThreads(JNIEnv *env,
-                                                             jobject thiz,
-                                                             jint numThreads) {
-  int num_threads = numThreads;
-  openblas_set_num_threads(num_threads);
+Java_com_yangwenbo_caffemobile_CaffeMobile_setBlasThreadNum(JNIEnv *env, jobject instance,
+                                                            jint numThreads) {
+  openblas_set_num_threads(numThreads);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -48,7 +20,7 @@ Java_com_yangwenbo_caffemobile_CaffeMobile_loadModel(JNIEnv *env, jobject instan
     const char *modelPath = env->GetStringUTFChars(modelPath_, 0);
     const char *weightPath = env->GetStringUTFChars(weightPath_, 0);
 
-    if (CaffeMobile::get(modelPath, weightPath) == NULL) {
+    if (caffe::CaffeMobile::get(modelPath, weightPath) == NULL) {
         ret = false;
     }
 
@@ -57,23 +29,28 @@ Java_com_yangwenbo_caffemobile_CaffeMobile_loadModel(JNIEnv *env, jobject instan
     return ret;
 }
 
-/**
- * NOTE: when width == 0 && height == 0, buf is a byte array
- * (str.getBytes("US-ASCII")) which contains the img path
- */
 JNIEXPORT jfloatArray JNICALL
 Java_com_yangwenbo_caffemobile_CaffeMobile_predict(JNIEnv *env, jobject instance,
-		jbyteArray bitmap, jint width, jint height, jint channels) {
+                                                   jbyteArray img_buf, jint width, jint height, jint channels) {
   // Get matrix pointer
-  jbyte *ptr = env->GetByteArrayElements(bitmap, 0);
+  uint8_t *ptr = (uint8_t *)env->GetByteArrayElements(img_buf, 0);
   // Predict
-  CaffeMobile *caffe_mobile = CaffeMobile::get();
-  vector<float> predict = caffe_mobile->predictImage(ptr, width, height, channels);
-  __android_log_print(ANDROID_LOG_DEBUG, "caffe-jni", "CaffeMobile::predictImage result size-%lld", predict.size());
+  caffe::CaffeMobile *caffe_mobile = caffe::CaffeMobile::get();
+  if (NULL == caffe_mobile) {
+      return NULL;  // not initialized
+  }
+  std::vector<float> predict;
+  if (!caffe_mobile->predictImage(ptr, width, height, channels, predict)) {
+    return NULL; // predict error
+  }
+  __android_log_print(ANDROID_LOG_INFO, "caffe-jni", "CaffeMobile::predictImage result size=%zd", predict.size());
+  for (size_t i=0; i<predict.size(); i++) {
+    __android_log_print(ANDROID_LOG_INFO, "caffe-jni", "result[%zd]=%f", i, predict[i]);
+  }
   // Handle result
   jfloatArray result = env->NewFloatArray(predict.size());
   if (result == NULL) {
-    return 0; /* out of memory error thrown */
+    return NULL; // out of memory error thrown
   }
   // move from the temp structure to the java structure
   env->SetFloatArrayRegion(result, 0, predict.size(), predict.data());
