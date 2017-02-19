@@ -3,6 +3,16 @@ Caffe on Mobile Devices
 
 iOS/Android Caffe lib with demo APP (CPU_ONLY, NO_BACKWARD, NO_BOOST, NO_HDF5, NO_LEVELDB)
 
+# Screenshots
+
+## iPhone5s
+
+![image](https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleiPhone5s.png)
+
+## Meizu M3 note
+
+![image](https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleM3-Note.jpg)
+
 # For iPhone Simulator
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
