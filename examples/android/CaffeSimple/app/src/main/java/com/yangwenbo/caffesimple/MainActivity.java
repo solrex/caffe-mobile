@@ -9,6 +9,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yangwenbo.caffemobile.CaffeMobile;
@@ -27,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.Console);
         tv.append("Loading caffe model...");
         tv.setMovementMethod(new ScrollingMovementMethod());
+        // Show test image
+        File imageFile = new File(Environment.getExternalStorageDirectory(), "test_image.png");
+        Bitmap bmp = BitmapFactory.decodeFile(imageFile.getPath());
+        ImageView img = (ImageView) findViewById(R.id.testImage);
+        img.setImageBitmap(bmp);
 
         // Load caffe model
         long start_time = System.nanoTime();

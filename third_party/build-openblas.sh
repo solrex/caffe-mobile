@@ -10,7 +10,7 @@ BUILD_DIR=".cbuild"
 # Options for Android
 ANDROID_NATIVE_API_LEVEL=21
 # Options: "arm64-v8a" "armeabi-v7a with NEON"
-ANDROID_ABI="armeabi-v7a with NEON"
+ANDROID_ABI="arm64-v8a"
 
 # Build Environment
 if [ "$(uname)" = "Darwin" ]; then
@@ -98,26 +98,14 @@ function build-Android {
         CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
         HOSTCC=gcc \
         TARGET=$TARGET \
-        CFLAGS="-mhard-float" \
-        BINARY=$BINARY \
-        PREFIX="../OpenBLAS-$TARGET"
-    make ${MAKE_FLAGS} \
-        NOFORTRAN=1 \
-        NO_NOLAPACKE=1 \
-        OSNAME=Android \
-        SMP=1 \
-        USE_THREAD=1 \
-        NUM_THREAD=4 \
-        CROSS_SUFFIX="$CROSS_SUFFIX" \
-        CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
-        HOSTCC=gcc \
-        TARGET=$TARGET \
-        CFLAGS="-mhard-float" \
-        BINARY=$BINARY \
+#        CFLAGS="-mhard-float" \
+        BINARY=$BINARY
+    make \
         PREFIX="../OpenBLAS-$TARGET" \
         install
     cd ..
-    ln -s OpenBLAS-$OPENBLAS_VERSION OpenBLAS
+    rm -f OpenBLAS
+    ln -s OpenBLAS-$TARGET OpenBLAS
 }
 
 fetch-OpenBLAS

@@ -13,7 +13,28 @@ MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
 # Options for Android
-ANDROID_ABI="armeabi-v7a-hard with NEON"
+ANDROID_ABI="arm64-v8a"
+#    ANDROID_ABI=armeabi-v7a - specifies the target Application Binary
+#      Interface (ABI). This option nearly matches to the APP_ABI variable
+#      used by ndk-build tool from Android NDK.
+#
+#      Possible targets are:
+#        "armeabi" - ARMv5TE based CPU with software floating point operations
+#        "armeabi-v7a" - ARMv7 based devices with hardware FPU instructions
+#            this ABI target is used by default
+#        "armeabi-v7a-hard with NEON" - ARMv7 based devices with hardware FPU instructions and hardfp
+#        "armeabi-v7a with NEON" - same as armeabi-v7a, but
+#            sets NEON as floating-point unit
+#        "armeabi-v7a with VFPV3" - same as armeabi-v7a, but
+#            sets VFPV3 as floating-point unit (has 32 registers instead of 16)
+#        "armeabi-v6 with VFP" - tuned for ARMv6 processors having VFP
+#        "x86" - IA-32 instruction set
+#        "mips" - MIPS32 instruction set
+#
+#      64-bit ABIs for NDK r10 and newer:
+#        "arm64-v8a" - ARMv8 AArch64 instruction set
+#        "x86_64" - Intel64 instruction set (r1)
+#        "mips64" - MIPS64 instruction set (r6)
 ANDROID_NATIVE_API_LEVEL=21
 BUILD_PROTOC=OFF
 
