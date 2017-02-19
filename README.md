@@ -6,8 +6,8 @@ iOS/Android Caffe lib with demo APP (CPU_ONLY, NO_BACKWARD, NO_BOOST, NO_HDF5, N
 # Screenshots
 
 iPhone5s | Meizu M3 note
----------| -------------
-<img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleiPhone5s.png" width="50%" /> | <img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleM3-Note.jpg" width="40%" />
+:---------:| :-------------:
+<img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleiPhone5s.png" width="70%" /> | <img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleM3-Note.jpg" width="40%" />
 
 # For iPhone Simulator
 
