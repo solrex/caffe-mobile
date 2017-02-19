@@ -35,12 +35,10 @@ public class CaffeMobile {
      */
     private native float[] predict(byte[] bitmap, int width, int height, int channels);
 
-    public void predictImage(String fileName) {
+    public float[] predictImage(String fileName) {
         CaffeImage image = ReadGrayPngToPixel(fileName);
         float[] result = predict(image.pixels, image.width, image.height, image.channels);
-        for (int i = 0; i<result.length; i++) {
-            Log.i(TAG, "predictImage:  " + result[i]);
-        }
+        return result;
     }
 
     class CaffeImage {

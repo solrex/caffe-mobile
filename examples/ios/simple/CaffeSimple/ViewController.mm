@@ -54,7 +54,7 @@ caffe::Net<float> *_net;
 
 - (void)RunCaffeModel:(UIButton *)btn {
     caffe::CPUTimer timer;
-    [_console insertText:@"\nCaffe infering..."];
+    [_console insertText:@"\nCaffe inferring..."];
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
     NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
     timer.Start();
