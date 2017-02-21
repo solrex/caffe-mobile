@@ -98,9 +98,9 @@ function build-Android {
         CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
         HOSTCC=gcc \
         TARGET=$TARGET \
-#        CFLAGS="-mhard-float" \
         BINARY=$BINARY
     make \
+        SMP=1 \
         PREFIX="../OpenBLAS-$TARGET" \
         install
     cd ..
