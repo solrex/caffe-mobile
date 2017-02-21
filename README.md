@@ -94,13 +94,13 @@ $ diff $CAFFE/examples/mnist/lenet.prototxt \
 ## Step 1: Build Caffe-Mobile Lib with cmake
 
 ```
+$ export NDK_HOME=/path/to/your/ndk # TODO
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
 $ cd caffe-mobile/third_party
 $ ./build-protobuf-3.1.0.sh Android
 $ ./build-openblas.sh
 $ mkdir ../build
 $ cd ../build
-$ export NDK_HOME=/path/to/your/ndk # TODO
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/android-cmake/android.toolchain.cmake \
 -DANDROID_NDK=$NDK_HOME \
 -DANDROID_ABI="arm64-v8a" \
