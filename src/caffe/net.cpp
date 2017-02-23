@@ -739,6 +739,7 @@ void Net<Dtype>::Backward() {
                << "L2 norm = (" << l2norm_data << ", " << l2norm_diff << ")";
   }
 }
+#endif
 
 template <typename Dtype>
 void Net<Dtype>::Reshape() {
@@ -746,7 +747,6 @@ void Net<Dtype>::Reshape() {
     layers_[i]->Reshape(bottom_vecs_[i], top_vecs_[i]);
   }
 }
-#endif
 
 template <typename Dtype>
 void Net<Dtype>::CopyTrainedLayersFrom(const NetParameter& param) {
