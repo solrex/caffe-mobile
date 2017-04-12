@@ -589,6 +589,7 @@ message ConvolutionParameter {
     DEFAULT = 0;
     CAFFE = 1;
     CUDNN = 2;
+    NNPACK = 3;
   }
   optional Engine engine = 15 [default = DEFAULT];
 
@@ -609,6 +610,9 @@ message ConvolutionParameter {
   // implementation; for input blobs with num_axes != 2, this option is
   // ignored and the ND implementation will be used.)
   optional bool force_nd_im2col = 17 [default = false];
+
+  optional int32 nnpack_algorithm = 101 [default=0];
+  optional int32 nnpack_transform_strategy = 102 [default=0];
 }
 
 message CropParameter {
@@ -823,6 +827,12 @@ message InnerProductParameter {
   // of the weight matrix. The weight matrix itself is not going to be transposed
   // but rather the transfer flag of operations will be toggled accordingly.
   optional bool transpose = 6 [default = false];
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    NNPACK = 2;
+  }
+  optional Engine engine = 7 [default = DEFAULT];
 }
 
 message InputParameter {
@@ -906,6 +916,7 @@ message PoolingParameter {
     DEFAULT = 0;
     CAFFE = 1;
     CUDNN = 2;
+    NNPACK = 3;
   }
   optional Engine engine = 11 [default = DEFAULT];
   // If global_pooling then it will pool over the size of the bottom by doing
