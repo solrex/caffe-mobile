@@ -281,13 +281,17 @@
 					../../../build/include,
 					../../../third_party/protobuf/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = (
 					../../../build/lib,
 					../../../third_party/protobuf/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated-declarations",
+				);
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
 					../../../build/lib/libcaffe.a,
@@ -320,7 +324,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -341,12 +345,16 @@
 					../../../build/include,
 					../../../third_party/protobuf/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = (
 					../../../build/lib,
 					../../../third_party/protobuf/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated-declarations",
+				);
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
 					../../../build/lib/libcaffe.a,

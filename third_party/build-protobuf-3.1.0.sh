@@ -73,6 +73,7 @@ function build-Linux {
     cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET \
         -Dprotobuf_BUILD_TESTS=OFF \
         -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+        -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
         -Dprotobuf_WITH_ZLIB=OFF
     make ${MAKE_FLAGS}
     make install
@@ -181,7 +182,7 @@ function build-iPhoneOS {
     cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET\
         -DCMAKE_TOOLCHAIN_FILE="../../ios-cmake/toolchain/iOS.cmake" \
         -DIOS_PLATFORM=OS \
-        -DCMAKE_CXX_FLAGS="-fembed-bitcode" \
+        -DCMAKE_CXX_FLAGS="-fembed-bitcode -Wno-deprecated-declarations" \
         -Dprotobuf_BUILD_TESTS=OFF \
         -Dprotobuf_BUILD_SHARED_LIBS=OFF \
         -Dprotobuf_WITH_ZLIB=OFF
