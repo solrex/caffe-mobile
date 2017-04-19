@@ -1,5 +1,5 @@
---- caffe/tools/caffe.cpp	2017-01-27 09:51:57.559643300 +0800
-+++ ../tools/caffe.cpp	2017-02-04 22:35:34.674081512 +0800
+--- caffe/tools/caffe.cpp	2017-04-19 19:07:37.000000000 +0800
++++ ../tools/caffe.cpp	2017-04-19 17:09:45.000000000 +0800
 @@ -3,23 +3,29 @@
  namespace bp = boost::python;
  #endif

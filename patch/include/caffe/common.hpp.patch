@@ -1,5 +1,5 @@
---- caffe/include/caffe/common.hpp	2017-01-27 09:51:55.340623900 +0800
-+++ ../include/caffe/common.hpp	2017-02-04 22:42:22.849568507 +0800
+--- caffe/include/caffe/common.hpp	2017-04-19 19:07:36.000000000 +0800
++++ ../include/caffe/common.hpp	2017-04-19 17:09:45.000000000 +0800
 @@ -1,9 +1,19 @@
  #ifndef CAFFE_COMMON_HPP_
  #define CAFFE_COMMON_HPP_

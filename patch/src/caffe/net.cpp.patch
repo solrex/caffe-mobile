@@ -1,5 +1,5 @@
---- caffe/src/caffe/net.cpp	2017-01-27 09:51:56.935642700 +0800
-+++ ../src/caffe/net.cpp	2017-02-06 20:20:48.232476426 +0800
+--- caffe/src/caffe/net.cpp	2017-04-19 19:08:25.000000000 +0800
++++ ../src/caffe/net.cpp	2017-04-19 17:09:45.000000000 +0800
 @@ -5,19 +5,27 @@
  #include <utility>
  #include <vector>
@@ -87,14 +87,14 @@
  template <typename Dtype>
  void Net<Dtype>::BackwardFrom(int start) {
    BackwardFromTo(start, 0);
-@@ -730,6 +746,7 @@
-     layers_[i]->Reshape(bottom_vecs_[i], top_vecs_[i]);
+@@ -723,6 +739,7 @@
+                << "L2 norm = (" << l2norm_data << ", " << l2norm_diff << ")";
    }
  }
 +#endif
  
  template <typename Dtype>
- void Net<Dtype>::CopyTrainedLayersFrom(const NetParameter& param) {
+ void Net<Dtype>::Reshape() {
 @@ -771,10 +788,14 @@
  
  template <typename Dtype>

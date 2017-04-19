@@ -1,5 +1,5 @@
---- caffe/src/caffe/common.cpp	2017-01-27 09:51:56.283123700 +0800
-+++ ../src/caffe/common.cpp	2017-02-04 23:04:01.367500325 +0800
+--- caffe/src/caffe/common.cpp	2017-04-19 19:07:37.000000000 +0800
++++ ../src/caffe/common.cpp	2017-04-19 17:09:45.000000000 +0800
 @@ -1,5 +1,9 @@
 +#ifdef USE_BOOST
  #include <boost/thread.hpp>
