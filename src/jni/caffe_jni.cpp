@@ -57,6 +57,36 @@ Java_com_yangwenbo_caffemobile_CaffeMobile_predict(JNIEnv *env, jobject instance
   return result;
 }
 
+JNIEXPORT jint JNICALL
+Java_com_yangwenbo_caffemobile_CaffeMobile_inputChannels(JNIEnv *env, jobject instance) {
+  // Predict
+  caffe::CaffeMobile *caffe_mobile = caffe::CaffeMobile::get();
+  if (NULL == caffe_mobile) {
+      return -1;  // not initialized
+  }
+  return caffe_mobile->input_channels();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_yangwenbo_caffemobile_CaffeMobile_inputWidth(JNIEnv *env, jobject instance) {
+  // Predict
+  caffe::CaffeMobile *caffe_mobile = caffe::CaffeMobile::get();
+  if (NULL == caffe_mobile) {
+      return -1;  // not initialized
+  }
+  return caffe_mobile->input_width();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_yangwenbo_caffemobile_CaffeMobile_inputHeight(JNIEnv *env, jobject instance) {
+  // Predict
+  caffe::CaffeMobile *caffe_mobile = caffe::CaffeMobile::get();
+  if (NULL == caffe_mobile) {
+      return -1;  // not initialized
+  }
+  return caffe_mobile->input_height();
+}
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
   JNIEnv *env = NULL;
   jint result = -1;

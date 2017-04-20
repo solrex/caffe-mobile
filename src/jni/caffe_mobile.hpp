@@ -40,6 +40,18 @@ public:
                     int height,
                     int channels,
                     std::vector<float> &result);
+
+  int input_channels() {
+      return input_channels_;
+  }
+
+  int input_width() {
+      return input_width_;
+  }
+
+  int input_height() {
+      return input_height_;
+  }
 private:
   /**
    * @brief Construct a caffe net from the param file (*.prototxt)

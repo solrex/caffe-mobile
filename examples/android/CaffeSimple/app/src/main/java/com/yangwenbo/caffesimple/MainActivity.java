@@ -15,10 +15,27 @@ import android.widget.TextView;
 import com.yangwenbo.caffemobile.CaffeMobile;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     static private String TAG = "MainActivity";
     private CaffeMobile _cm;
+
+    protected class Cate implements Comparable<Cate> {
+        public final int    idx;
+        public final float  prob;
+
+        public Cate(int idx, float prob) {
+            this.idx = idx;
+            this.prob = prob;
+        }
+
+        @Override
+        public int compareTo(Cate other) {
+            // need descending sort order
+            return Float.compare(other.prob, this.prob);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         tv.append("Loading caffe model...");
         tv.setMovementMethod(new ScrollingMovementMethod());
         // Show test image
-        File imageFile = new File(Environment.getExternalStorageDirectory(), "test_image.png");
+        final File imageFile = new File(Environment.getExternalStorageDirectory(), "test_image.jpg");
         Bitmap bmp = BitmapFactory.decodeFile(imageFile.getPath());
         ImageView img = (ImageView) findViewById(R.id.testImage);
         img.setImageBitmap(bmp);
@@ -47,22 +64,34 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: loadmodel:" + res);
         tv.append(String.valueOf(difference) + "ms\n");
 
+        //_cm.setBlasThreadNum(2);
         Button btn = (Button) findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
             // Run test
             @Override
             public void onClick(View view) {
                 TextView tv = (TextView) findViewById(R.id.Console);
-                tv.append("\nCaffe inferring...");
+                tv.append("\nCaffe inferring...\n");
                 long start_time = System.nanoTime();
-                File imageFile = new File(Environment.getExternalStorageDirectory(), "test_image.png");
                 float[] result = _cm.predictImage(imageFile.getPath());
                 long end_time = System.nanoTime();
-                double difference = (end_time - start_time)/1e6;
-                tv.append(String.valueOf(difference) + "ms\n");
-                for (int i = 0; i < result.length; i++) {
-                    tv.append("result[" + i + "]\t=" + result[i] + "\n");
+                if (null != result) {
+                    double difference = (end_time - start_time)/1e6;
+                    // Top 10
+                    int topN = 10;
+                    tv.append("Top" + topN + " Results (" + String.valueOf(difference) + "ms):\n");
+                    Cate[] cates = new Cate[result.length];
+                    for (int i=0; i < result.length; i++) {
+                        cates[i] = new Cate(i, result[i]);
+                    }
+                    Arrays.sort(cates);
+                    for (int i = 0; i < topN; i++) {
+                        tv.append("output[" + cates[i].idx + "]\t=" + cates[i].prob + "\n");
+                    }
+                } else {
+                    tv.append("output=null (some error happens)");
                 }
+
             }
         });
     }

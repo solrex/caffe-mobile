@@ -77,7 +77,7 @@ bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int chan
   LOG(INFO) << "Inference use " << timer.MilliSeconds() << " ms.";
   Blob<float> *output_layer = net_->output_blobs()[0];
   const float *begin = output_layer->cpu_data();
-  const float *end = begin + output_layer->channels();
+  const float *end = begin + output_layer->shape(1);
   result.assign(begin, end);
   return true;
 }
