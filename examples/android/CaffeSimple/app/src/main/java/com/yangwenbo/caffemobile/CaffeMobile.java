@@ -73,6 +73,7 @@ public class CaffeMobile {
         // Read image file to bitmap (in ARGB format)
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inPremultiplied = false;
         Bitmap bitmap = BitmapFactory.decodeFile(file_name, options);
 
         // Copy bitmap pixels to buffer
