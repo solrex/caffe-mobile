@@ -73,6 +73,7 @@ bool ReadImageToBlob(NSString *file_name,
     } else if (image_channels == 4) {
         // Remove alpha channel
         color_space = CGColorSpaceCreateDeviceRGB();
+        // RGBA with A=None
         //bitmapInfo = kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big;
         bitmapInfo = kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big;
     } else {
@@ -97,37 +98,49 @@ bool ReadImageToBlob(NSString *file_name,
     CFRelease(image_provider);
     CFRelease(file_data_ref);
     
+    LOG(DEBUG) << "ReadImageToBlob: bitmap(0,0)=" << std::hex
+              << ((result[0] << 24) | (result[1] << 16) | (result[2] << 8) | result[3])
+              << std::oct;
+    
     // Convert Bitmap (channels*width*height) to Matrix (width*height*channels)
     // Remove alpha channel
     int input_channels = input_layer->channels();
     LOG(INFO) << "image_channels:" << image_channels << " input_channels:" << input_channels;
-    if (input_channels == 3 && image_channels != 4) {
-        LOG(ERROR) << "image_channels input_channels not match.";
-        return false;
-    } else if (input_channels == 1 && image_channels != 1) {
+    
+    float *input_data = input_layer->mutable_cpu_data();
+    size_t plane_size = width * height;
+    if (input_channels == 1 && image_channels == 1) {
+        for (size_t i = 0; i < plane_size; i++) {
+            input_data[i] = static_cast<float>(result[i]);  // Gray
+            if (mean.size() == 1) {
+                input_data[i] -= mean[0];
+            }
+        }
+    } else if (input_channels == 1 && image_channels == 4) {
+        for (size_t i = 0; i < plane_size; i++) {
+            input_data[i] = 0.2126 * result[i * 4] + 0.7152 * result[i * 4 + 1] + 0.0722 * result[i * 4 + 2]; // RGB2Gray
+            // Alpha is discarded
+            if (mean.size() == 1) {
+                input_data[i] -= mean[0];
+            }
+        }
+    } else if (input_channels == 3 && image_channels == 4) {
+        for (size_t i = 0; i < plane_size; i++) {
+            input_data[i] = static_cast<float>(result[i * 4 + 2]);                   // B
+            input_data[plane_size + i] = static_cast<float>(result[i * 4 + 1]);      // G
+            input_data[2 * plane_size + i] = static_cast<float>(result[i * 4]);      // R
+            // Alpha is discarded
+            if (mean.size() == 3) {
+                input_data[i] -= mean[0];
+                input_data[plane_size + i] -= mean[1];
+                input_data[2 * plane_size + i] -= mean[2];
+            }
+        }
+    } else {
         LOG(ERROR) << "image_channels input_channels not match.";
         return false;
     }
     //int input_width = input_layer->width();
     //int input_height = input_layer->height();
-    
-    float *input_data = input_layer->mutable_cpu_data();
-   
-    for (size_t h = 0; h < height; h++) {
-        for (size_t w = 0; w < width; w++) {
-            for (size_t c = 0; c < input_channels; c++) {
-                // OpenCV use BGR instead of RGB
-                size_t cc = c;
-                if (input_channels == 3) {
-                    cc = 2 - c;
-                }
-                // Convert uint8_t to float
-                input_data[c*width*height + h*width + w] = static_cast<float>(result[h*width*image_channels + w*image_channels + cc]);
-                if (mean.size() == input_channels) {
-                    input_data[c*width*height + h*width + w] -= mean[c];
-                }
-            }
-        }
-    }
     return true;
 }

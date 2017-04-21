@@ -1,5 +1,5 @@
---- caffe/include/caffe/util/math_functions.hpp	2017-01-27 09:51:55.772623200 +0800
-+++ ../include/caffe/util/math_functions.hpp	2017-02-04 22:45:32.054023741 +0800
+--- caffe/include/caffe/util/math_functions.hpp	2017-04-19 19:08:25.000000000 +0800
++++ ../include/caffe/util/math_functions.hpp	2017-04-19 17:09:45.000000000 +0800
 @@ -4,7 +4,12 @@
  #include <stdint.h>
  #include <cmath>  // for std::fabs and std::signbit

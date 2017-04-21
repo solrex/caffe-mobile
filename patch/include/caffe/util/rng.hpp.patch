@@ -1,5 +1,5 @@
---- caffe/include/caffe/util/rng.hpp	2017-01-27 09:51:55.785123500 +0800
-+++ ../include/caffe/util/rng.hpp	2017-02-04 22:35:34.598149613 +0800
+--- caffe/include/caffe/util/rng.hpp	2017-04-19 19:07:36.000000000 +0800
++++ ../include/caffe/util/rng.hpp	2017-04-19 17:09:45.000000000 +0800
 @@ -4,14 +4,23 @@
  #include <algorithm>
  #include <iterator>

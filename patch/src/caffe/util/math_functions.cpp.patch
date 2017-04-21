@@ -1,28 +1,40 @@
---- caffe/src/caffe/util/math_functions.cpp	2017-01-27 09:51:57.502642700 +0800
-+++ ../src/caffe/util/math_functions.cpp	2017-02-04 23:03:03.164175136 +0800
-@@ -1,5 +1,7 @@
+--- caffe/src/caffe/util/math_functions.cpp	2017-04-19 19:08:25.000000000 +0800
++++ ../src/caffe/util/math_functions.cpp	2017-04-19 17:09:45.000000000 +0800
+@@ -1,5 +1,9 @@
 +#ifdef USE_BOOST
  #include <boost/math/special_functions/next.hpp>
  #include <boost/random.hpp>
-+#endif
++#else
++#include <math.h>
++#endif // USE_BOOST
  
  #include <limits>
  
-@@ -232,8 +234,13 @@
- 
- template <typename Dtype>
- Dtype caffe_nextafter(const Dtype b) {
-+#ifdef USE_BOOST
-   return boost::math::nextafter<Dtype>(
-       b, std::numeric_limits<Dtype>::max());
-+#else
-+  return std::nextafter(
-+      b, std::numeric_limits<Dtype>::max());
-+#endif
+@@ -230,6 +234,7 @@
+   return (*caffe_rng())();
  }
  
++#ifdef USE_BOOST
+ template <typename Dtype>
+ Dtype caffe_nextafter(const Dtype b) {
+   return boost::math::nextafter<Dtype>(
+@@ -241,18 +246,35 @@
+ 
  template
-@@ -247,12 +254,19 @@
+ double caffe_nextafter(const double b);
++#else
++// std::nextafter has some problems with tr1 & _GLIBCXX_USE_C99_MATH_TR1
++// when using android ndk
++float caffe_nextafter(const float b) {
++    return ::nextafterf(b, std::numeric_limits<float>::max());
++}
++double caffe_nextafter(const double b) {
++    return ::nextafter(b, std::numeric_limits<float>::max());
++}
++#endif
+ 
+ template <typename Dtype>
+ void caffe_rng_uniform(const int n, const Dtype a, const Dtype b, Dtype* r) {
    CHECK_GE(n, 0);
    CHECK(r);
    CHECK_LE(a, b);
@@ -34,7 +46,7 @@
      r[i] = variate_generator();
    }
 +#else
-+  std::uniform_real_distribution<Dtype> random_distribution(a, caffe_nextafter<Dtype>(b));
++  std::uniform_real_distribution<Dtype> random_distribution(a, caffe_nextafter(b));
 +  for (int i = 0; i < n; ++i) {
 +    r[i] = random_distribution(*caffe_rng());
 +  }
@@ -42,7 +54,7 @@
  }
  
  template
-@@ -269,12 +283,19 @@
+@@ -269,12 +291,19 @@
    CHECK_GE(n, 0);
    CHECK(r);
    CHECK_GT(sigma, 0);
@@ -62,7 +74,7 @@
  }
  
  template
-@@ -291,12 +312,19 @@
+@@ -291,12 +320,19 @@
    CHECK(r);
    CHECK_GE(p, 0);
    CHECK_LE(p, 1);
@@ -82,7 +94,7 @@
  }
  
  template
-@@ -311,12 +339,19 @@
+@@ -311,12 +347,19 @@
    CHECK(r);
    CHECK_GE(p, 0);
    CHECK_LE(p, 1);

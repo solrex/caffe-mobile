@@ -47,7 +47,7 @@ $ diff $CAFFE/examples/mnist/lenet.prototxt \
 >   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
 ```
 
- - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on the simulator.
+ - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, change build target to one of your "iOS Simulators" , and press Command-R to build and run it on the simulator.
 
 # For iPhone
 
@@ -87,7 +87,7 @@ $ diff $CAFFE/examples/mnist/lenet.prototxt \
 >   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
 ```
 
- - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, and press Command-R to build and run it on your connected device.
+ - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, connect your iPhone to Mac, change target to "Your Name's iPhone", and press Command-R to build and run it on your connected device.
 
 # For Android (arm64-v8a only)
 

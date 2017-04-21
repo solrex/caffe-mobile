@@ -1,5 +1,5 @@
---- caffe/src/caffe/layers/base_data_layer.cpp	2017-01-27 09:51:56.330123800 +0800
-+++ ../src/caffe/layers/base_data_layer.cpp	2017-02-06 20:20:48.228476426 +0800
+--- caffe/src/caffe/layers/base_data_layer.cpp	2017-04-19 19:07:37.000000000 +0800
++++ ../src/caffe/layers/base_data_layer.cpp	2017-04-19 17:09:45.000000000 +0800
 @@ -1,9 +1,13 @@
 +#ifdef USE_BOOST
  #include <boost/thread.hpp>

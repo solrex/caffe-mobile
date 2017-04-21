@@ -1,5 +1,5 @@
---- caffe/include/caffe/caffe.hpp	2017-01-27 09:51:55.335623700 +0800
-+++ ../include/caffe/caffe.hpp	2017-02-04 22:35:34.594153197 +0800
+--- caffe/include/caffe/caffe.hpp	2017-04-19 19:07:36.000000000 +0800
++++ ../include/caffe/caffe.hpp	2017-04-19 17:09:45.000000000 +0800
 @@ -10,10 +10,14 @@
  #include "caffe/layer.hpp"
  #include "caffe/layer_factory.hpp"

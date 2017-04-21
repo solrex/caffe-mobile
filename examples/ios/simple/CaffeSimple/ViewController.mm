@@ -23,7 +23,7 @@ caffe::Net<float> *_net;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
+    NSString *test_file_path = FilePathForResourceName(@"test_image", @"jpg");
     UIImage *image = [UIImage imageWithContentsOfFile:test_file_path];
     [_test_image setImage:image];
 }
@@ -54,12 +54,11 @@ caffe::Net<float> *_net;
 
 - (void)RunCaffeModel:(UIButton *)btn {
     caffe::CPUTimer timer;
-    [_console insertText:@"\nCaffe inferring..."];
+    [_console insertText:@"\nCaffe inferring...\n"];
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
-    NSString *test_file_path = FilePathForResourceName(@"test_image", @"png");
+    NSString *test_file_path = FilePathForResourceName(@"test_image", @"jpg");
     timer.Start();
-    //std::vector<float> mean({81.3, 107.3, 105.3});
-    std::vector<float> mean;
+    std::vector<float> mean({81.3, 107.3, 105.3});
     if(! ReadImageToBlob(test_file_path, mean, input_layer)) {
         LOG(INFO) << "ReadImageToBlob failed";
         [_console insertText:@"ReadImageToBlob failed"];
@@ -67,21 +66,22 @@ caffe::Net<float> *_net;
     }
     _net->Forward();
     timer.Stop();
-    [_console insertText:[NSString stringWithFormat:@"%fms\n", timer.MilliSeconds()]];
+    int topN = 10;
+    [_console insertText:[NSString stringWithFormat:@"Top%d Results (%fms): \n", topN, timer.MilliSeconds()]];
     
-    [_console insertText:@"Inference result(sorted):\n"];
     caffe::Blob<float> *output_layer = _net->output_blobs()[0];
     const float *begin = output_layer->cpu_data();
-    const float *end = begin + output_layer->channels();
+    const float *end = begin + output_layer->shape(1);
     std::vector<float> result(begin, end);
     std::vector<size_t> result_idx(result.size());
     std::iota(result_idx.begin(), result_idx.end(), 0);
     std::sort(result_idx.begin(), result_idx.end(),
               [&result](size_t l, size_t r){return result[l] > result[r];});
-    for (int i=0; i<result_idx.size(); i++) {
-        LOG(INFO) << "result[" << result_idx[i] << "]=" << result[result_idx[i]];
-        [_console insertText:[NSString stringWithFormat:@"result[%lu] \t= %f\n", result_idx[i], result[result_idx[i]] ] ];
+    for (int i=0; i<topN; i++) {
+        LOG(INFO) << "output[" << result_idx[i] << "]=" << result[result_idx[i]];
+        [_console insertText:[NSString stringWithFormat:@"output[%lu] \t= %f\n", result_idx[i], result[result_idx[i]] ] ];
     }
+    
 }
 
 

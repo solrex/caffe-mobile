@@ -1,5 +1,5 @@
---- caffe/include/caffe/net.hpp	2017-01-27 09:51:55.678623300 +0800
-+++ ../include/caffe/net.hpp	2017-02-04 22:35:34.598149613 +0800
+--- caffe/include/caffe/net.hpp	2017-04-19 19:07:36.000000000 +0800
++++ ../include/caffe/net.hpp	2017-04-19 17:09:45.000000000 +0800
 @@ -38,8 +38,10 @@
    const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
    /// @brief DEPRECATED; use Forward() instead.

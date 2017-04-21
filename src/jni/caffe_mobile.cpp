@@ -47,19 +47,16 @@ CaffeMobile::CaffeMobile(const string &param_file, const string &trained_file) {
 }
 
 CaffeMobile::~CaffeMobile() {
-    net_.reset();
+  net_.reset();
 }
 
-bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int channels,
+bool CaffeMobile::predictImage(const uint8_t* rgba,
+                               int channels,
+                               const std::vector<float> &mean,
                                std::vector<float> &result) {
-  if ((img_buf == NULL) || net_.get() == NULL) {
-    LOG(ERROR) << "Invalid arguments: img_buf=" << img_buf
+  if ((rgba == NULL) || net_.get() == NULL) {
+    LOG(ERROR) << "Invalid arguments: rgba=" << rgba
         << ",net_=" << net_.get();
-    return false;
-  }
-  LOG(INFO) << "image_channels:" << channels << " input_channels:" << input_channels_;
-  if (input_channels_ != channels) {
-    LOG(ERROR) << "image_channels input_channels not match.";
     return false;
   }
   CPUTimer timer;
@@ -67,9 +64,36 @@ bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int chan
   // Write input
   Blob<float> *input_layer = net_->input_blobs()[0];
   float *input_data = input_layer->mutable_cpu_data();
-  for (int i = 0; i < input_channels_*input_height_*input_width_; i++) {
-    // Cast *uint8_t* to float
-    input_data[i] = static_cast<float>(img_buf[i]);
+  size_t plane_size = input_height() * input_width();
+  if (input_channels() == 1 && channels == 1) {
+    for (size_t i = 0; i < plane_size; i++) {
+      input_data[i] = static_cast<float>(rgba[i]);  // Gray
+      if (mean.size() == 1) {
+        input_data[i] -= mean[0];
+      }
+    }
+  } else if (input_channels() == 1 && channels == 4) {
+    for (size_t i = 0; i < plane_size; i++) {
+      input_data[i] = 0.2126 * rgba[i * 4] + 0.7152 * rgba[i * 4 + 1] + 0.0722 * rgba[i * 4 + 2]; // RGB2Gray
+      if (mean.size() == 1) {
+        input_data[i] -= mean[0];
+      }
+    }
+  } else if (input_channels() == 3 && channels == 4) {
+    for (size_t i = 0; i < plane_size; i++) {
+      input_data[i] = static_cast<float>(rgba[i * 4 + 2]);                   // B
+      input_data[plane_size + i] = static_cast<float>(rgba[i * 4 + 1]);      // G
+      input_data[2 * plane_size + i] = static_cast<float>(rgba[i * 4]);      // R
+      // Alpha is discarded
+      if (mean.size() == 3) {
+        input_data[i] -= mean[0];
+        input_data[plane_size + i] -= mean[1];
+        input_data[2 * plane_size + i] -= mean[2];
+      }
+    }
+  } else {
+    LOG(ERROR) << "image_channels input_channels not match.";
+    return false;
   }
   // Do Inference
   net_->Forward();
@@ -77,7 +101,7 @@ bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int chan
   LOG(INFO) << "Inference use " << timer.MilliSeconds() << " ms.";
   Blob<float> *output_layer = net_->output_blobs()[0];
   const float *begin = output_layer->cpu_data();
-  const float *end = begin + output_layer->channels();
+  const float *end = begin + output_layer->shape(1);
   result.assign(begin, end);
   return true;
 }
