@@ -47,14 +47,15 @@ CaffeMobile::CaffeMobile(const string &param_file, const string &trained_file) {
 }
 
 CaffeMobile::~CaffeMobile() {
-    net_.reset();
+  net_.reset();
 }
 
-bool CaffeMobile::predictImage(const uint8_t* img_buf,
+bool CaffeMobile::predictImage(const uint8_t* rgba,
+                               int channels,
                                const std::vector<float> &mean,
                                std::vector<float> &result) {
-  if ((img_buf == NULL) || net_.get() == NULL) {
-    LOG(ERROR) << "Invalid arguments: img_buf=" << img_buf
+  if ((rgba == NULL) || net_.get() == NULL) {
+    LOG(ERROR) << "Invalid arguments: rgba=" << rgba
         << ",net_=" << net_.get();
     return false;
   }
@@ -64,12 +65,35 @@ bool CaffeMobile::predictImage(const uint8_t* img_buf,
   Blob<float> *input_layer = net_->input_blobs()[0];
   float *input_data = input_layer->mutable_cpu_data();
   size_t plane_size = input_height() * input_width();
-  for (size_t c = 0; c < input_channels(); c++) {
-    float c_mean = (mean.size() == input_channels()) ? mean[c] : 0;
-    const uint8_t *plane = img_buf + c * plane_size;
+  if (input_channels() == 1 && channels == 1) {
     for (size_t i = 0; i < plane_size; i++) {
-      input_data[i] = static_cast<float>(plane[i]) - c_mean;
+      input_data[i] = static_cast<float>(rgba[i]);  // Gray
+      if (mean.size() == 1) {
+        input_data[i] -= mean[0];
+      }
     }
+  } else if (input_channels() == 1 && channels == 4) {
+    for (size_t i = 0; i < plane_size; i++) {
+      input_data[i] = 0.2126 * rgba[i * 4] + 0.7152 * rgba[i * 4 + 1] + 0.0722 * rgba[i * 4 + 2]; // RGB2Gray
+      if (mean.size() == 1) {
+        input_data[i] -= mean[0];
+      }
+    }
+  } else if (input_channels() == 3 && channels == 4) {
+    for (size_t i = 0; i < plane_size; i++) {
+      input_data[i] = static_cast<float>(rgba[i * 4 + 2]);                   // B
+      input_data[plane_size + i] = static_cast<float>(rgba[i * 4 + 1]);      // G
+      input_data[2 * plane_size + i] = static_cast<float>(rgba[i * 4]);      // R
+      // Alpha is discarded
+      if (mean.size() == 3) {
+        input_data[i] -= mean[0];
+        input_data[plane_size + i] -= mean[1];
+        input_data[2 * plane_size + i] -= mean[2];
+      }
+    }
+  } else {
+    LOG(ERROR) << "image_channels input_channels not match.";
+    return false;
   }
   // Do Inference
   net_->Forward();

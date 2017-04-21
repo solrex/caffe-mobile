@@ -47,11 +47,11 @@ public class CaffeMobile {
      * A native method that is implemented by the 'caffe-jni' native library,
      * which is packaged with this application.
      */
-    private native float[] predict(byte[] bitmap, float[]mean);
+    private native float[] predict(byte[] bitmap, int channels, float[]mean);
 
     public float[] predictImage(String fileName, float[] mean) {
         CaffeImage image = readImage(fileName);
-        float[] result = predict(image.pixels, mean);
+        float[] result = predict(image.pixels, image.channels, mean);
         return result;
     }
 
@@ -69,44 +69,29 @@ public class CaffeMobile {
      * @return
      */
     protected CaffeImage readImage(String file_name) {
+        Log.i(TAG, "readImage: reading: " + file_name);
         // Read image file to bitmap (in ARGB format)
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(file_name, options);
+
         // Copy bitmap pixels to buffer
         ByteBuffer argb_buf = ByteBuffer.allocate(bitmap.getByteCount());
         bitmap.copyPixelsToBuffer(argb_buf);
-        // Get the underlying array containing the ARGB pixels
-        byte[] argb = argb_buf.array();
+
         // Generate CaffeImage to classification
         CaffeImage image = new CaffeImage();
         image.width = bitmap.getWidth();
         image.height = bitmap.getHeight();
-        image.channels = inputChannels();
-        int plane_size = image.width * image.height;
-        if (image.channels == 3) {
-            // Allocate array for 3 bytes BGR pixels
-            image.pixels = new byte[3 * plane_size];
-            // Copy pixels into place
-            for (int i = 0; i < plane_size; i++) {
-                image.pixels[i] = argb[i * 4 + 3];                   // B
-                image.pixels[plane_size + i] = argb[i * 4 + 2];      // G
-                image.pixels[2 * plane_size + i] = argb[i * 4 + 1];  // R
-                // Alpha is discarded
-            }
-        } else if (image.channels  == 1) {
-            // Allocate array for 1 bytes Grayscale pixels
-            image.pixels = new byte[plane_size];
-            // Compute grayscale pixels
-            for (int i = 0; i < plane_size; i++) {
-                image.pixels[i] = (byte) Math.round(0.2126 * argb[i * 4 + 1]
-                        + 0.7152 * argb[i * 4 + 2]
-                        + 0.0722 * argb[i * 4 + 3]);
-            }
-        } else {
-            Log.w(TAG, "readImage: invalid input channels: " + image.channels);
-        }
-        Log.i(TAG, "readImage: " + image.channels + "," + image.pixels.length);
+        image.channels = 4;
+        Log.i(TAG, "readImage: image CxWxH: " + image.channels + "x" + image.width + "x" + image.height);
+        // Get the underlying array containing the ARGB pixels
+        image.pixels = argb_buf.array();
+        Log.d(TAG, "readImage: bitmap(0,0)="
+                + Integer.toHexString(bitmap.getPixel(0, 0))
+                + ", rgba[0,0]="
+                + Integer.toHexString((image.pixels[0] << 24 & 0xff000000) | (image.pixels[1] << 16 & 0xff0000)
+                                      | (image.pixels[2] << 8 & 0xff00) | (image.pixels[3] & 0xff) ));
         return image;
     }
 }
