@@ -35,10 +35,8 @@ public:
    * @brief Use loaded model to classify a Image
    * @param img_buf: Grayscale(1 channel) or BGR(3 channels) pixels array
    */
-  bool predictImage(uint8_t *img_buf,
-                    int width,
-                    int height,
-                    int channels,
+  bool predictImage(const uint8_t *img_buf,
+                    const std::vector<float> &mean,
                     std::vector<float> &result);
 
   int input_channels() {

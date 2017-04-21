@@ -50,16 +50,12 @@ CaffeMobile::~CaffeMobile() {
     net_.reset();
 }
 
-bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int channels,
+bool CaffeMobile::predictImage(const uint8_t* img_buf,
+                               const std::vector<float> &mean,
                                std::vector<float> &result) {
   if ((img_buf == NULL) || net_.get() == NULL) {
     LOG(ERROR) << "Invalid arguments: img_buf=" << img_buf
         << ",net_=" << net_.get();
-    return false;
-  }
-  LOG(INFO) << "image_channels:" << channels << " input_channels:" << input_channels_;
-  if (input_channels_ != channels) {
-    LOG(ERROR) << "image_channels input_channels not match.";
     return false;
   }
   CPUTimer timer;
@@ -67,9 +63,13 @@ bool CaffeMobile::predictImage(uint8_t* img_buf, int width, int height, int chan
   // Write input
   Blob<float> *input_layer = net_->input_blobs()[0];
   float *input_data = input_layer->mutable_cpu_data();
-  for (int i = 0; i < input_channels_*input_height_*input_width_; i++) {
-    // Cast *uint8_t* to float
-    input_data[i] = static_cast<float>(img_buf[i]);
+  size_t plane_size = input_height() * input_width();
+  for (size_t c = 0; c < input_channels(); c++) {
+    float c_mean = (mean.size() == input_channels()) ? mean[c] : 0;
+    const uint8_t *plane = img_buf + c * plane_size;
+    for (size_t i = 0; i < plane_size; i++) {
+      input_data[i] = static_cast<float>(plane[i]) - c_mean;
+    }
   }
   // Do Inference
   net_->Forward();

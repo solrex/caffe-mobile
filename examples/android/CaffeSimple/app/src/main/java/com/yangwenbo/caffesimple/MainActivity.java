@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 TextView tv = (TextView) findViewById(R.id.Console);
                 tv.append("\nCaffe inferring...\n");
                 long start_time = System.nanoTime();
-                float[] result = _cm.predictImage(imageFile.getPath());
+                float mean[] = {81.3f, 107.3f, 105.3f};
+                float[] result = _cm.predictImage(imageFile.getPath(), mean);
                 long end_time = System.nanoTime();
                 if (null != result) {
                     double difference = (end_time - start_time)/1e6;

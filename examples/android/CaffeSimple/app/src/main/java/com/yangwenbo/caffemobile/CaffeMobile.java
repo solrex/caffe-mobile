@@ -47,11 +47,11 @@ public class CaffeMobile {
      * A native method that is implemented by the 'caffe-jni' native library,
      * which is packaged with this application.
      */
-    private native float[] predict(byte[] bitmap, int width, int height, int channels);
+    private native float[] predict(byte[] bitmap, float[]mean);
 
-    public float[] predictImage(String fileName) {
+    public float[] predictImage(String fileName, float[] mean) {
         CaffeImage image = readImage(fileName);
-        float[] result = predict(image.pixels, image.width, image.height, image.channels);
+        float[] result = predict(image.pixels, mean);
         return result;
     }
 
@@ -109,30 +109,4 @@ public class CaffeMobile {
         Log.i(TAG, "readImage: " + image.channels + "," + image.pixels.length);
         return image;
     }
-
-
-    /**
-     * @brief Specified for  MNIST 1 channel grayscale png reading
-     * @param file_name
-     * @return
-     */
-//    protected CaffeImage ReadGrayPngToPixel(String file_name) {
-//        PngReaderByte pngr = new PngReaderByte(new File(file_name));
-//        if (pngr.imgInfo.channels!=1 || pngr.imgInfo.bitDepth != 8 || pngr.imgInfo.indexed) {
-//            throw new RuntimeException("This method is for gray images");
-//        }
-//        CaffeImage image = new CaffeImage();
-//        image.channels = pngr.imgInfo.channels;
-//        image.width = pngr.imgInfo.bytesPerRow;
-//        image.height = pngr.imgInfo.rows;
-//        image.pixels = new byte[image.width*image.height];
-//        Log.i(TAG, "ReadGrayscalePngToPixel: {" + image.channels + "," + image.width + ","
-//                + image.height + "}");
-//        for (int row = 0; row < pngr.imgInfo.rows; row++) {
-//            ImageLineByte line = pngr.readRowByte();
-//            System.arraycopy(line.getScanlineByte(), 0, image.pixels, row*image.width, image.width);
-//        }
-//        pngr.end();
-//        return image;
-//    }
 }

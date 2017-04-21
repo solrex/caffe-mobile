@@ -31,16 +31,32 @@ Java_com_yangwenbo_caffemobile_CaffeMobile_loadModel(JNIEnv *env, jobject instan
 
 JNIEXPORT jfloatArray JNICALL
 Java_com_yangwenbo_caffemobile_CaffeMobile_predict(JNIEnv *env, jobject instance,
-                                                   jbyteArray img_buf, jint width, jint height, jint channels) {
+                                                   jbyteArray jimg_buf, jfloatArray jmean) {
+  uint8_t *img_buf = NULL;
   // Get matrix pointer
-  uint8_t *ptr = (uint8_t *)env->GetByteArrayElements(img_buf, 0);
+  if (NULL != jimg_buf) {
+    img_buf = (uint8_t *)env->GetByteArrayElements(jimg_buf, 0);
+  } else {
+    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): invalid args: jimg_buf(NULL)");
+    return NULL;
+  }
+  std::vector<float> mean;
+  if (NULL != jmean) {
+    float * mean_arr = (float *)env->GetFloatArrayElements(jmean, 0);
+    int mean_size = env->GetArrayLength(jmean);
+    mean.assign(mean_arr, mean_arr+mean_size);
+  } else {
+    __android_log_print(ANDROID_LOG_INFO, "caffe-jni", "predict(): args: jmean(NULL)");
+  }
   // Predict
   caffe::CaffeMobile *caffe_mobile = caffe::CaffeMobile::get();
   if (NULL == caffe_mobile) {
-      return NULL;  // not initialized
+    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): CaffeMobile failed to initialize");
+    return NULL;  // not initialized
   }
   std::vector<float> predict;
-  if (!caffe_mobile->predictImage(ptr, width, height, channels, predict)) {
+  if (!caffe_mobile->predictImage(img_buf, mean, predict)) {
+    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): CaffeMobile failed to predict");
     return NULL; // predict error
   }
   __android_log_print(ANDROID_LOG_INFO, "caffe-jni", "CaffeMobile::predictImage result size=%zd", predict.size());
