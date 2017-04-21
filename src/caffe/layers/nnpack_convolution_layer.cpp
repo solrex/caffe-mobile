@@ -9,6 +9,10 @@
 
 namespace caffe {
 
+// NOTE: FAST BUT NOT WORK
+//static char workspace_buffer[buffer_size];
+//static const size_t buffer_size = 64*10*1024;
+
 namespace {
 
 void caffe_nnp_convolution_forward(
@@ -32,6 +36,7 @@ void caffe_nnp_convolution_forward(
                                .bottom = static_cast<size_t>(pad.cpu_data()[0]),
                                .left = static_cast<size_t>(pad.cpu_data()[1])};
 
+  //size_t workspace_size = buffer_size;
   const nnp_size stride = {1, 1};
 
   if (batch_size == 1) {
@@ -49,6 +54,10 @@ void caffe_nnp_convolution_forward(
         weights.cpu_data(),
         bias.cpu_data(),
         top->mutable_cpu_data(),
+        NULL,
+        NULL,
+        //workspace_buffer,
+        //&workspace_size,
         nnp_activation_identity,
         NULL,
         NULL,

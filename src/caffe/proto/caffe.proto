@@ -620,8 +620,8 @@ message ConvolutionParameter {
   // ignored and the ND implementation will be used.)
   optional bool force_nd_im2col = 17 [default = false];
 
-  optional int32 nnpack_algorithm = 101 [default=0];
-  optional int32 nnpack_transform_strategy = 102 [default=0];
+  optional int32 nnpack_algorithm = 101 [default=1];
+  optional int32 nnpack_transform_strategy = 102 [default=1];
 }
 
 message CropParameter {

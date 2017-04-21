@@ -15,6 +15,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef USE_NNPACK
+#include <nnpack.h>
+#endif
+
 namespace caffe {
 
 #ifdef USE_BOOST
@@ -76,6 +80,19 @@ void GlobalInit(int* pargc, char*** pargv) {
   ::google::InstallFailureSignalHandler();
 #endif
 }
+
+#ifdef USE_NNPACK
+  template<>
+  bool Caffe::nnpack_supported<double>() {
+    return false;
+  }
+
+  template<>
+  bool Caffe::nnpack_supported<float>() {
+    static enum nnp_status nnpack_status = nnp_initialize();
+    return nnpack_status == nnp_status_success;
+  }
+#endif
 
 #ifdef CPU_ONLY  // CPU-only Caffe.
 

@@ -154,6 +154,10 @@ class Caffe {
   }
 #endif
 
+#ifdef USE_NNPACK
+  template<typename Dtype> static bool nnpack_supported();
+#endif
+
   // Returns the mode: running on CPU or GPU.
   inline static Brew mode() { return Get().mode_; }
   // The setters for the variables

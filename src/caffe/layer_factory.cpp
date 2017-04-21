@@ -27,6 +27,12 @@
 #include "caffe/layers/cudnn_tanh_layer.hpp"
 #endif
 
+#ifdef USE_NNPACK
+#include "caffe/layers/nnpack_convolution_layer.hpp"
+#include "caffe/layers/nnpack_pooling_layer.hpp"
+#include "caffe/layers/nnpack_inner_product_layer.hpp"
+#endif
+
 #ifdef WITH_PYTHON_LAYER
 #include "caffe/layers/python_layer.hpp"
 #endif
@@ -57,6 +63,16 @@ shared_ptr<Layer<Dtype> > GetConvolutionLayer(
   }
   if (engine == ConvolutionParameter_Engine_CAFFE) {
     return shared_ptr<Layer<Dtype> >(new ConvolutionLayer<Dtype>(param));
+#ifdef USE_NNPACK
+  } else if (engine == ConvolutionParameter_Engine_NNPACK) {
+    // If we're in CPU mode and on supported processor, we can use NNPACK.
+    // Otherwise, we can't fall-through (since we'll get an unknown
+    // layer, so just return the default ConvolutionLayer
+    if ((Caffe::mode() == Caffe::CPU) && Caffe::nnpack_supported<Dtype>()) {
+      return shared_ptr<Layer<Dtype> >(new NNPackConvolutionLayer<Dtype>(param));
+    }
+    return shared_ptr<Layer<Dtype> >(new ConvolutionLayer<Dtype>(param));
+#endif
 #ifdef USE_CUDNN
   } else if (engine == ConvolutionParameter_Engine_CUDNN) {
     if (use_dilation) {
@@ -85,6 +101,16 @@ shared_ptr<Layer<Dtype> > GetPoolingLayer(const LayerParameter& param) {
   }
   if (engine == PoolingParameter_Engine_CAFFE) {
     return shared_ptr<Layer<Dtype> >(new PoolingLayer<Dtype>(param));
+#ifdef USE_NNPACK
+  } else if (engine == PoolingParameter_Engine_NNPACK) {
+    // If we're in CPU mode and on supported processor, we can use NNPACK.
+    // Otherwise, we can't fall-through (since we'll get an unknown
+    // layer, so just return the default ConvolutionLayer
+    if ((Caffe::mode() == Caffe::CPU) && Caffe::nnpack_supported<Dtype>()) {
+      return shared_ptr<Layer<Dtype> >(new NNPackPoolingLayer<Dtype>(param));
+    }
+    return shared_ptr<Layer<Dtype> >(new PoolingLayer<Dtype>(param));
+#endif
 #ifdef USE_CUDNN
   } else if (engine == PoolingParameter_Engine_CUDNN) {
     if (param.top_size() > 1) {
@@ -110,6 +136,34 @@ shared_ptr<Layer<Dtype> > GetPoolingLayer(const LayerParameter& param) {
 }
 
 REGISTER_LAYER_CREATOR(Pooling, GetPoolingLayer);
+
+// Get pooling layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetInnerProductLayer(const LayerParameter& param) {
+  InnerProductParameter_Engine engine = param.inner_product_param().engine();
+  if (engine == InnerProductParameter_Engine_DEFAULT) {
+    engine = InnerProductParameter_Engine_CAFFE;
+  }
+  if (engine == InnerProductParameter_Engine_CAFFE) {
+    return shared_ptr<Layer<Dtype> >(new InnerProductLayer<Dtype>(param));
+#ifdef USE_NNPACK
+  } else if (engine == InnerProductParameter_Engine_NNPACK) {
+    // If we're in CPU mode and on supported processor, we can use NNPACK.
+    // Otherwise, we can't fall-through (since we'll get an unknown
+    // layer, so just return the default InnerProductLayer
+    if ((Caffe::mode() == Caffe::CPU) && Caffe::nnpack_supported<Dtype>()) {
+        return shared_ptr<Layer<Dtype> >(
+          new NNPackInnerProductLayer<Dtype>(param));
+    }
+    return shared_ptr<Layer<Dtype> >(new InnerProductLayer<Dtype>(param));
+#endif
+  } else {
+    LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+  }
+  return shared_ptr<Layer<Dtype> >();
+}
+
+REGISTER_LAYER_CREATOR(InnerProduct, GetInnerProductLayer);
 
 // Get LRN layer according to engine
 template <typename Dtype>
