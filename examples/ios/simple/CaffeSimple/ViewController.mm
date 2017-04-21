@@ -54,7 +54,7 @@ caffe::Net<float> *_net;
 
 - (void)RunCaffeModel:(UIButton *)btn {
     caffe::CPUTimer timer;
-    [_console insertText:@"\nCaffe inferring..."];
+    [_console insertText:@"\nCaffe inferring...\n"];
     caffe::Blob<float> *input_layer = _net->input_blobs()[0];
     NSString *test_file_path = FilePathForResourceName(@"test_image", @"jpg");
     timer.Start();
@@ -66,12 +66,10 @@ caffe::Net<float> *_net;
     }
     _net->Forward();
     timer.Stop();
-    [_console insertText:[NSString stringWithFormat:@"%fms\n", timer.MilliSeconds()]];
-    
-    [_console insertText:@"Inference result(sorted):\n"];
+    int topN = 10;
+    [_console insertText:[NSString stringWithFormat:@"Top%d Results (%fms): \n", topN, timer.MilliSeconds()]];
     
     caffe::Blob<float> *output_layer = _net->output_blobs()[0];
-    LOG(INFO) << "output_layer.count()=" << output_layer->count();
     const float *begin = output_layer->cpu_data();
     const float *end = begin + output_layer->shape(1);
     std::vector<float> result(begin, end);
@@ -79,9 +77,9 @@ caffe::Net<float> *_net;
     std::iota(result_idx.begin(), result_idx.end(), 0);
     std::sort(result_idx.begin(), result_idx.end(),
               [&result](size_t l, size_t r){return result[l] > result[r];});
-    for (int i=0; i<result_idx.size(); i++) {
-        LOG(INFO) << "result[" << result_idx[i] << "]=" << result[result_idx[i]];
-        [_console insertText:[NSString stringWithFormat:@"result[%lu] \t= %f\n", result_idx[i], result[result_idx[i]] ] ];
+    for (int i=0; i<topN; i++) {
+        LOG(INFO) << "output[" << result_idx[i] << "]=" << result[result_idx[i]];
+        [_console insertText:[NSString stringWithFormat:@"output[%lu] \t= %f\n", result_idx[i], result[result_idx[i]] ] ];
     }
     
 }

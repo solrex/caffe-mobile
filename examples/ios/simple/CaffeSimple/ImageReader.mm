@@ -98,6 +98,10 @@ bool ReadImageToBlob(NSString *file_name,
     CFRelease(image_provider);
     CFRelease(file_data_ref);
     
+    LOG(DEBUG) << "ReadImageToBlob: bitmap(0,0)=" << std::hex
+              << ((result[0] << 24) | (result[1] << 16) | (result[2] << 8) | result[3])
+              << std::oct;
+    
     // Convert Bitmap (channels*width*height) to Matrix (width*height*channels)
     // Remove alpha channel
     int input_channels = input_layer->channels();
@@ -114,7 +118,7 @@ bool ReadImageToBlob(NSString *file_name,
         }
     } else if (input_channels == 1 && image_channels == 4) {
         for (size_t i = 0; i < plane_size; i++) {
-            input_data[i] = 0.2126 * result[i * 4 + 3] + 0.7152 * result[i * 4 + 2] + 0.0722 * result[i * 4 + 1]; // RGB2Gray
+            input_data[i] = 0.2126 * result[i * 4] + 0.7152 * result[i * 4 + 1] + 0.0722 * result[i * 4 + 2]; // RGB2Gray
             // Alpha is discarded
             if (mean.size() == 1) {
                 input_data[i] -= mean[0];
