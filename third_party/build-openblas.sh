@@ -9,8 +9,10 @@ BUILD_DIR=".cbuild"
 
 # Options for Android
 ANDROID_NATIVE_API_LEVEL=21
-# Options: "arm64-v8a" "armeabi-v7a with NEON"
-ANDROID_ABI="arm64-v8a"
+if [ "$ANDROID_ABI" = "" ]; then
+  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi
+  ANDROID_ABI="arm64-v8a"
+fi
 
 # Build Environment
 if [ "$(uname)" = "Darwin" ]; then
@@ -70,7 +72,7 @@ function build-Android {
         exit 1
     fi
 
-    if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then
+    if [ "${ANDROID_ABI}" = "armeabi-v7a" ]; then
         CROSS_SUFFIX=$NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}-${BIT}/bin/arm-linux-androideabi-
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
         TARGET=ARMV7
@@ -80,6 +82,11 @@ function build-Android {
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm64
         TARGET=ARMV8
         BINARY=64
+    elif [ "${ANDROID_ABI}" = "armeabi" ]; then
+        CROSS_SUFFIX=$NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}-${BIT}/bin/arm-linux-androideabi-
+        SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
+        TARGET=ARMV5
+        BINARY=32
     else
         echo "Error: not support OpenBLAS for ABI: ${ANDROID_ABI}"
         exit 1

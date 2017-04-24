@@ -13,7 +13,10 @@ MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
 # Options for Android
-ANDROID_ABI="arm64-v8a"
+if [ "$ANDROID_ABI" = "" ]; then
+  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi
+  ANDROID_ABI="arm64-v8a"
+fi
 #    ANDROID_ABI=armeabi-v7a - specifies the target Application Binary
 #      Interface (ABI). This option nearly matches to the APP_ABI variable
 #      used by ndk-build tool from Android NDK.
