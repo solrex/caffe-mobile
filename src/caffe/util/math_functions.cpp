@@ -11,6 +11,10 @@
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/rng.hpp"
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <vecLib.h>
+#endif
+
 namespace caffe {
 
 template<>
@@ -68,22 +72,42 @@ void caffe_set(const int N, const Dtype alpha, Dtype* Y) {
   }
 }
 
+#ifdef __VECLIB__
+template <>
+void caffe_set(const int N, const float alpha, float* Y) {
+  vDSP_vfill(&alpha, Y, 1, N);
+}
+
+template <>
+void caffe_set(const int N, const double alpha, double* Y) {
+  vDSP_vfillD(&alpha, Y, 1, N);
+}
+#endif
+
 template void caffe_set<int>(const int N, const int alpha, int* Y);
 template void caffe_set<float>(const int N, const float alpha, float* Y);
 template void caffe_set<double>(const int N, const double alpha, double* Y);
 
 template <>
 void caffe_add_scalar(const int N, const float alpha, float* Y) {
+#ifdef __VECLIB__
+  vDSP_vsadd(Y, 1, &alpha, Y, 1, N);
+#else
   for (int i = 0; i < N; ++i) {
     Y[i] += alpha;
   }
+#endif
 }
 
 template <>
 void caffe_add_scalar(const int N, const double alpha, double* Y) {
+#ifdef __VECLIB__
+  vDSP_vsaddD(Y, 1, &alpha, Y, 1, N);
+#else
   for (int i = 0; i < N; ++i) {
     Y[i] += alpha;
   }
+#endif
 }
 
 template <typename Dtype>
@@ -133,49 +157,81 @@ void caffe_cpu_axpby<double>(const int N, const double alpha, const double* X,
 template <>
 void caffe_add<float>(const int n, const float* a, const float* b,
     float* y) {
+#ifdef __VECLIB__
+  vDSP_vadd(a, 1, b, 1, y, 1, n);
+#else
   vsAdd(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_add<double>(const int n, const double* a, const double* b,
     double* y) {
+#ifdef __VECLIB__
+  vDSP_vaddD(a, 1, b, 1, y, 1, n);
+#else
   vdAdd(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_sub<float>(const int n, const float* a, const float* b,
     float* y) {
+#ifdef __VECLIB__
+  vDSP_vsub(a, 1, b, 1, y, 1, n);
+#else
   vsSub(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_sub<double>(const int n, const double* a, const double* b,
     double* y) {
+#ifdef __VECLIB__
+  vDSP_vsubD(a, 1, b, 1, y, 1, n);
+#else
   vdSub(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_mul<float>(const int n, const float* a, const float* b,
     float* y) {
+#ifdef __VECLIB__
+  vDSP_vmul(a, 1, b, 1, y, 1, n);
+#else
   vsMul(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_mul<double>(const int n, const double* a, const double* b,
     double* y) {
+#ifdef __VECLIB__
+  vDSP_vmulD(a, 1, b, 1, y, 1, n);
+#else
   vdMul(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_div<float>(const int n, const float* a, const float* b,
     float* y) {
+#ifdef __VECLIB__
+  vDSP_vdiv(b, 1, a, 1, y, 1, n);
+#else
   vsDiv(n, a, b, y);
+#endif
 }
 
 template <>
 void caffe_div<double>(const int n, const double* a, const double* b,
     double* y) {
+#ifdef __VECLIB__
+  vDSP_vdivD(b, 1, a, 1, y, 1, n);
+#else
   vdDiv(n, a, b, y);
+#endif
 }
 
 template <>
@@ -192,52 +248,92 @@ void caffe_powx<double>(const int n, const double* a, const double b,
 
 template <>
 void caffe_sqr<float>(const int n, const float* a, float* y) {
+#ifdef __VECLIB__
+  vDSP_vsq(a, 1, y, 1, n);
+#else
   vsSqr(n, a, y);
+#endif
 }
 
 template <>
 void caffe_sqr<double>(const int n, const double* a, double* y) {
+#ifdef __VECLIB__
+  vDSP_vsqD(a, 1, y, 1, n);
+#else
   vdSqr(n, a, y);
+#endif
 }
 
 template <>
 void caffe_sqrt<float>(const int n, const float* a, float* y) {
+#ifdef __VECLIB__
+  vvsqrtf(y, a, &n);
+#else
   vsSqrt(n, a, y);
+#endif
 }
 
 template <>
 void caffe_sqrt<double>(const int n, const double* a, double* y) {
+#ifdef __VECLIB__
+  vvsqrt(y, a, &n);
+#else
   vdSqrt(n, a, y);
+#endif
 }
 
 template <>
 void caffe_exp<float>(const int n, const float* a, float* y) {
+#ifdef __VECLIB__
+  vvexpf(y, a, &n);
+#else
   vsExp(n, a, y);
+#endif
 }
 
 template <>
 void caffe_exp<double>(const int n, const double* a, double* y) {
+#ifdef __VECLIB__
+  vvexp(y, a, &n);
+#else
   vdExp(n, a, y);
+#endif
 }
 
 template <>
 void caffe_log<float>(const int n, const float* a, float* y) {
+#ifdef __VECLIB__
+  vvlogf(y, a, &n);
+#else
   vsLn(n, a, y);
+#endif
 }
 
 template <>
 void caffe_log<double>(const int n, const double* a, double* y) {
+#ifdef __VECLIB__
+  vvlog(y, a, &n);
+#else
   vdLn(n, a, y);
+#endif
 }
 
 template <>
 void caffe_abs<float>(const int n, const float* a, float* y) {
-    vsAbs(n, a, y);
+#ifdef __VECLIB__
+  vDSP_vabs(a, 1, y , 1, n);
+#else
+  vsAbs(n, a, y);
+#endif
 }
 
 template <>
 void caffe_abs<double>(const int n, const double* a, double* y) {
-    vdAbs(n, a, y);
+#ifdef __VECLIB__
+  vDSP_vabsD(a, 1, y , 1, n);
+#else
+  vdAbs(n, a, y);
+#endif
 }
 
 unsigned int caffe_rng_rand() {
