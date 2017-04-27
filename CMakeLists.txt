@@ -12,6 +12,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 #add_definitions(-DUSE_EIGEN)
 add_definitions(-DCPU_ONLY)
+add_definitions(-DUSE_NEON_MATH)
 
 include(./cmake/Utils.cmake)
 include(./cmake/Misc.cmake)
