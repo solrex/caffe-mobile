@@ -13,6 +13,8 @@
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <vecLib.h>
+#elif defined(__ARM_NEON)
+#include <arm_neon.h>
 #endif
 
 namespace caffe {
@@ -82,6 +84,20 @@ template <>
 void caffe_set(const int N, const double alpha, double* Y) {
   vDSP_vfillD(&alpha, Y, 1, N);
 }
+#elif defined(__ARM_NEON)
+template <>
+void caffe_set(const int N, const float alpha, float* Y) {
+  int tail_frames = N % 4;
+  const float* end = Y + N - tail_frames;
+  while (Y < end) {
+    float32x4_t alpha_dup = vld1q_dup_f32(&alpha);
+    vst1q_f32(Y, alpha_dup);
+    Y += 4;
+  }
+  for (int i = 0; i < tail_frames; ++i) {
+    Y[i] = alpha;
+  }
+}
 #endif
 
 template void caffe_set<int>(const int N, const int alpha, int* Y);
@@ -92,6 +108,18 @@ template <>
 void caffe_add_scalar(const int N, const float alpha, float* Y) {
 #ifdef __VECLIB__
   vDSP_vsadd(Y, 1, &alpha, Y, 1, N);
+#elif defined(__ARM_NEON)
+  int tail_frames = N % 4;
+  const float* end = Y + N - tail_frames;
+  while (Y < end) {
+    float32x4_t a_frame = vld1q_f32(Y);
+    float32x4_t alpha_dup = vld1q_dup_f32(&alpha);
+    vst1q_f32(Y, vaddq_f32(a_frame, alpha_dup));
+    Y += 4;
+  }
+  for (int i = 0; i < tail_frames; ++i) {
+    Y[i] += alpha;
+  }
 #else
   for (int i = 0; i < N; ++i) {
     Y[i] += alpha;
@@ -129,7 +157,25 @@ void caffe_copy(const int N, const Dtype* X, Dtype* Y) {
 template void caffe_copy<int>(const int N, const int* X, int* Y);
 template void caffe_copy<unsigned int>(const int N, const unsigned int* X,
     unsigned int* Y);
+#if defined(__ARM_NEON)
+template <>
+void caffe_copy<float>(const int N, const float* X, float* Y) {
+  int tail_frames = N % 4;
+  const float* end = Y + N - tail_frames;
+  while (Y < end) {
+    float32x4_t x_frame = vld1q_f32(X);
+    vst1q_f32(Y, x_frame);
+    X += 4;
+    Y += 4;
+  }
+  for (int i = 0; i < tail_frames; ++i) {
+    Y[i] = X[i];
+  }
+}
+#else
 template void caffe_copy<float>(const int N, const float* X, float* Y);
+#endif
+
 template void caffe_copy<double>(const int N, const double* X, double* Y);
 
 template <>
@@ -159,6 +205,18 @@ void caffe_add<float>(const int n, const float* a, const float* b,
     float* y) {
 #ifdef __VECLIB__
   vDSP_vadd(a, 1, b, 1, y, 1, n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    float32x4_t b_frame = vld1q_f32(b);
+    vst1q_f32(y, vaddq_f32(a_frame, b_frame));
+    a += 4;
+    b += 4;
+    y += 4;
+  }
+  vsAdd(tail_frames, a, b, y);
 #else
   vsAdd(n, a, b, y);
 #endif
@@ -179,6 +237,18 @@ void caffe_sub<float>(const int n, const float* a, const float* b,
     float* y) {
 #ifdef __VECLIB__
   vDSP_vsub(a, 1, b, 1, y, 1, n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    float32x4_t b_frame = vld1q_f32(b);
+    vst1q_f32(y, vsubq_f32(a_frame, b_frame));
+    a += 4;
+    b += 4;
+    y += 4;
+  }
+  vsSub(tail_frames, a, b, y);
 #else
   vsSub(n, a, b, y);
 #endif
@@ -199,6 +269,18 @@ void caffe_mul<float>(const int n, const float* a, const float* b,
     float* y) {
 #ifdef __VECLIB__
   vDSP_vmul(a, 1, b, 1, y, 1, n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    float32x4_t b_frame = vld1q_f32(b);
+    vst1q_f32(y, vmulq_f32(a_frame, b_frame));
+    a += 4;
+    b += 4;
+    y += 4;
+  }
+  vsMul(tail_frames, a, b, y);
 #else
   vsMul(n, a, b, y);
 #endif
@@ -219,6 +301,18 @@ void caffe_div<float>(const int n, const float* a, const float* b,
     float* y) {
 #ifdef __VECLIB__
   vDSP_vdiv(b, 1, a, 1, y, 1, n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    float32x4_t b_frame = vld1q_f32(b);
+    vst1q_f32(y, vdivq_f32(a_frame, b_frame));
+    a += 4;
+    b += 4;
+    y += 4;
+  }
+  vsDiv(tail_frames, a, b, y);
 #else
   vsDiv(n, a, b, y);
 #endif
@@ -250,6 +344,16 @@ template <>
 void caffe_sqr<float>(const int n, const float* a, float* y) {
 #ifdef __VECLIB__
   vDSP_vsq(a, 1, y, 1, n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    vst1q_f32(y, vmulq_f32(a_frame, a_frame));
+    a += 4;
+    y += 4;
+  }
+  vsSqr(tail_frames, a, y);
 #else
   vsSqr(n, a, y);
 #endif
@@ -268,6 +372,16 @@ template <>
 void caffe_sqrt<float>(const int n, const float* a, float* y) {
 #ifdef __VECLIB__
   vvsqrtf(y, a, &n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    vst1q_f32(y, vsqrtq_f32(a_frame));
+    a += 4;
+    y += 4;
+  }
+  vsSqrt(tail_frames, a, y);
 #else
   vsSqrt(n, a, y);
 #endif
@@ -322,6 +436,16 @@ template <>
 void caffe_abs<float>(const int n, const float* a, float* y) {
 #ifdef __VECLIB__
   vDSP_vabs(a, 1, y , 1, n);
+#elif defined(__ARM_NEON)
+  int tail_frames = n % 4;
+  const float* end = y + n - tail_frames;
+  while (y < end) {
+    float32x4_t a_frame = vld1q_f32(a);
+    vst1q_f32(y, vabsq_f32(a_frame));
+    a += 4;
+    y += 4;
+  }
+  vsAbs(tail_frames, a, y);
 #else
   vsAbs(n, a, y);
 #endif
