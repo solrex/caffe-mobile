@@ -3,6 +3,8 @@ package com.yangwenbo.caffesimple;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -70,29 +72,41 @@ public class MainActivity extends AppCompatActivity {
             // Run test
             @Override
             public void onClick(View view) {
-                TextView tv = (TextView) findViewById(R.id.Console);
+                final TextView tv = (TextView) findViewById(R.id.Console);
                 tv.append("\nCaffe inferring...\n");
-                long start_time = System.nanoTime();
-                float mean[] = {81.3f, 107.3f, 105.3f};
-                float[] result = _cm.predictImage(imageFile.getPath(), mean);
-                long end_time = System.nanoTime();
-                if (null != result) {
-                    double difference = (end_time - start_time)/1e6;
-                    // Top 10
-                    int topN = 10;
-                    tv.append("Top" + topN + " Results (" + String.valueOf(difference) + "ms):\n");
-                    Cate[] cates = new Cate[result.length];
-                    for (int i=0; i < result.length; i++) {
-                        cates[i] = new Cate(i, result[i]);
+                final Handler myHandler = new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        tv.append((String)msg.obj);
                     }
-                    Arrays.sort(cates);
-                    for (int i = 0; i < topN; i++) {
-                        tv.append("output[" + cates[i].idx + "]\t=" + cates[i].prob + "\n");
+                };
+                (new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Message msg = myHandler.obtainMessage();
+                        long start_time = System.nanoTime();
+                        float mean[] = {81.3f, 107.3f, 105.3f};
+                        float[] result = _cm.predictImage(imageFile.getPath(), mean);
+                        long end_time = System.nanoTime();
+                        if (null != result) {
+                            double difference = (end_time - start_time) / 1e6;
+                            // Top 10
+                            int topN = 10;
+                            Cate[] cates = new Cate[result.length];
+                            for (int i = 0; i < result.length; i++) {
+                                cates[i] = new Cate(i, result[i]);
+                            }
+                            Arrays.sort(cates);
+                            msg.obj = "Top" + topN + " Results (" + String.valueOf(difference) + "ms):\n";
+                            for (int i = 0; i < topN; i++) {
+                                msg.obj += "output[" + cates[i].idx + "]\t=" + cates[i].prob + "\n";
+                            }
+                        } else {
+                            msg.obj = "output=null (some error happens)";
+                        }
+                        myHandler.sendMessage(msg);
                     }
-                } else {
-                    tv.append("output=null (some error happens)");
-                }
-
+                })).start();
             }
         });
     }
