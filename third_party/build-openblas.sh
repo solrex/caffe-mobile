@@ -64,7 +64,7 @@ function fetch-OpenBLAS-softfp {
     echo "##########################################"
     echo "$(tput sgr0)"
 
-    if [ ! -f OpenBLAS-${OPENBLAS_VERSION}.tar.gz ]; then
+    if [ ! -f OpenBLAS-${OPENBLAS_VERSION}.zip ]; then
         curl -L https://github.com/xianyi/OpenBLAS/archive/${OPENBLAS_VERSION}.zip --output OpenBLAS-${OPENBLAS_VERSION}.zip
     fi
     if [ -d OpenBLAS-${OPENBLAS_VERSION} ]; then
