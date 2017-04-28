@@ -10,7 +10,7 @@ BUILD_DIR=".cbuild"
 # Options for Android
 ANDROID_NATIVE_API_LEVEL=21
 if [ "$ANDROID_ABI" = "" ]; then
-  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi
+  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi, armeabi-v7a with NEON
   ANDROID_ABI="arm64-v8a"
 fi
 
@@ -55,6 +55,24 @@ function fetch-OpenBLAS {
     tar -xzf OpenBLAS-${OPENBLAS_VERSION}.tar.gz
 }
 
+
+function fetch-OpenBLAS-softfp {
+    OPENBLAS_VERSION=arm_soft_fp_abi
+    echo "$(tput setaf 2)"
+    echo "##########################################"
+    echo " Fetch Openblas $OPENBLAS_VERSION from source."
+    echo "##########################################"
+    echo "$(tput sgr0)"
+
+    if [ ! -f OpenBLAS-${OPENBLAS_VERSION}.tar.gz ]; then
+        curl -L https://github.com/xianyi/OpenBLAS/archive/${OPENBLAS_VERSION}.zip --output OpenBLAS-${OPENBLAS_VERSION}.zip
+    fi
+    if [ -d OpenBLAS-${OPENBLAS_VERSION} ]; then
+        rm -rf OpenBLAS-${OPENBLAS_VERSION}
+    fi
+    unzip OpenBLAS-${OPENBLAS_VERSION}.zip
+}
+
 function build-Android {
     echo "$(tput setaf 2)"
     echo "#####################"
@@ -77,20 +95,19 @@ function build-Android {
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
         TARGET=ARMV7
         BINARY=32
-        # Android removed hard abi support
-        sed -i -e 's/float-abi=hard/float-abi=softfp/g' OpenBLAS-$OPENBLAS_VERSION/Makefile.arm || exit 1
+        ARM_SOFTFP_ABI=1
     elif [ "${ANDROID_ABI}" = "arm64-v8a" ]; then
         CROSS_SUFFIX=$NDK_HOME/toolchains/aarch64-linux-android-4.9/prebuilt/${OS}-${BIT}/bin/aarch64-linux-android-
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm64
         TARGET=ARMV8
         BINARY=64
+        ARM_SOFTFP_ABI=0
     elif [ "${ANDROID_ABI}" = "armeabi" ]; then
         CROSS_SUFFIX=$NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}-${BIT}/bin/arm-linux-androideabi-
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
         TARGET=ARMV5
         BINARY=32
-        # Android removed hard abi support
-        sed -i -e 's/float-abi=hard/float-abi=softfp/g' OpenBLAS-$OPENBLAS_VERSION/Makefile.arm || exit 1
+        ARM_SOFTFP_ABI=1
     else
         echo "Error: not support OpenBLAS for ABI: ${ANDROID_ABI}"
         exit 1
@@ -109,6 +126,7 @@ function build-Android {
         CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
         HOSTCC=gcc \
         TARGET=$TARGET \
+        ARM_SOFTFP_ABI=$ARM_SOFTFP_ABI \
         BINARY=$BINARY
     make \
         SMP=1 \
@@ -119,5 +137,9 @@ function build-Android {
     ln -s OpenBLAS-$TARGET OpenBLAS
 }
 
-fetch-OpenBLAS
+if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then
+  fetch-OpenBLAS-softfp
+else 
+  fetch-OpenBLAS
+fi 
 build-$PLATFORM

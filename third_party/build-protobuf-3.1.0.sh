@@ -14,7 +14,7 @@ BUILD_DIR=".cbuild"
 
 # Options for Android
 if [ "$ANDROID_ABI" = "" ]; then
-  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi
+  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi, armeabi-v7a with NEON
   ANDROID_ABI="arm64-v8a"
 fi
 #    ANDROID_ABI=armeabi-v7a - specifies the target Application Binary

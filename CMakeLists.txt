@@ -10,7 +10,6 @@ set(CAFFE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CAFFE_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-#add_definitions(-DUSE_EIGEN)
 add_definitions(-DCPU_ONLY)
 add_definitions(-DUSE_NEON_MATH)
 

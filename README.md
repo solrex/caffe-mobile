@@ -97,11 +97,11 @@ Test passed ANDROID_ABI:
 
  - [x] arm64-v8a
  - [x] armeabi
- - [ ] armeabi-v7a
+ - [x] armeabi-v7a with NEON
 
 ```
 $ export NDK_HOME=/path/to/your/ndk # TODO
-$ export ANDROID_ABI="arm64-v8a"    # OR: armeabi
+$ export ANDROID_ABI="arm64-v8a"    # OR armeabi/armeabi-v7a with NEON
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
 $ cd caffe-mobile/third_party
 $ ./build-protobuf-3.1.0.sh Android
