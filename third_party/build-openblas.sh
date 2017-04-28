@@ -72,11 +72,13 @@ function build-Android {
         exit 1
     fi
 
-    if [ "${ANDROID_ABI}" = "armeabi-v7a" ]; then
+    if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then
         CROSS_SUFFIX=$NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}-${BIT}/bin/arm-linux-androideabi-
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
         TARGET=ARMV7
         BINARY=32
+        # Android removed hard abi support
+        sed -i -e 's/float-abi=hard/float-abi=softfp/g' OpenBLAS-$OPENBLAS_VERSION/Makefile.arm || exit 1
     elif [ "${ANDROID_ABI}" = "arm64-v8a" ]; then
         CROSS_SUFFIX=$NDK_HOME/toolchains/aarch64-linux-android-4.9/prebuilt/${OS}-${BIT}/bin/aarch64-linux-android-
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm64
@@ -87,6 +89,8 @@ function build-Android {
         SYSROOT=$NDK_HOME/platforms/android-$ANDROID_NATIVE_API_LEVEL/arch-arm
         TARGET=ARMV5
         BINARY=32
+        # Android removed hard abi support
+        sed -i -e 's/float-abi=hard/float-abi=softfp/g' OpenBLAS-$OPENBLAS_VERSION/Makefile.arm || exit 1
     else
         echo "Error: not support OpenBLAS for ABI: ${ANDROID_ABI}"
         exit 1
