@@ -119,8 +119,8 @@ $ make -j 4
 ## Step 2: Copy Caffe-Mobile Lib to JniLib of CaffeSimple
 
 ```
-$ mkdir -p ../examples/android/CaffeSimple/app/libs/$ANDROID_ABI/
-$ cp ../build/lib/libcaffe-jni.so ../examples/android/CaffeSimple/app/libs/$ANDROID_ABI/
+$ mkdir -p ../examples/android/CaffeSimple/app/libs/${ANDROID_ABI%% *}/
+$ cp ../build/lib/libcaffe-jni.so ../examples/android/CaffeSimple/app/libs/${ANDROID_ABI%% *}/
 ```
 
 ## Step 3: Build Android App: CaffeSimple with Android Studio
