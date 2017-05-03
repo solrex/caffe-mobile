@@ -89,7 +89,7 @@ $ diff $CAFFE/examples/mnist/lenet.prototxt \
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, connect your iPhone to Mac, change target to "Your Name's iPhone", and press Command-R to build and run it on your connected device.
 
-# For Android (arm64-v8a/armeabi)
+# For Android
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
 
@@ -97,11 +97,12 @@ Test passed ANDROID_ABI:
 
  - [x] arm64-v8a
  - [x] armeabi
- - [x] armeabi-v7a with NEON
+ - [x] armeabi-v7a with NEON (not stable)
 
 ```
-$ export NDK_HOME=/path/to/your/ndk # TODO
-$ export ANDROID_ABI="arm64-v8a"    # OR armeabi/armeabi-v7a with NEON
+$ export NDK_HOME=/path/to/your/ndk  # TODO
+$ export ANDROID_ABI="arm64-v8a"     # OR armeabi/armeabi-v7a with NEON
+$ export ANDROID_NATIVE_API_LEVEL=21 # the minimum one (for armeabi) should be less than your minSdkVersion
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
 $ cd caffe-mobile/third_party
 $ ./build-protobuf-3.1.0.sh Android
@@ -111,7 +112,7 @@ $ cd ../build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/android-cmake/android.toolchain.cmake \
 -DANDROID_NDK=$NDK_HOME \
 -DANDROID_ABI="$ANDROID_ABI" \
--DANDROID_NATIVE_API_LEVEL=21 \
+-DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DTHIRD_PARTY=1
 $ make -j 4
 ```

@@ -8,10 +8,17 @@ MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
 # Options for Android
-ANDROID_NATIVE_API_LEVEL=21
+# Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi, armeabi-v7a with NEON
 if [ "$ANDROID_ABI" = "" ]; then
-  # Caffe-Mobile Tested ANDROID_ABI: arm64-v8a, armeabi, armeabi-v7a with NEON
-  ANDROID_ABI="arm64-v8a"
+    ANDROID_ABI="arm64-v8a"
+fi
+if [ "$ANDROID_NATIVE_API_LEVEL" = "" ]; then
+    ANDROID_NATIVE_API_LEVEL=21
+fi
+
+if [ $ANDROID_NATIVE_API_LEVEL -lt 21 -a "$ANDROID_ABI" = "arm64-v8a" ]; then
+    echo "ERROR: This ANDROID_ABI($ANDROID_ABI) requires ANDROID_NATIVE_API_LEVEL($ANDROID_NATIVE_API_LEVEL) >= 21"
+    exit 1
 fi
 
 # Build Environment
@@ -70,7 +77,7 @@ function fetch-OpenBLAS-softfp {
     if [ -d OpenBLAS-${OPENBLAS_VERSION} ]; then
         rm -rf OpenBLAS-${OPENBLAS_VERSION}
     fi
-    unzip OpenBLAS-${OPENBLAS_VERSION}.zip
+    unzip -q OpenBLAS-${OPENBLAS_VERSION}.zip
 }
 
 function build-Android {
