@@ -99,7 +99,7 @@ function build-MacOSX {
 }
 
 function build-Android {
-    TARGET="android-$ANDROID_NATIVE_API_LEVEL-${ANDROID_ABI%% *}"
+    TARGET="${ANDROID_ABI%% *}-$ANDROID_NATIVE_API_LEVEL"
     echo "$(tput setaf 2)"
     echo "#####################"
     echo " Building protobuf for $TARGET"

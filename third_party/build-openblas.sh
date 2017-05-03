@@ -121,7 +121,7 @@ function build-Android {
         exit 1
     fi
 
-    PREFIX=android-$ANDROID_NATIVE_API_LEVEL-${ANDROID_ABI%% *}-OpenBLAS
+    PREFIX=${ANDROID_ABI%% *}-$ANDROID_NATIVE_API_LEVEL-OpenBLAS
     mkdir -p $PREFIX
     if [ ! -s $PREFIX/lib/libopenblas.a ]; then
         cd OpenBLAS-$OPENBLAS_VERSION
