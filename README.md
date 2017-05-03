@@ -9,6 +9,83 @@ iPhone5s | Meizu M3 note
 :---------:| :-------------:
 <img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleiPhone5s.png" width="70%" /> | <img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleM3-Note.jpg" width="40%" />
 
+# For iPhone
+
+## Step 1: Build Caffe-Mobile Lib with cmake
+
+```
+$ git clone --recursive https://github.com/solrex/caffe-mobile.git
+$ ./tools/build_ios.sh
+```
+
+## Step 2: Build iOS App: CaffeSimple with Xcode
+
+ - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
+Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
+
+```
+$ cp $CAFFE/examples/mnist/lenet.prototxt \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
+```
+
+ - Check the batch size setting in net.prototxt, set it to `1` if needed.
+
+```
+$ diff $CAFFE/examples/mnist/lenet.prototxt \
+       $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+6c6
+<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
+---
+>   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
+```
+
+ - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, connect your iPhone to Mac, change target to "Your Name's iPhone", and press Command-R to build and run it on your connected device.
+
+# For Android
+
+## Step 1: Build Caffe-Mobile Lib with cmake
+
+Test passed ANDROID_ABI:
+
+ - [x] arm64-v8a
+ - [x] armeabi
+ - [x] armeabi-v7a with NEON (not stable)
+
+```
+$ git clone --recursive https://github.com/solrex/caffe-mobile.git
+$ export NDK_HOME=/path/to/your/ndk
+$ ./tools/build_android.sh
+```
+
+## Step 2: Build Android App: CaffeSimple with Android Studio
+
+ - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
+Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to the SD card root of your Android mobile phone.
+
+```
+$ adb push $CAFFE/examples/mnist/lenet.prototxt \
+     /sdcard/net.prototxt
+$ adb push $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
+     /sdcard/weight.caffemodel
+$ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/test_image.png \
+     /sdcard/test_image.png
+```
+
+ - Check the batch size setting in net.prototxt, set it to `1` if needed.
+
+```
+$ diff $CAFFE/examples/mnist/lenet.prototxt \
+       net.prototxt
+6c6
+<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
+---
+>   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
+```
+
+ - Load the Android studio project inside the `$CAFFE_MOBILE/examples/android/CaffeSimple/` folder, and press Command-R to build and run it on your connected device.
+
 # For iPhone Simulator
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
@@ -48,108 +125,6 @@ $ diff $CAFFE/examples/mnist/lenet.prototxt \
 ```
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, change build target to one of your "iOS Simulators" , and press Command-R to build and run it on the simulator.
-
-# For iPhone
-
-## Step 1: Build Caffe-Mobile Lib with cmake
-
-```
-$ git clone --recursive https://github.com/solrex/caffe-mobile.git
-$ cd caffe-mobile/third_party
-$ ./build-protobuf-3.1.0.sh iPhoneOS
-$ mkdir ../build
-$ cd ../build
-$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
-  -DIOS_PLATFORM=OS -DTHIRD_PARTY=1
-$ make -j 4
-```
-
-## Step 2: Build iOS App: CaffeSimple with Xcode
-
- - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
-Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
-
-```
-$ cp $CAFFE/examples/mnist/lenet.prototxt \
-     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
-$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
-     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
-```
-
- - Check the batch size setting in net.prototxt, set it to `1` if needed.
-
-```
-$ diff $CAFFE/examples/mnist/lenet.prototxt \
-       $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
-6c6
-<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
----
->   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
-```
-
- - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, connect your iPhone to Mac, change target to "Your Name's iPhone", and press Command-R to build and run it on your connected device.
-
-# For Android
-
-## Step 1: Build Caffe-Mobile Lib with cmake
-
-Test passed ANDROID_ABI:
-
- - [x] arm64-v8a
- - [x] armeabi
- - [x] armeabi-v7a with NEON (not stable)
-
-```
-$ export NDK_HOME=/path/to/your/ndk  # TODO
-$ export ANDROID_ABI="arm64-v8a"     # OR armeabi/armeabi-v7a with NEON
-$ export ANDROID_NATIVE_API_LEVEL=21 # the minimum one (for armeabi) should be less than your minSdkVersion
-$ git clone --recursive https://github.com/solrex/caffe-mobile.git
-$ cd caffe-mobile/third_party
-$ ./build-protobuf-3.1.0.sh Android
-$ ./build-openblas.sh
-$ mkdir ../build
-$ cd ../build
-$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/android-cmake/android.toolchain.cmake \
--DANDROID_NDK=$NDK_HOME \
--DANDROID_ABI="$ANDROID_ABI" \
--DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
--DTHIRD_PARTY=1
-$ make -j 4
-```
-
-## Step 2: Copy Caffe-Mobile Lib to JniLib of CaffeSimple
-
-```
-$ mkdir -p ../examples/android/CaffeSimple/app/libs/${ANDROID_ABI%% *}/
-$ cp ../build/lib/libcaffe-jni.so ../examples/android/CaffeSimple/app/libs/${ANDROID_ABI%% *}/
-```
-
-## Step 3: Build Android App: CaffeSimple with Android Studio
-
- - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
-Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to the SD card root of your Android mobile phone.
-
-```
-$ adb push $CAFFE/examples/mnist/lenet.prototxt \
-     /sdcard/net.prototxt
-$ adb push $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
-     /sdcard/weight.caffemodel
-$ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/test_image.png \
-     /sdcard/test_image.png
-```
-
- - Check the batch size setting in net.prototxt, set it to `1` if needed.
-
-```
-$ diff $CAFFE/examples/mnist/lenet.prototxt \
-       net.prototxt
-6c6
-<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
----
->   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
-```
-
- - Load the Android studio project inside the `$CAFFE_MOBILE/examples/android/CaffeSimple/` folder, and press Command-R to build and run it on your connected device.
 
 # For MacOSX & Ubuntu
 

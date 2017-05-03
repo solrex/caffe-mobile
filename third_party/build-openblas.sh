@@ -115,6 +115,7 @@ function build-Android {
         TARGET=ARMV5
         BINARY=32
         ARM_SOFTFP_ABI=1
+        sed -i -e 's/_MSC_VER/FORCE_OPENBLAS_COMPLEX_STRUCT/g' OpenBLAS-${OPENBLAS_VERSION}/kernel/arm/zdot.c || exit 1
     else
         echo "Error: not support OpenBLAS for ABI: ${ANDROID_ABI}"
         exit 1
