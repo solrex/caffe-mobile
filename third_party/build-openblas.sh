@@ -121,28 +121,31 @@ function build-Android {
         exit 1
     fi
 
-    mkdir -p OpenBLAS-$TARGET
-    cd OpenBLAS-$OPENBLAS_VERSION
-    make ${MAKE_FLAGS} \
-        NOFORTRAN=1 \
-        NO_NOLAPACKE=1 \
-        OSNAME=Android \
-        SMP=1 \
-        USE_THREAD=1 \
-        NUM_THREAD=4 \
-        CROSS_SUFFIX="$CROSS_SUFFIX" \
-        CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
-        HOSTCC=gcc \
-        TARGET=$TARGET \
-        ARM_SOFTFP_ABI=$ARM_SOFTFP_ABI \
-        BINARY=$BINARY
-    make \
-        SMP=1 \
-        PREFIX="../OpenBLAS-$TARGET" \
-        install
-    cd ..
+    PREFIX=android-$ANDROID_NATIVE_API_LEVEL-${ANDROID_ABI%% *}-OpenBLAS
+    mkdir -p $PREFIX
+    if [ ! -s $PREFIX/lib/libopenblas.a ]; then
+        cd OpenBLAS-$OPENBLAS_VERSION
+        make ${MAKE_FLAGS} \
+            NOFORTRAN=1 \
+            NO_NOLAPACKE=1 \
+            OSNAME=Android \
+            SMP=1 \
+            USE_THREAD=1 \
+            NUM_THREAD=4 \
+            CROSS_SUFFIX="$CROSS_SUFFIX" \
+            CC="${CROSS_SUFFIX}gcc --sysroot=$SYSROOT" \
+            HOSTCC=gcc \
+            TARGET=$TARGET \
+            ARM_SOFTFP_ABI=$ARM_SOFTFP_ABI \
+            BINARY=$BINARY
+        make \
+            SMP=1 \
+            PREFIX="../$PREFIX" \
+            install
+        cd ..
+    fi
     rm -f OpenBLAS
-    ln -s OpenBLAS-$TARGET OpenBLAS
+    ln -s $PREFIX OpenBLAS
 }
 
 if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then

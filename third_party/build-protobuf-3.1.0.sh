@@ -80,20 +80,18 @@ function build-Linux {
     mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
     rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
     cd protobuf-$PB_VERSION/$BUILD_DIR
-    cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET \
-        -Dprotobuf_BUILD_TESTS=OFF \
-        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
-        -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
-        -Dprotobuf_WITH_ZLIB=OFF
-    make ${MAKE_FLAGS}
-    make install
-    mkdir -p ../../protobuf
-    cd ../../protobuf
-    rm -f lib include bin
-    ln -s ../protobuf-$TARGET/lib lib
-    ln -s ../protobuf-$TARGET/include include
-    ln -s ../protobuf-$TARGET/bin bin
+    if [ ! -s ${TARGET}-protobuf/lib/libprotobuf.a ]; then
+        cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../${TARGET}-protobuf \
+            -Dprotobuf_BUILD_TESTS=OFF \
+            -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+            -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
+            -Dprotobuf_WITH_ZLIB=OFF
+        make ${MAKE_FLAGS}
+        make install
+    fi
     cd ..
+    rm -f protobuf
+    ln -s ${TARGET}-protobuf protobuf
 }
 
 function build-MacOSX {
@@ -101,6 +99,7 @@ function build-MacOSX {
 }
 
 function build-Android {
+    TARGET="android-$ANDROID_NATIVE_API_LEVEL-${ANDROID_ABI%% *}"
     echo "$(tput setaf 2)"
     echo "#####################"
     echo " Building protobuf for $TARGET"
@@ -117,30 +116,27 @@ function build-Android {
         exit 1
     fi
 
-    mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
-    rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
-    cd protobuf-$PB_VERSION/$BUILD_DIR
-    # if [ "$BUILD_PROTOC" = "OFF" ]; then
-    #     # Do not cross build protoc
-    #     sed -i "s/include(libprotoc.cmake)/#include(libprotoc.cmake)/" ../cmake/CMakeLists.txt
-    #     sed -i "s/include(protoc.cmake)/#include(protoc.cmake)/" ../cmake/CMakeLists.txt
-    # fi
-    cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET\
-        -DCMAKE_TOOLCHAIN_FILE="../../android-cmake/android.toolchain.cmake" \
-        -DANDROID_NDK="$NDK_HOME" \
-        -DANDROID_ABI="$ANDROID_ABI" \
-        -DANDROID_NATIVE_API_LEVEL="$ANDROID_NATIVE_API_LEVEL" \
-        -Dprotobuf_BUILD_TESTS=OFF \
-        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
-        -Dprotobuf_WITH_ZLIB=OFF
-    make ${MAKE_FLAGS}
-    make install
-    mkdir -p ../../protobuf
-    cd ../../protobuf
-    rm -f lib include
-    ln -s ../protobuf-$TARGET/lib lib
-    ln -s ../protobuf-$TARGET/include include
-    cd ..
+    if [ ! -s ${TARGET}-protobuf/lib/libprotobuf.a ]; then
+        mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
+        rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
+        cd protobuf-$PB_VERSION/$BUILD_DIR
+        cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../${TARGET}-protobuf \
+            -DCMAKE_TOOLCHAIN_FILE="../../android-cmake/android.toolchain.cmake" \
+            -DANDROID_NDK="$NDK_HOME" \
+            -DANDROID_ABI="$ANDROID_ABI" \
+            -DANDROID_NATIVE_API_LEVEL="$ANDROID_NATIVE_API_LEVEL" \
+            -Dprotobuf_BUILD_TESTS=OFF \
+            -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+            -Dprotobuf_WITH_ZLIB=OFF
+        make ${MAKE_FLAGS}
+        make install
+        cd ../..
+    fi
+    cd ${TARGET}-protobuf/bin
+    ln -sf ../../protobuf-Linux/bin/protoc protoc
+    cd ../..
+    rm -f protobuf
+    ln -s ${TARGET}-protobuf protobuf
 }
 
 function build-iPhoneSimulator {
@@ -150,28 +146,25 @@ function build-iPhoneSimulator {
     echo "#####################"
     echo "$(tput sgr0)"
 
-    mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
-    rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
-    cd protobuf-$PB_VERSION/$BUILD_DIR
-    # if [ "$BUILD_PROTOC" = "OFF" ]; then
-    #     # Do not cross build protoc
-    #     sed -i "s/include(libprotoc.cmake)/#include(libprotoc.cmake)/" ../cmake/CMakeLists.txt
-    #     sed -i "s/include(protoc.cmake)/#include(protoc.cmake)/" ../cmake/CMakeLists.txt
-    # fi
-    cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET\
-        -DCMAKE_TOOLCHAIN_FILE="../../ios-cmake/toolchain/iOS.cmake" \
-        -DIOS_PLATFORM=SIMULATOR \
-        -Dprotobuf_BUILD_TESTS=OFF \
-        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
-        -Dprotobuf_WITH_ZLIB=OFF
-    make ${MAKE_FLAGS}
-    make install
-    mkdir -p ../../protobuf
-    cd ../../protobuf
-    rm -f lib include
-    ln -s ../protobuf-$TARGET/lib lib
-    ln -s ../protobuf-$TARGET/include include
-    cd ..
+    if [ ! -s ${TARGET}-protobuf/lib/libprotobuf.a ]; then
+        mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
+        rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
+        cd protobuf-$PB_VERSION/$BUILD_DIR
+        cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../${TARGET}-protobuf\
+            -DCMAKE_TOOLCHAIN_FILE="../../ios-cmake/toolchain/iOS.cmake" \
+            -DIOS_PLATFORM=SIMULATOR \
+            -Dprotobuf_BUILD_TESTS=OFF \
+            -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+            -Dprotobuf_WITH_ZLIB=OFF
+        make ${MAKE_FLAGS}
+        make install
+        cd ../..
+    fi
+    cd ${TARGET}-protobuf/bin
+    ln -sf ../../protobuf-Linux/bin/protoc protoc
+    cd ../..
+    rm -f protobuf
+    ln -s ${TARGET}-protobuf protobuf
 }
 
 function build-iPhoneOS {
@@ -181,34 +174,30 @@ function build-iPhoneOS {
     echo "#####################"
     echo "$(tput sgr0)"
 
-    mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
-    rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
-    cd protobuf-$PB_VERSION/$BUILD_DIR
-    # if [ "$BUILD_PROTOC" = "OFF" ]; then
-    #     # Do not cross build protoc
-    #     sed -i "s/include(libprotoc.cmake)/#include(libprotoc.cmake)/" ../cmake/CMakeLists.txt
-    #     sed -i "s/include(protoc.cmake)/#include(protoc.cmake)/" ../cmake/CMakeLists.txt
-    # fi
-    cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../protobuf-$TARGET\
-        -DCMAKE_TOOLCHAIN_FILE="../../ios-cmake/toolchain/iOS.cmake" \
-        -DIOS_PLATFORM=OS \
-        -DCMAKE_CXX_FLAGS="-fembed-bitcode -Wno-deprecated-declarations" \
-        -Dprotobuf_BUILD_TESTS=OFF \
-        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
-        -Dprotobuf_WITH_ZLIB=OFF
-    make ${MAKE_FLAGS}
-    make install
-    mkdir -p ../../protobuf
-    cd ../../protobuf
-    rm -f lib include
-    ln -s ../protobuf-$TARGET/lib lib
-    ln -s ../protobuf-$TARGET/include include
-    cd ..
+    if [ ! -s ${TARGET}-protobuf/lib/libprotobuf.a ]; then
+        mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
+        rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
+        cd protobuf-$PB_VERSION/$BUILD_DIR
+        cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../${TARGET}-protobuf\
+            -DCMAKE_TOOLCHAIN_FILE="../../ios-cmake/toolchain/iOS.cmake" \
+            -DIOS_PLATFORM=OS \
+            -DCMAKE_CXX_FLAGS="-fembed-bitcode -Wno-deprecated-declarations" \
+            -Dprotobuf_BUILD_TESTS=OFF \
+            -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+            -Dprotobuf_WITH_ZLIB=OFF
+        make ${MAKE_FLAGS}
+        make install
+    fi
+    cd ${TARGET}-protobuf/bin
+    ln -sf ../../protobuf-Linux/bin/protoc protoc
+    cd ../..
+    rm -f protobuf
+    ln -s ${TARGET}-protobuf protobuf
 }
 
 fetch-protobuf
 if [ "$TARGET" != "Linux" -a "$TARGET" != "MacOSX" ]; then
-    PROTOC_VERSION=$(./protobuf/bin/protoc --version)
+    PROTOC_VERSION=$(./protobuf-Linux/bin/protoc --version)
     if [ "$PROTOC_VERSION" != "libprotoc 3.1.0" ]; then
         TARGET_SAVE=$TARGET
         TARGET=Linux

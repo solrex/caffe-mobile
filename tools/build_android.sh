@@ -15,6 +15,7 @@ function build-abi {
     ./build-openblas.sh || exit 1
     mkdir ../build_${ANDROID_ABI%% *}
     cd ../build_${ANDROID_ABI%% *} || exit 1
+    rm -rf *
     cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/android-cmake/android.toolchain.cmake \
         -DANDROID_NDK=$NDK_HOME \
         -DANDROID_ABI="$ANDROID_ABI" \
@@ -23,7 +24,7 @@ function build-abi {
     make -j 4 || exit 1
     cd ../examples/android/CaffeSimple/app/
     mkdir -p libs/${ANDROID_ABI%% *}
-    ln -s ../../../../build_${ANDROID_ABI%% *}/lib/libcaffe-jni.so libs/${ANDROID_ABI%% *}/libcaffe-jni.so
+    ln -sf ../../../../build_${ANDROID_ABI%% *}/lib/libcaffe-jni.so libs/${ANDROID_ABI%% *}/libcaffe-jni.so
     cd ../../../..
 }
 
