@@ -13,9 +13,11 @@ bool NetNeedsUpgrade(const NetParameter& net_param);
 // Check for deprecations and upgrade the NetParameter as needed.
 bool UpgradeNetAsNeeded(const string& param_file, NetParameter* param);
 
+#ifdef USE_PROTOBUF_FULL
 // Read parameters from a file into a NetParameter proto message.
 void ReadNetParamsFromTextFileOrDie(const string& param_file,
                                     NetParameter* param);
+#endif
 void ReadNetParamsFromBinaryFileOrDie(const string& param_file,
                                       NetParameter* param);
 

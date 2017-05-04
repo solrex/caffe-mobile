@@ -8,7 +8,11 @@
 #include <iostream>  // NOLINT(readability/streams)
 #include <string>
 
+#ifdef USE_PROTOBUF_FULL
 #include "google/protobuf/message.h"
+#else
+#include "google/protobuf/message_lite.h"
+#endif
 
 #include "caffe/common.hpp"
 #include "caffe/proto/caffe.pb.h"
@@ -20,7 +24,11 @@
 
 namespace caffe {
 
+#ifdef USE_PROTOBUF_FULL
 using ::google::protobuf::Message;
+#else
+typedef ::google::protobuf::MessageLite Message;
+#endif
 #ifdef USE_BOOST
 using ::boost::filesystem::path;
 
@@ -53,6 +61,7 @@ inline void MakeTempFilename(string* temp_filename) {
 }
 #endif
 
+#ifdef USE_PROTOBUF_FULL
 bool ReadProtoFromTextFile(const char* filename, Message* proto);
 
 inline bool ReadProtoFromTextFile(const string& filename, Message* proto) {
@@ -71,6 +80,7 @@ void WriteProtoToTextFile(const Message& proto, const char* filename);
 inline void WriteProtoToTextFile(const Message& proto, const string& filename) {
   WriteProtoToTextFile(proto, filename.c_str());
 }
+#endif
 
 bool ReadProtoFromBinaryFile(const char* filename, Message* proto);
 

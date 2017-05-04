@@ -1,7 +1,12 @@
 #include <fcntl.h>
 #include <google/protobuf/io/coded_stream.h>
+#ifdef USE_PROTOBUF_FULL
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
+#else
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
+#include <errno.h>
+#endif
 #ifdef USE_OPENCV
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -26,14 +31,23 @@ const int kProtoReadBytesLimit = INT_MAX;  // Max size of 2 GB minus 1 byte.
 
 namespace caffe {
 
+#ifdef USE_PROTOBUF_FULL
 using google::protobuf::io::FileInputStream;
 using google::protobuf::io::FileOutputStream;
+#else
+using google::protobuf::io::CopyingInputStream;
+using google::protobuf::io::CopyingInputStreamAdaptor;
+typedef google::protobuf::MessageLite Message;
+#endif
 using google::protobuf::io::ZeroCopyInputStream;
 using google::protobuf::io::CodedInputStream;
 using google::protobuf::io::ZeroCopyOutputStream;
 using google::protobuf::io::CodedOutputStream;
+#ifdef USE_PROTOBUF_FULL
 using google::protobuf::Message;
+#endif
 
+#ifdef USE_PROTOBUF_FULL
 bool ReadProtoFromTextFile(const char* filename, Message* proto) {
   int fd = open(filename, O_RDONLY);
   CHECK_NE(fd, -1) << "File not found: " << filename;
@@ -51,11 +65,31 @@ void WriteProtoToTextFile(const Message& proto, const char* filename) {
   delete output;
   close(fd);
 }
+#endif
 
 bool ReadProtoFromBinaryFile(const char* filename, Message* proto) {
   int fd = open(filename, O_RDONLY);
   CHECK_NE(fd, -1) << "File not found: " << filename;
+#ifdef USE_PROTOBUF_FULL
   ZeroCopyInputStream* raw_input = new FileInputStream(fd);
+#else
+  class CopyingFileInputStream: public CopyingInputStream {
+  public:
+    CopyingFileInputStream(int file_descriptor): file_(file_descriptor) {
+    }
+    int Read(void *buffer, int size) {
+      int result;
+      do {
+        result = read(file_, buffer, size);
+      } while (result < 0 && errno == EINTR);
+      return result;
+    }
+  private:
+      const int file_;
+  };
+  CopyingFileInputStream *cfis = new CopyingFileInputStream(fd);
+  ZeroCopyInputStream* raw_input = new CopyingInputStreamAdaptor(cfis);
+#endif
   CodedInputStream* coded_input = new CodedInputStream(raw_input);
   coded_input->SetTotalBytesLimit(kProtoReadBytesLimit, 536870912);
 
@@ -67,10 +101,12 @@ bool ReadProtoFromBinaryFile(const char* filename, Message* proto) {
   return success;
 }
 
+#ifdef NO_CAFFE_MOBILE
 void WriteProtoToBinaryFile(const Message& proto, const char* filename) {
   fstream output(filename, ios::out | ios::trunc | ios::binary);
   CHECK(proto.SerializeToOstream(&output));
 }
+#endif
 
 #ifdef USE_OPENCV
 cv::Mat ReadImageToCVMat(const string& filename,

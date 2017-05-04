@@ -40,7 +40,7 @@ caffe::Net<float> *_net;
 - (void)viewDidAppear:(BOOL)animated {
     caffe::CPUTimer timer;
     timer.Start();
-    NSString *modle_path = FilePathForResourceName(@"net", @"prototxt");
+    NSString *modle_path = FilePathForResourceName(@"net", @"protobin");
     _net = new caffe::Net<float>([modle_path UTF8String], caffe::TEST);
     NSString *weight_path = FilePathForResourceName(@"weight", @"caffemodel");
     _net->CopyTrainedLayersFrom([weight_path UTF8String]);

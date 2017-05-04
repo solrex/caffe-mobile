@@ -78,7 +78,11 @@ Dtype SoftmaxWithLossLayer<Dtype>::get_normalizer(
       break;
     default:
       LOG(FATAL) << "Unknown normalization mode: "
+#ifdef USE_PROTOBUF_FULL
           << LossParameter_NormalizationMode_Name(normalization_mode);
+#else
+          << normalization_mode;
+#endif
   }
   // Some users will have no labels for some examples in order to 'turn off' a
   // particular loss in a multi-task setup. The max prevents NaNs in that case.

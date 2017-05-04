@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Load caffe model
         long start_time = System.nanoTime();
-        File modelFile = new File(Environment.getExternalStorageDirectory(), "net.prototxt");
+        File modelFile = new File(Environment.getExternalStorageDirectory(), "net.protobin");
         File weightFile = new File(Environment.getExternalStorageDirectory(), "weight.caffemodel");
         Log.d(TAG, "onCreate: modelFile:" + modelFile.getPath());
         Log.d(TAG, "onCreate: weightFIle:" + weightFile.getPath());

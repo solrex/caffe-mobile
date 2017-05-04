@@ -135,8 +135,6 @@ function build-Android {
     cd ${TARGET}-protobuf/bin
     ln -sf ../../protobuf-Linux/bin/protoc protoc
     cd ../..
-    rm -f protobuf
-    ln -s ${TARGET}-protobuf protobuf
 }
 
 function build-iPhoneSimulator {

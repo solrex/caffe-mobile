@@ -83,12 +83,14 @@ bool UpgradeNetAsNeeded(const string& param_file, NetParameter* param) {
   return success;
 }
 
+#ifdef USE_PROTOBUF_FULL
 void ReadNetParamsFromTextFileOrDie(const string& param_file,
                                     NetParameter* param) {
   CHECK(ReadProtoFromTextFile(param_file, param))
       << "Failed to parse NetParameter file: " << param_file;
   UpgradeNetAsNeeded(param_file, param);
 }
+#endif
 
 void ReadNetParamsFromBinaryFileOrDie(const string& param_file,
                                       NetParameter* param) {
@@ -1095,6 +1097,7 @@ bool UpgradeSolverAsNeeded(const string& param_file, SolverParameter* param) {
   return success;
 }
 
+#ifdef USE_PROTOBUF_FULL
 // Read parameters from a file into a SolverParameter proto message.
 void ReadSolverParamsFromTextFileOrDie(const string& param_file,
                                        SolverParameter* param) {
@@ -1102,5 +1105,6 @@ void ReadSolverParamsFromTextFileOrDie(const string& param_file,
       << "Failed to parse SolverParameter file: " << param_file;
   UpgradeSolverAsNeeded(param_file, param);
 }
+#endif
 
 }  // namespace caffe

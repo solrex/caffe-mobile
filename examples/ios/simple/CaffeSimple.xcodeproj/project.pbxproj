@@ -13,11 +13,11 @@
 		1965DBB81E447C130064AD55 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBB61E447C130064AD55 /* Main.storyboard */; };
 		1965DBBA1E447C130064AD55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBB91E447C130064AD55 /* Assets.xcassets */; };
 		1965DBBD1E447C130064AD55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1965DBBB1E447C130064AD55 /* LaunchScreen.storyboard */; };
+		1976F2801EBB2B9F00E9351E /* net.protobin in Resources */ = {isa = PBXBuildFile; fileRef = 1976F27F1EBB2B9F00E9351E /* net.protobin */; };
 		19F82F1F1E44C2C300695409 /* ImageReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 19F82F1E1E44C2C300695409 /* ImageReader.mm */; };
 		19F82F221E44D8D100695409 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F82F211E44D8D100695409 /* Accelerate.framework */; };
 		19F82F531E4847C200695409 /* test_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F511E4847C200695409 /* test_image.jpg */; };
 		19F82F541E4847C200695409 /* test_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F521E4847C200695409 /* test_image.png */; };
-		19F82F571E48485C00695409 /* net.prototxt in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F551E48485C00695409 /* net.prototxt */; };
 		19F82F581E48485C00695409 /* weight.caffemodel in Resources */ = {isa = PBXBuildFile; fileRef = 19F82F561E48485C00695409 /* weight.caffemodel */; };
 /* End PBXBuildFile section */
 
@@ -32,13 +32,13 @@
 		1965DBB91E447C130064AD55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1965DBBC1E447C130064AD55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1965DBBE1E447C130064AD55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1976F27F1EBB2B9F00E9351E /* net.protobin */ = {isa = PBXFileReference; lastKnownFileType = file; name = net.protobin; path = data/net.protobin; sourceTree = "<group>"; };
 		19F82F1B1E44BD1E00695409 /* ImageReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageReader.h; sourceTree = "<group>"; };
 		19F82F1E1E44C2C300695409 /* ImageReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageReader.mm; sourceTree = "<group>"; };
 		19F82F211E44D8D100695409 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		19F82F231E44D9A100695409 /* libcaffe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcaffe.a; path = ../../../build/lib/libcaffe.a; sourceTree = "<group>"; };
 		19F82F511E4847C200695409 /* test_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = test_image.jpg; path = data/test_image.jpg; sourceTree = "<group>"; };
 		19F82F521E4847C200695409 /* test_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = test_image.png; path = data/test_image.png; sourceTree = "<group>"; };
-		19F82F551E48485C00695409 /* net.prototxt */ = {isa = PBXFileReference; lastKnownFileType = text; name = net.prototxt; path = data/net.prototxt; sourceTree = "<group>"; };
 		19F82F561E48485C00695409 /* weight.caffemodel */ = {isa = PBXFileReference; lastKnownFileType = file; name = weight.caffemodel; path = data/weight.caffemodel; sourceTree = "<group>"; };
 		19FEA4A71E52043600E336DE /* bin */ = {isa = PBXFileReference; lastKnownFileType = text; path = bin; sourceTree = "<group>"; };
 		19FEA4A81E52043600E336DE /* protoc */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = protoc; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		19F82F4B1E45783D00695409 /* data */ = {
 			isa = PBXGroup;
 			children = (
-				19F82F551E48485C00695409 /* net.prototxt */,
+				1976F27F1EBB2B9F00E9351E /* net.protobin */,
 				19F82F561E48485C00695409 /* weight.caffemodel */,
 				19F82F521E4847C200695409 /* test_image.png */,
 				19F82F511E4847C200695409 /* test_image.jpg */,
@@ -190,7 +190,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19F82F571E48485C00695409 /* net.prototxt in Resources */,
+				1976F2801EBB2B9F00E9351E /* net.protobin in Resources */,
 				19F82F581E48485C00695409 /* weight.caffemodel in Resources */,
 				19F82F531E4847C200695409 /* test_image.jpg in Resources */,
 				19F82F541E4847C200695409 /* test_image.png in Resources */,
@@ -295,7 +295,7 @@
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
 					../../../build/lib/libcaffe.a,
-					"-lprotobuf",
+					"-lprotobuf-lite",
 					"-lproto",
 				);
 				SDKROOT = iphoneos;
@@ -351,6 +351,7 @@
 					../../../third_party/protobuf/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated-declarations",
@@ -358,7 +359,7 @@
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
 					../../../build/lib/libcaffe.a,
-					"-lprotobuf",
+					"-lprotobuf-lite",
 					"-lproto",
 				);
 				SDKROOT = iphoneos;

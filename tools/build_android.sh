@@ -24,7 +24,7 @@ function build-abi {
     make -j 4 || exit 1
     cd ../examples/android/CaffeSimple/app/
     mkdir -p libs/${ANDROID_ABI%% *}
-    ln -sf ../../../../build_${ANDROID_ABI%% *}/lib/libcaffe-jni.so libs/${ANDROID_ABI%% *}/libcaffe-jni.so
+    ln -sf ../../../../../../build_${ANDROID_ABI%% *}/lib/libcaffe-jni.so libs/${ANDROID_ABI%% *}/libcaffe-jni.so
     cd ../../../..
 }
 

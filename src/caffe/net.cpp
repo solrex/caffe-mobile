@@ -34,7 +34,11 @@ template <typename Dtype>
 Net<Dtype>::Net(const string& param_file, Phase phase,
     const int level, const vector<string>* stages) {
   NetParameter param;
+#ifdef USE_PROTOBUF_FULL
   ReadNetParamsFromTextFileOrDie(param_file, &param);
+#else
+  ReadNetParamsFromBinaryFileOrDie(param_file, &param);
+#endif
   // Set phase, stages and level
   param.mutable_state()->set_phase(phase);
   if (stages != NULL) {
@@ -56,7 +60,11 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   FilterNet(in_param, &filtered_param);
   LOG_IF(INFO, Caffe::root_solver())
       << "Initializing net from parameters: " << std::endl
+#ifdef USE_PROTOBUF_FULL
       << filtered_param.DebugString();
+#else
+      ;
+#endif
   // Create a copy of filtered_param with splits added where necessary.
   NetParameter param;
   InsertSplits(filtered_param, &param);
