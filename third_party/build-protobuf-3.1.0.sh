@@ -187,6 +187,7 @@ function build-iPhoneOS {
             -Dprotobuf_WITH_ZLIB=OFF
         make ${MAKE_FLAGS}
         make install
+        cd ../..
     fi
     cd ${TARGET}-protobuf/bin
     ln -sf ../../protobuf-Linux/bin/protoc protoc
