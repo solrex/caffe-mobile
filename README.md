@@ -28,7 +28,7 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
      $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
 
-If you want to use your self-defined caffe network, use `tools/prototxt2protobin.py net.prototxt` to convert your prototxt to protobin. Then place `net.protobin` to `$CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/`.
+ - If you want to use your self-defined caffe network, use `tools/prototxt2protobin.py net.prototxt` to convert your prototxt to protobin. Then place `net.protobin` to `$CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/`.
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, connect your iPhone to Mac, change target to "Your Name's iPhone", and press Command-R to build and run it on your connected device.
 
@@ -56,13 +56,13 @@ Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.ber
 ```
 $ adb push $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
      /sdcard/weight.caffemodel
-$ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt \
-     /sdcard/net.prototxt
+$ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.protobin \
+     /sdcard/net.protobin
 $ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/test_image.jpg \
      /sdcard/test_image.jpg
 ```
 
-If you want to use your self-defined caffe network, use `tools/prototxt2protobin.py net.prototxt` to convert your prototxt to protobin. Then push `net.protobin` to your sdcard root directory.
+ - If you want to use your self-defined caffe network, use `tools/prototxt2protobin.py net.prototxt` to convert your prototxt to protobin. Then push `net.protobin` to your sdcard root directory.
 
  - Load the Android studio project inside the `$CAFFE_MOBILE/examples/android/CaffeSimple/` folder, and press Command-R to build and run it on your connected device.
 
@@ -87,22 +87,14 @@ $ make -j 4
 Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
 
 ```
-$ cp $CAFFE/examples/mnist/lenet.prototxt \
-     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
+$ ./tools/prototxt2bin.py $CAFFE/examples/mnist/lenet.prototxt
+$ cp $CAFFE/examples/mnist/lenet.protobin \
+     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.protobin
 $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
      $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
 
  - Check the batch size setting in net.prototxt, set it to `1` if needed.
-
-```
-$ diff $CAFFE/examples/mnist/lenet.prototxt \
-       $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.prototxt
-6c6
-<   input_param { shape: { dim: 64 dim: 1 dim: 28 dim: 28 } }
----
->   input_param { shape: { dim: 1 dim: 1 dim: 28 dim: 28 } }
-```
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, change build target to one of your "iOS Simulators" , and press Command-R to build and run it on the simulator.
 
