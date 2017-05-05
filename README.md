@@ -1,7 +1,7 @@
 Caffe on Mobile Devices
 ==================
 
-iOS/Android Caffe lib with demo APP (CPU_ONLY, NO_BACKWARD, NO_BOOST, NO_HDF5, NO_LEVELDB)
+Optimized (for size and speed) Caffe lib for iOS and Android with demo APP. (CPU_ONLY, NO_BACKWARD, NO_BOOST, NO_HDF5, NO_LEVELDB)
 
 # Screenshots
 
