@@ -1,64 +1,69 @@
 #ifndef GLOG_WRAPPER_HPP
 #define GLOG_WRAPPER_HPP
 
+#ifndef USE_GLOG
+
+#include <sstream>
+
+#ifdef __ANDROID__
+#include <android/log.h>
+#else
 #include <iostream>
-#include <string>
-#include <ctime>
-#include <cstdlib>
+#endif
 
 namespace caffe{
 
-struct nullstream: std::ostream{
-  nullstream(): std::ostream(0){}
+class LogMessage {
+public:
+  LogMessage(const char *file, int line, const char * severity,
+             bool cond_mode = false, bool cond = true)
+  : cond_mode_(cond_mode), cond_(cond), cont_(true) {
+    stream() << severity << " " << file << ":" << line << "] ";
+  }
+
+  std::iostream &stream() {
+    return log_stream_;
+  }
+
+  bool cont() {
+    return cont_;
+  }
+
+  void print() {
+    cont_ = false;
+    if (cond_mode_ && (!cond_)) {
+      return;
+    }
+#ifdef __ANDROID__
+    __android_log_print(ANDROID_LOG_INFO, "caffe", log_stream_.str().c_str());
+#else
+    std::cout << log_stream_.str() << std::endl;
+#endif
+  }
+private:
+  std::stringstream log_stream_;    ///< logging stream
+  bool cond_mode_;  ///< cond mode
+  bool cond_;       ///< cond
+  bool cont_;       ///< Should continue
 };
 
-template <typename T>
-nullstream &operator<<(nullstream &o, T const & x) { return o;}
-extern nullstream __nullstream;
-
-class LogMessage{
-  std::string level;
-  std::ostream &ofs;
-  static bool enable;
-  public:
-    LogMessage(const std::string &l)
-      :level(l), ofs(enable ? std::cerr : __nullstream){
-      stream() << "[" << level << "]\t";
-    }
-    LogMessage(std::ostream &o)
-      :level("ERROR"), ofs(o){
-      stream() << "[" << level << "]\t";
-    }
-    inline std::ostream &stream(){
-      return ofs;
-    }
-    ~LogMessage() {
-      stream() << std::endl;
-    }
-
-    static void Enable(bool _enable){
-      enable = _enable;
-    }
-};
-
-// This class is used to explicitly ignore values in the conditional
-// logging macros.  This avoids compiler warnings like "value computed
-// is not used" and "statement has no effect".
-
-class LogMessageVoidify {
- public:
-  LogMessageVoidify() { }
-  // This has to be an operator with a precedence lower than << but
-  // higher than ?:
-  void operator&(std::ostream&) { }
-};
 }
 
-#define   LOG(type)   caffe::LogMessage(#type).stream()
-#define   DLOG(type)   caffe::LogMessage(#type).stream()
-#define   VLOG(level)   if ((level) <= FLAGS_v) LOG(INFO)
+#define LOG(severity) \
+    for(caffe::LogMessage _logger(__FILE__, __LINE__, #severity); \
+        _logger.cont(); _logger.print()) _logger.stream()
 
-#define CHECK(x) if(x) {} else LOG(ERROR) << #x
+#define DLOG(severity)  LOG(severity)
+#define VLOG(severity)  LOG(severity)
+
+#define LOG_IF(severity, condition) \
+    for(caffe::LogMessage _logger(__FILE__, __LINE__, #severity, #condition, \
+                                  static_cast<bool>(condition)); \
+        _logger.cont(); _logger.print()) _logger.stream()
+
+#define CHECK(condition) \
+    LOG_IF(FATAL, (!(condition))) << "Check failed: " #condition " "
+
 #define DCHECK(x) CHECK(x)
 
 #define   CHECK_EQ(x, y)   CHECK((x) == (y))
@@ -75,7 +80,14 @@ class LogMessageVoidify {
 #define   DCHECK_GE(x, y)   DCHECK((x) >= (y))
 #define   DCHECK_NE(x, y)   DCHECK((x) != (y))
 
-#define LOG_IF(severity, condition) \
-  !(condition) ? (void) 0 : caffe::LogMessageVoidify() & LOG(severity)
+#define LOG_EVERY_N(severity, n) \
+  static int LOG_OCCURRENCES = 0, LOG_OCCURRENCES_MOD_N = 0; \
+  ++LOG_OCCURRENCES; \
+  if (++LOG_OCCURRENCES_MOD_N > n) LOG_OCCURRENCES_MOD_N -= n; \
+  if (LOG_OCCURRENCES_MOD_N == 1) \
+    LOG(severity) << "REPEAT:" << LOG_OCCURRENCES << " "
+
+
+#endif // USE_GLOG
 
 #endif

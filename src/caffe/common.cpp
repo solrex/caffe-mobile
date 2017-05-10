@@ -24,11 +24,6 @@ static boost::thread_specific_ptr<Caffe> thread_instance_;
 thread_local static Caffe *thread_instance_ = NULL;
 #endif
 
-#ifndef USE_GLOG
-nullstream __nullstream;
-bool LogMessage::enable = true;
-#endif
-
 Caffe& Caffe::Get() {
 #ifdef USE_BOOST
   if (!thread_instance_.get()) {
