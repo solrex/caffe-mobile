@@ -15,25 +15,21 @@ namespace caffe{
 
 class LogMessage {
 public:
-  LogMessage(const char *file, int line, const char * severity,
-             bool cond_mode = false, bool cond = true)
-  : cond_mode_(cond_mode), cond_(cond), cont_(true) {
+  LogMessage(const char *file, int line, const char * severity)
+  : cont_(true) {
     stream() << severity << " " << file << ":" << line << "] ";
   }
 
-  std::iostream &stream() {
+  inline std::iostream & stream() {
     return log_stream_;
   }
 
-  bool cont() {
+  inline bool cont() {
     return cont_;
   }
 
-  void print() {
+  inline void print() {
     cont_ = false;
-    if (cond_mode_ && (!cond_)) {
-      return;
-    }
 #ifdef __ANDROID__
     __android_log_print(ANDROID_LOG_INFO, "caffe", log_stream_.str().c_str());
 #else
@@ -42,8 +38,6 @@ public:
   }
 private:
   std::stringstream log_stream_;    ///< logging stream
-  bool cond_mode_;  ///< cond mode
-  bool cond_;       ///< cond
   bool cont_;       ///< Should continue
 };
 
@@ -80,12 +74,9 @@ T* CheckNotNull(const char *file, int line, const char *names, T* t) {
 #define VLOG(severity)  LOG(severity)
 
 #define LOG_IF(severity, condition) \
-    for(caffe::LogMessage _logger(__FILE__, __LINE__, #severity, #condition, \
-                                  static_cast<bool>(condition)); \
-        _logger.cont(); _logger.print()) _logger.stream()
+  if(!(condition)) LOG(severity) << #condition " "
 
-#define CHECK(condition) \
-    LOG_IF(FATAL, (!(condition))) << "Check failed: " #condition " "
+#define CHECK(condition) LOG_IF(ERROR, condition)
 
 #define DCHECK(x) CHECK(x)
 
