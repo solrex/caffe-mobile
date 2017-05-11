@@ -47,6 +47,29 @@ private:
   bool cont_;       ///< Should continue
 };
 
+// This class is used to explicitly ignore values in the conditional
+// logging macros.  This avoids compiler warnings like "value computed
+// is not used" and "statement has no effect".
+
+class LogMessageVoidify {
+public:
+  LogMessageVoidify() { }
+  // This has to be an operator with a precedence lower than << but
+  // higher than ?:
+  void operator&(std::ostream&) { }
+};
+
+// A small helper for CHECK_NOTNULL().
+template <typename T>
+T* CheckNotNull(const char *file, int line, const char *names, T* t) {
+  if (t == NULL) {
+    LogMessage _logger(file, line, "FATAL");
+    _logger.stream() << names;
+    _logger.print();
+  }
+  return t;
+}
+
 }
 
 #define LOG(severity) \
@@ -87,6 +110,8 @@ private:
   if (LOG_OCCURRENCES_MOD_N == 1) \
     LOG(severity) << "REPEAT:" << LOG_OCCURRENCES << " "
 
+#define CHECK_NOTNULL(val) \
+  caffe::CheckNotNull(__FILE__, __LINE__, "'" #val "' Must be non NULL", (val))
 
 #endif // USE_GLOG
 
