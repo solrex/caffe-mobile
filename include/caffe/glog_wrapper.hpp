@@ -70,29 +70,8 @@ T* CheckNotNull(const char *file, int line, const char *names, T* t) {
     for(caffe::LogMessage _logger(__FILE__, __LINE__, #severity); \
         _logger.cont(); _logger.print()) _logger.stream()
 
-#define DLOG(severity)  LOG(severity)
-#define VLOG(severity)  LOG(severity)
-
 #define LOG_IF(severity, condition) \
   if(!(condition)) LOG(severity) << #condition " "
-
-#define CHECK(condition) LOG_IF(ERROR, condition)
-
-#define DCHECK(x) CHECK(x)
-
-#define   CHECK_EQ(x, y)   CHECK((x) == (y))
-#define   CHECK_LT(x, y)   CHECK((x) < (y))
-#define   CHECK_GT(x, y)   CHECK((x) > (y))
-#define   CHECK_LE(x, y)   CHECK((x) <= (y))
-#define   CHECK_GE(x, y)   CHECK((x) >= (y))
-#define   CHECK_NE(x, y)   CHECK((x) != (y))
-
-#define   DCHECK_EQ(x, y)   DCHECK((x) == (y))
-#define   DCHECK_LT(x, y)   DCHECK((x) < (y))
-#define   DCHECK_GT(x, y)   DCHECK((x) > (y))
-#define   DCHECK_LE(x, y)   DCHECK((x) <= (y))
-#define   DCHECK_GE(x, y)   DCHECK((x) >= (y))
-#define   DCHECK_NE(x, y)   DCHECK((x) != (y))
 
 #define LOG_EVERY_N(severity, n) \
   static int LOG_OCCURRENCES = 0, LOG_OCCURRENCES_MOD_N = 0; \
@@ -101,8 +80,39 @@ T* CheckNotNull(const char *file, int line, const char *names, T* t) {
   if (LOG_OCCURRENCES_MOD_N == 1) \
     LOG(severity) << "REPEAT:" << LOG_OCCURRENCES << " "
 
+#define CHECK(condition) LOG_IF(ERROR, condition)
+#define CHECK_EQ(x, y)   CHECK((x) == (y))
+#define CHECK_LT(x, y)   CHECK((x) < (y))
+#define CHECK_GT(x, y)   CHECK((x) > (y))
+#define CHECK_LE(x, y)   CHECK((x) <= (y))
+#define CHECK_GE(x, y)   CHECK((x) >= (y))
+#define CHECK_NE(x, y)   CHECK((x) != (y))
 #define CHECK_NOTNULL(val) \
   caffe::CheckNotNull(__FILE__, __LINE__, "'" #val "' Must be non NULL", (val))
+
+#ifdef NDEBUG
+
+#define DLOG(severity) \
+  if(false) LOG(severity)
+
+#define DCHECK(x)  \
+  if(false) CHECK(x)
+
+#else
+
+#define DLOG(severity)    LOG(severity)
+#define DCHECK(x)         CHECK(x)
+
+#endif
+
+#define DCHECK_EQ(x, y)   DCHECK((x) == (y))
+#define DCHECK_LT(x, y)   DCHECK((x) < (y))
+#define DCHECK_GT(x, y)   DCHECK((x) > (y))
+#define DCHECK_LE(x, y)   DCHECK((x) <= (y))
+#define DCHECK_GE(x, y)   DCHECK((x) >= (y))
+#define DCHECK_NE(x, y)   DCHECK((x) != (y))
+
+#define VLOG(severity)  LOG(severity)
 
 #endif // USE_GLOG
 
