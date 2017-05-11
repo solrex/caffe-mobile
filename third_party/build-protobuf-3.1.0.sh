@@ -89,7 +89,7 @@ function build-Linux {
         make ${MAKE_FLAGS}
         make install
     fi
-    cd ..
+    cd ../..
     rm -f protobuf
     ln -s ${TARGET}-protobuf protobuf
 }
@@ -133,7 +133,7 @@ function build-Android {
         cd ../..
     fi
     cd ${TARGET}-protobuf/bin
-    ln -sf ../../protobuf-Linux/bin/protoc protoc
+    ln -sf ../../Linux-protobuf/bin/protoc protoc
     cd ../..
 }
 
