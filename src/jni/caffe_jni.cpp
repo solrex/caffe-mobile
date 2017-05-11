@@ -1,5 +1,4 @@
 #include <jni.h>
-#include <android/log.h>
 
 #include "caffe_mobile.hpp"
 
@@ -37,7 +36,7 @@ Java_com_yangwenbo_caffemobile_CaffeMobile_predict(JNIEnv *env, jobject instance
   if (NULL != jrgba) {
     rgba = (uint8_t *)env->GetByteArrayElements(jrgba, 0);
   } else {
-    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): invalid args: jrgba(NULL)");
+    LOG(ERROR) << "caffe-jni predict(): invalid args: jrgba(NULL)";
     return NULL;
   }
   std::vector<float> mean;
@@ -46,29 +45,25 @@ Java_com_yangwenbo_caffemobile_CaffeMobile_predict(JNIEnv *env, jobject instance
     int mean_size = env->GetArrayLength(jmean);
     mean.assign(mean_arr, mean_arr+mean_size);
   } else {
-    __android_log_print(ANDROID_LOG_INFO, "caffe-jni", "predict(): args: jmean(NULL)");
+    LOG(INFO) << "caffe-jni predict(): args: jmean(NULL)";
   }
   // Predict
   caffe::CaffeMobile *caffe_mobile = caffe::CaffeMobile::get();
   if (NULL == caffe_mobile) {
-    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): CaffeMobile failed to initialize");
+    LOG(ERROR) << "caffe-jni predict(): CaffeMobile failed to initialize";
     return NULL;  // not initialized
   }
   int rgba_len = env->GetArrayLength(jrgba);
   if (rgba_len != jchannels * caffe_mobile->input_width() * caffe_mobile->input_height()) {
-    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): invalid rgba length(%d) expect(%d)",
-                        rgba_len, jchannels * caffe_mobile->input_width() * caffe_mobile->input_height());
+    LOG(WARNING) << "caffe-jni predict(): invalid rgba length(" << rgba_len << ") expect(" <<
+                    jchannels * caffe_mobile->input_width() * caffe_mobile->input_height() << ")";
     return NULL;  // not initialized
   }
   std::vector<float> predict;
   if (!caffe_mobile->predictImage(rgba, jchannels, mean, predict)) {
-    __android_log_print(ANDROID_LOG_WARN, "caffe-jni", "predict(): CaffeMobile failed to predict");
+    LOG(WARNING) << "caffe-jni predict(): CaffeMobile failed to predict";
     return NULL; // predict error
   }
-  //__android_log_print(ANDROID_LOG_INFO, "caffe-jni", "CaffeMobile::predictImage result size=%zd", predict.size());
-  //for (size_t i=0; i<predict.size(); i++) {
-  //  __android_log_print(ANDROID_LOG_INFO, "caffe-jni", "result[%zd]=%f", i, predict[i]);
-  //}
   // Handle result
   jfloatArray result = env->NewFloatArray(predict.size());
   if (result == NULL) {
