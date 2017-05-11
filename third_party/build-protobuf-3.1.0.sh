@@ -159,7 +159,7 @@ function build-iPhoneSimulator {
         cd ../..
     fi
     cd ${TARGET}-protobuf/bin
-    ln -sf ../../protobuf-Linux/bin/protoc protoc
+    ln -sf ../../Linux-protobuf/bin/protoc protoc
     cd ../..
     rm -f protobuf
     ln -s ${TARGET}-protobuf protobuf
@@ -188,7 +188,7 @@ function build-iPhoneOS {
         cd ../..
     fi
     cd ${TARGET}-protobuf/bin
-    ln -sf ../../protobuf-Linux/bin/protoc protoc
+    ln -sf ../../Linux-protobuf/bin/protoc protoc
     cd ../..
     rm -f protobuf
     ln -s ${TARGET}-protobuf protobuf
@@ -196,7 +196,7 @@ function build-iPhoneOS {
 
 fetch-protobuf
 if [ "$TARGET" != "Linux" -a "$TARGET" != "MacOSX" ]; then
-    PROTOC_VERSION=$(./protobuf-Linux/bin/protoc --version)
+    PROTOC_VERSION=$(./Linux-protobuf/bin/protoc --version)
     if [ "$PROTOC_VERSION" != "libprotoc 3.1.0" ]; then
         TARGET_SAVE=$TARGET
         TARGET=Linux
