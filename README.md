@@ -9,6 +9,8 @@ iPhone5s | Meizu M3 note
 :---------:| :-------------:
 <img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleiPhone5s.png" width="70%" /> | <img src="https://raw.githubusercontent.com/solrex/caffe-mobile/master/screenshot/CaffeSimpleM3-Note.jpg" width="40%" />
 
+> NOTE: Cmake version 3.7.2 builds faster lib than version 3.5.1 (verified on Ubuntu 16.10/Android NDK r14). Don't know why. So please use a newer cmake if you can.
+
 # For iPhone
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
