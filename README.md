@@ -30,7 +30,7 @@ $ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
      $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
 ```
 
- - If you want to use your self-defined caffe network, use `tools/prototxt2protobin.py net.prototxt` to convert your prototxt to protobin. Then place `net.protobin` to `$CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/`.
+ - If you want to use your self-defined caffe network, use `tools/prototxt2bin.py net.prototxt` to convert your prototxt to protobin. Then place `net.protobin` in `$CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/`.
 
  - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, connect your iPhone to Mac, change target to "Your Name's iPhone", and press Command-R to build and run it on your connected device.
 
@@ -64,7 +64,7 @@ $ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/test_image.jpg \
      /sdcard/test_image.jpg
 ```
 
- - If you want to use your self-defined caffe network, use `tools/prototxt2protobin.py net.prototxt` to convert your prototxt to protobin. Then push `net.protobin` to your sdcard root directory.
+ - If you want to use your self-defined caffe network, use `tools/prototxt2bin.py net.prototxt` to convert your prototxt to protobin. Then push `net.protobin` to your sdcard root directory.
 
  - Load the Android studio project inside the `$CAFFE_MOBILE/examples/android/CaffeSimple/` folder, and press Command-R to build and run it on your connected device.
 
