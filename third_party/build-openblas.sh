@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -x
+set -e
+
 PLATFORM=Android
 
 # Options for All
@@ -26,8 +29,7 @@ if [ "$(uname)" = "Darwin" ]; then
     OS=darwin
 elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
     OS=linux
-elif [ "$(expr substr $(uname -s) 1 10)" = "MINGW32_NT" ||
-       "$(expr substr $(uname -s) 1 9)" = "CYGWIN_NT" ]; then
+elif [ "$(expr substr $(uname -s) 1 10)" = "MINGW64_NT" ] || [ "$(expr substr $(uname -s) 1 9)" = "CYGWIN_NT" ]; then
     OS=windows
 else
     echo "Unknown OS"
@@ -144,7 +146,7 @@ function build-Android {
             install
         cd ..
     fi
-    rm -f OpenBLAS
+    rm -rf OpenBLAS
     ln -s $PREFIX OpenBLAS
 }
 

@@ -50,6 +50,8 @@ $ export NDK_HOME=/path/to/your/ndk
 $ ./tools/build_android.sh
 ```
 
+- If you are on Windows system, please install [git-for-windows](https://git-for-windows.github.io/) and 64bit version of [tdm-gcc](http://tdm-gcc.tdragon.net/download). The former provides a shell environment(MinGW64) to run the build, by opening `Git Bash` after installation. The latter provides GNU toolchains, and remember to copy and rename `/path/to/TDM-GCC-64/bin/mingw32-make.exe` to `/path/to/TDM-GCC-64/bin/make.exe` after installation.
+
 ## Step 2: Build Android App: CaffeSimple with Android Studio
 
  - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
@@ -133,3 +135,4 @@ $ make -j 4
  - Inspired by https://github.com/chyh1990/caffe-compact
  - Use https://github.com/Yangqing/ios-cmake
  - Use https://github.com/taka-no-me/android-cmake
+ - Windows build script inspired by https://github.com/luoyetx/mini-caffe/tree/master/android

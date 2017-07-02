@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ ! -d "$NDK_HOME" ]; then
     echo "$(tput setaf 2)"
     echo "###########################################################"
@@ -12,7 +14,9 @@ ANDROID_ABIs=("armeabi" "armeabi-v7a with NEON" "arm64-v8a")
 function build-abi {
     cd third_party
     ./build-protobuf-3.1.0.sh Android || exit 1
+    #exit 1
     ./build-openblas.sh || exit 1
+    #exit 1
     mkdir ../build_${ANDROID_ABI%% *}
     cd ../build_${ANDROID_ABI%% *} || exit 1
     rm -rf *
@@ -20,7 +24,8 @@ function build-abi {
         -DANDROID_NDK=$NDK_HOME \
         -DANDROID_ABI="$ANDROID_ABI" \
         -DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
-        -DTHIRD_PARTY=1 || exit 1
+        -DTHIRD_PARTY=1 \
+        -G "Unix Makefiles" || exit 1
     make -j 4 || exit 1
     cd ../examples/android/CaffeSimple/app/
     mkdir -p libs/${ANDROID_ABI%% *}
