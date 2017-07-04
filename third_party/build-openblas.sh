@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -x
-set -e
-
 PLATFORM=Android
 
 # Options for All

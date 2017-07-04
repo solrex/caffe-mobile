@@ -44,9 +44,19 @@ Test passed ANDROID_ABI:
  - [x] armeabi
  - [x] armeabi-v7a with NEON (not stable)
 
-```
+> For Windows Users:
+>
+> Install the following softwares before you continue:
+>
+> 1. [Git for Windows](https://github.com/git-for-windows/git/releases/download/v2.13.2.windows.1/Git-2.13.2-64-bit.exe): A shell environment(MinGW64) to run the build.
+> 1. [tdm64-gcc-5.1.0-2.exe](http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm64-gcc-5.1.0-2.exe/download): The GNU toolchain, remember to copy `/path/to/TDM-GCC-64/bin/mingw32-make.exe` to `/path/to/TDM-GCC-64/bin/make.exe`.
+> 1. [cmake-3.8.2-win64-x64.msi](https://cmake.org/files/v3.8/cmake-3.8.2-win64-x64.msi): Cmake
+>
+> Then start `Git Bash` to run the following shell command.
+
+```bash
 $ git clone --recursive https://github.com/solrex/caffe-mobile.git
-$ export NDK_HOME=/path/to/your/ndk
+$ export NDK_HOME=/path/to/your/ndk  # C:/path/to/your/ndk on MinGW64 (/c/path/to/your/ndk not work for OpenBLAS)
 $ ./tools/build_android.sh
 ```
 
