@@ -1,8 +1,20 @@
 #!/bin/bash
 
-# TARGET: Linux, Android, iPhoneOS, iPhoneSimulator, MacOSX
+# check host system
+if [ "$(uname)" = "Darwin" ]; then
+    HOST_OS=MacOSX
+elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
+    HOST_OS=Linux
+elif [ "$(expr substr $(uname -s) 1 10)" = "MINGW64_NT" ]; then
+    HOST_OS=Windows
+else
+    echo "Unknown OS"
+    exit 1
+fi
+
+# TARGET: Windows, Linux, Android, iPhoneOS, iPhoneSimulator, MacOSX
 if [ "$1" = "" ]; then
-    TARGET=Linux
+    TARGET=$HOST_OS
 else
     TARGET=$1
 fi
@@ -70,6 +82,31 @@ function fetch-protobuf {
     tar -xzf protobuf-${PB_VERSION}.tar.gz
 }
 
+function build-Windows {
+    echo "$(tput setaf 2)"
+    echo "#####################"
+    echo " Building protobuf for $TARGET"
+    echo "#####################"
+    echo "$(tput sgr0)"
+
+    mkdir -p protobuf-$PB_VERSION/$BUILD_DIR
+    rm -rf protobuf-$PB_VERSION/$BUILD_DIR/*
+    cd protobuf-$PB_VERSION/$BUILD_DIR
+    if [ ! -s ${TARGET}-protobuf/lib/libprotobuf.a ]; then
+        cmake ../cmake -DCMAKE_INSTALL_PREFIX=../../${TARGET}-protobuf \
+            -Dprotobuf_BUILD_TESTS=OFF \
+            -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+            -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
+            -Dprotobuf_WITH_ZLIB=OFF \
+            -G "Unix Makefiles"
+        make ${MAKE_FLAGS}
+        make install
+    fi
+    cd ../..
+    rm -f protobuf
+    ln -s ${TARGET}-protobuf protobuf
+}
+
 function build-Linux {
     echo "$(tput setaf 2)"
     echo "#####################"
@@ -127,13 +164,18 @@ function build-Android {
             -DANDROID_NATIVE_API_LEVEL="$ANDROID_NATIVE_API_LEVEL" \
             -Dprotobuf_BUILD_TESTS=OFF \
             -Dprotobuf_BUILD_SHARED_LIBS=OFF \
-            -Dprotobuf_WITH_ZLIB=OFF
+            -Dprotobuf_WITH_ZLIB=OFF \
+            -G "Unix Makefiles"
         make ${MAKE_FLAGS}
         make install
         cd ../..
     fi
     cd ${TARGET}-protobuf/bin
-    ln -sf ../../Linux-protobuf/bin/protoc protoc
+    PROTOC=protoc
+    if [ $HOST_OS = "Windows" ]; then
+        PROTOC=protoc.exe
+    fi
+    ln -sf ../../$HOST_OS-protobuf/bin/$PROTOC $PROTOC
     cd ../..
 }
 
@@ -195,11 +237,11 @@ function build-iPhoneOS {
 }
 
 fetch-protobuf
-if [ "$TARGET" != "Linux" -a "$TARGET" != "MacOSX" ]; then
-    PROTOC_VERSION=$(./Linux-protobuf/bin/protoc --version)
+if [ "$TARGET" != "Linux" -a "$TARGET" != "MacOSX" -a "$TARGET" != "Windows" ]; then
+    PROTOC_VERSION=$(./$HOST_OS-protobuf/bin/protoc --version)
     if [ "$PROTOC_VERSION" != "libprotoc 3.1.0" ]; then
         TARGET_SAVE=$TARGET
-        TARGET=Linux
+        TARGET=$HOST_OS
         build-$TARGET
         TARGET=$TARGET_SAVE
     fi
