@@ -6,7 +6,12 @@ from google.protobuf import text_format
 # Search path for caffe_pb2.py
 sys.path.append(path.abspath("../build/include/caffe/proto/"))
 sys.path.append(path.abspath("../build_armeabi/include/caffe/proto/"))
-import caffe_pb2
+
+try:
+  import caffe_pb2
+except TypeError:
+  print('ERROR: You need a newer version of python-protobuf. Try "sudo -H pip install protobuf==3.1."')
+  sys.exit(1)
 
 if len(sys.argv) < 2:
     print("Usage: ./prototxt2bin.py net.prototxt")
