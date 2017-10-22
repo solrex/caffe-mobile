@@ -24,7 +24,6 @@ function build-abi {
         -DANDROID_NDK=$NDK_HOME \
         -DANDROID_ABI="$ANDROID_ABI" \
         -DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
-        -DTHIRD_PARTY=1 \
         -G "Unix Makefiles" || exit 1
     make -j 4 || exit 1
     cd ../examples/android/CaffeSimple/app/

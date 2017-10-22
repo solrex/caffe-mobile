@@ -6,5 +6,5 @@ mkdir ../build
 cd ../build
 rm -rf *
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
-    -DIOS_PLATFORM=OS -DTHIRD_PARTY=1
+    -DIOS_PLATFORM=OS
 make -j 4

@@ -89,7 +89,7 @@ $ ./build-protobuf-3.1.0.sh iPhoneSimulator
 $ mkdir ../build
 $ cd ../build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
-  -DIOS_PLATFORM=SIMULATOR -DTHIRD_PARTY=1
+  -DIOS_PLATFORM=SIMULATOR
 $ make -j 4
 ```
 
