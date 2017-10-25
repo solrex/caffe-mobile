@@ -201,10 +201,9 @@ function build-iPhoneSimulator {
         cd ../..
     fi
     cd ${TARGET}-protobuf/bin
-    ln -sf ../../Linux-protobuf/bin/protoc protoc
+    PROTOC=protoc
+    ln -sf ../../$HOST_OS-protobuf/bin/$PROTOC $PROTOC
     cd ../..
-    rm -f protobuf
-    ln -s ${TARGET}-protobuf protobuf
 }
 
 function build-iPhoneOS {
@@ -230,10 +229,9 @@ function build-iPhoneOS {
         cd ../..
     fi
     cd ${TARGET}-protobuf/bin
-    ln -sf ../../Linux-protobuf/bin/protoc protoc
+    PROTOC=protoc
+    ln -sf ../../$HOST_OS-protobuf/bin/$PROTOC $PROTOC
     cd ../..
-    rm -f protobuf
-    ln -s ${TARGET}-protobuf protobuf
 }
 
 fetch-protobuf
