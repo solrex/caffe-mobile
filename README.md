@@ -11,7 +11,7 @@ iPhone5s | Meizu M3 note
 
 > NOTE: Cmake version 3.7.2 builds faster lib than version 3.5.1 (verified on Ubuntu 16.10/Android NDK r14). Don't know why. So please use a newer cmake if you can.
 
-# For iPhone
+# For iPhone or iPhone Simulator
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
 
@@ -77,38 +77,6 @@ $ adb push $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/test_image.jpg \
  - If you want to use your self-defined caffe network, use `tools/prototxt2bin.py net.prototxt` to convert your prototxt to protobin. Then push `net.protobin` to your sdcard root directory.
 
  - Load the Android studio project inside the `$CAFFE_MOBILE/examples/android/CaffeSimple/` folder, and press Command-R to build and run it on your connected device.
-
-# For iPhone Simulator
-
-## Step 1: Build Caffe-Mobile Lib with cmake
-
-```
-$ git clone --recursive https://github.com/solrex/caffe-mobile.git
-$ cd caffe-mobile/third_party
-$ ./build-protobuf-3.1.0.sh iPhoneSimulator
-$ mkdir ../build
-$ cd ../build
-$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../third_party/ios-cmake/toolchain/iOS.cmake \
-  -DIOS_PLATFORM=SIMULATOR
-$ make -j 4
-```
-
-## Step 2: Build iOS App: CaffeSimple with Xcode
-
- - For CaffeSimple to run, you need a pre-trained LeNet on MNIST caffe model and the weight file.
-Follow the instructions in [Training LeNet on MNIST with Caffe](http://caffe.berkeleyvision.org/gathered/examples/mnist.html) to train your LeNet Model on MNIST. Then copy the model file `caffe/examples/mnist/lenet.prototxt` and the trained weight file `caffe/examples/mnist/lenet_iter_10000.caffemodel` to CaffeSimple app directory.
-
-```
-$ ./tools/prototxt2bin.py $CAFFE/examples/mnist/lenet.prototxt
-$ cp $CAFFE/examples/mnist/lenet.protobin \
-     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/net.protobin
-$ cp $CAFFE/examples/mnist/lenet_iter_10000.caffemodel \
-     $CAFFE_MOBILE/examples/ios/simple/CaffeSimple/data/weight.caffemodel
-```
-
- - Check the batch size setting in net.prototxt, set it to `1` if needed.
-
- - Load the Xcode project inside the `$CAFFE_MOBILE/examples/ios/simple/` folder, change build target to one of your "iOS Simulators" , and press Command-R to build and run it on the simulator.
 
 # For MacOSX & Ubuntu
 
