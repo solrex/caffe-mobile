@@ -36,7 +36,7 @@
 		19F82F1B1E44BD1E00695409 /* ImageReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageReader.h; sourceTree = "<group>"; };
 		19F82F1E1E44C2C300695409 /* ImageReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageReader.mm; sourceTree = "<group>"; };
 		19F82F211E44D8D100695409 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		19F82F231E44D9A100695409 /* libcaffe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcaffe.a; path = ../../../build/lib/libcaffe.a; sourceTree = "<group>"; };
+		19F82F231E44D9A100695409 /* libcaffe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcaffe.a; path = ../../../build_ios/lib/libcaffe.a; sourceTree = "<group>"; };
 		19F82F511E4847C200695409 /* test_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = test_image.jpg; path = data/test_image.jpg; sourceTree = "<group>"; };
 		19F82F521E4847C200695409 /* test_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = test_image.png; path = data/test_image.png; sourceTree = "<group>"; };
 		19F82F561E48485C00695409 /* weight.caffemodel */ = {isa = PBXFileReference; lastKnownFileType = file; name = weight.caffemodel; path = data/weight.caffemodel; sourceTree = "<group>"; };
@@ -128,7 +128,7 @@
 				19FEA4A81E52043600E336DE /* protoc */,
 			);
 			name = bin;
-			path = ../../../third_party/protobuf/bin;
+			path = ../../../third_party/ios-protobuf/bin;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,13 +278,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../../include,
-					../../../build/include,
-					../../../third_party/protobuf/include,
+					../../../build_ios/include,
+					../../../third_party/ios-protobuf/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = (
-					../../../build/lib,
-					../../../third_party/protobuf/lib,
+					../../../build_ios/lib,
+					../../../third_party/ios-protobuf/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -294,7 +294,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
-					../../../build/lib/libcaffe.a,
+					../../../build_ios/lib/libcaffe.a,
 					"-lprotobuf-lite",
 					"-lproto",
 				);
@@ -342,13 +342,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../../include,
-					../../../build/include,
-					../../../third_party/protobuf/include,
+					../../../build_ios/include,
+					../../../third_party/ios-protobuf/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = (
-					../../../build/lib,
-					../../../third_party/protobuf/lib,
+					../../../build_ios/lib,
+					../../../third_party/ios-protobuf/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
@@ -358,7 +358,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-force_load",
-					../../../build/lib/libcaffe.a,
+					../../../build_ios/lib/libcaffe.a,
 					"-lprotobuf-lite",
 					"-lproto",
 				);
