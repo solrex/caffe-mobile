@@ -1,3 +1,9 @@
+/**
+ * Original version of this file is provided in https://github.com/sh1r0/caffe,
+ * which is part of https://github.com/sh1r0/caffe-android-lib.
+ * Thanks to github user "sh1r0" for sharing this.
+ */
+
 #include "caffe_mobile.hpp"
 
 namespace caffe {
