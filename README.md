@@ -109,6 +109,7 @@ $ make -j 4
 
  - Based on https://github.com/BVLC/caffe
  - Inspired by https://github.com/chyh1990/caffe-compact
+ - Android JNI code based on https://github.com/sh1r0/caffe
  - Use https://github.com/Yangqing/ios-cmake
  - Use https://github.com/taka-no-me/android-cmake
  - Windows build script inspired by https://github.com/luoyetx/mini-caffe/tree/master/android
