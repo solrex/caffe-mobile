@@ -11,6 +11,8 @@ iPhone5s | Meizu M3 note
 
 > NOTE: Cmake version 3.7.2 builds faster lib than version 3.5.1 (verified on Ubuntu 16.10/Android NDK r14). Don't know why. So please use a newer cmake if you can.
 
+> NOTE: NDK version r16+ is not supported. NDK r16 moves all standalone headers to [unified headers](https://android.googlesource.com/platform/ndk/+/ndk-release-r16/CHANGELOG.md). It causes a lot of cross compile problems which I cannot resolve. See issue [#52](https://github.com/solrex/caffe-mobile/issues/52).
+
 # For iPhone or iPhone Simulator
 
 ## Step 1: Build Caffe-Mobile Lib with cmake
