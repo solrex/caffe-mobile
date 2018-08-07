@@ -3,7 +3,7 @@
 PLATFORM=Android
 
 # Options for All
-OPENBLAS_VERSION=0.2.19
+OPENBLAS_VERSION=0.3.2
 MAKE_FLAGS="$MAKE_FLAGS -j 4"
 BUILD_DIR=".cbuild"
 
@@ -127,6 +127,7 @@ function build-Android {
         make ${MAKE_FLAGS} \
             NOFORTRAN=1 \
             NO_NOLAPACKE=1 \
+            NO_SHARED=1 \
             OSNAME=Android \
             SMP=1 \
             USE_THREAD=1 \
@@ -136,7 +137,7 @@ function build-Android {
             HOSTCC=gcc \
             TARGET=$TARGET \
             ARM_SOFTFP_ABI=$ARM_SOFTFP_ABI \
-            BINARY=$BINARY
+            BINARY=$BINARY || exit 1
         make \
             SMP=1 \
             PREFIX="../$PREFIX" \
@@ -147,9 +148,9 @@ function build-Android {
     ln -s $PREFIX OpenBLAS
 }
 
-if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then
-  fetch-OpenBLAS-softfp
-else 
-  fetch-OpenBLAS
-fi 
+#if [ "${ANDROID_ABI}" = "armeabi-v7a with NEON" ]; then
+#  fetch-OpenBLAS-softfp
+#else 
+fetch-OpenBLAS
+#fi 
 build-$PLATFORM
